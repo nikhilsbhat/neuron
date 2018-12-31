@@ -1,0 +1,22 @@
+package main
+
+import (
+	"fmt"
+        db "neuron/database"
+        dbcommon "neuron/database/common"
+)
+
+func test() {
+
+        creds, crderr := dbcommon.GetCloudCredentails(
+                db.UserData{UserName: "nikhibt434@gmail", Password: "42bhat24"},
+                db.GetCloudAccess{ProfileName: "niktest", Cloud: "aws"},
+                db.DataDetail{"neuron", "users"},
+        )
+        if crderr != nil {
+                fmt.Println("Cred error",crderr)
+        } else {
+		fmt.Println("Cloud Credentials",creds)
+	}
+
+}

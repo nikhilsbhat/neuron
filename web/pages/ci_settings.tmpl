@@ -1,0 +1,164 @@
+{{define "cisettings"}}
+        <!-- page content -->
+        <div class="right_col" role="main">
+
+          <br />
+          <div class="clearfix"></div>
+          <div class="row">
+
+             <br/>
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2><i class="fa fa-bars"></i> CI Profiles</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">View Existing Profiles</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+
+                    <div class="" role="tabpanel" data-example-id="togglable-tabs">
+                      <ul id="myTab" class="nav nav-tabs bar_tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#tab_content1" id="home-tab" role="tab" data-toggle="tab" aria-expanded="true">Note</a>
+                        </li>
+                        <li role="presentation" class=""><a href="#tab_content2" role="tab" id="profile-tab" data-toggle="tab" aria-expanded="false">Connect CI</a>
+                        </li>
+                      </ul>
+                      <div id="myTabContent" class="tab-content">
+                        <div role="tabpanel" class="tab-pane fade active in" id="tab_content1" aria-labelledby="home-tab">
+                          <p>Here this pane will help you to connect various CI into NeuRon. </p>
+                          <p>And you can view/monitor build status/triggered on going build etc. of your CI with connecting to it. </p>
+                        </div>
+                    <div role="tabpanel" class="tab-pane fade" id="tab_content2" aria-labelledby="profile-tab" href="aws-step-1" >
+                        <h4>CI Setup Wizard <small> enter your credentials below to establish connection</small></h4>
+
+                    <!-- Smart Wizard -->
+                    <form id="set-ci" data-parsley-validate class="form-horizontal form-label-left" action="/setci" method="POST">
+                       <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">CI Name
+                        </label>
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" id="Username" required="required" class="form-control col-md-7 col-xs-12" name="ciname">
+                          </div>
+                       </div>
+                       <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">URL
+                        </label>
+                          <div class="col-md-6 col-sm-6 col-xs-12">
+                            <input type="text" required="required" class="form-control col-md-7 col-xs-12" name="ciurl">
+                          </div>
+                       </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Username <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="Username" required="required" class="form-control col-md-7 col-xs-12" name="ciusername">
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Password <span class="required">*</span>
+                        </label>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                          <input type="text" id="Password" name="cipassword" required="required" class="form-control col-md-7 col-xs-12" >
+                        </div>
+                      </div>
+                      <div class="ln_solid"></div>
+                      <div class="form-group">
+                        <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                          <button class="btn btn-primary" type="reset">Reset</button>
+                                <!-- Small modal -->
+                          <button type="submit" class="btn btn-primary" data-toggle="modal" data-target=".bs-example-modal-sm">Setvalues</button>
+
+                  <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-hidden="true">
+                    <div class="modal-dialog modal-sm">
+                      <div class="modal-content">
+
+                        <div class="modal-header">
+                          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span>
+                          </button>
+                          <h4 class="modal-title" id="myModalLabel3">CI Credentials</h4>
+                        </div>
+                        <div class="modal-body">
+                          <h4>Click to Submit</h4>
+                          <p>By clicking "Set Credentials" you are agreeing to submit your CI's credentials to NeuRon</p>
+                        </div>
+                        <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button type="submit" class="btn btn-primary" name="start">Set Credentials</button>
+                        </div>
+
+                      </div>
+                    </div>
+                  </div>
+                        </div>
+                      </div>
+                  </form>
+
+                   </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+           <div class="x_content">
+            <!-- New wizard-1 -->
+            <!-- New wizard-1 ends-->
+
+            {{ if eq .Cred "yes" }}
+            <!-- New wizard-2 -->
+            <div class="col-md-12 col-sm-6 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>CI Connected to Neuron so far</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">View Existing Profiles</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+
+                <div class="x_content">
+                  {{ range $k, $v := .CiCred }}
+                     <div class="pull-center">
+                       <h4>{{ $k }} :</h4>
+                     </div>
+                      {{ range $key, $value := $v}}
+                         {{ if ne  $key "_id"}}
+	                   <p><strong>{{ $key }} :</strong> {{ $value }}</p>
+                         {{ end }}
+                      {{ end }}
+		      <br/>
+                  {{ end }}
+                </div>
+
+              </div>
+            </div>
+            <!-- New wizard-2 ends-->
+            {{ end }}
+
+         </div>
+      </div>
+      <!-- page content ends-->
+{{end}}

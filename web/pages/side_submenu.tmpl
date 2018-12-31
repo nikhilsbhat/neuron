@@ -1,0 +1,33 @@
+{{define "sidesubmenu"}}
+              <div class="menu_section">
+                <h3>Add Ons</h3>
+                <ul class="nav side-menu">
+                  <li><a><i class="fa fa-chain"></i> CI <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/ciview"> CI View </a></li>
+                      <li><a href="/cisettings"> CI Settings </a></li>
+                    </ul>
+                  </li>
+                  <li><a><i class="fa fa-cubes"></i> Start Build <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/buildapp"> Build Application </a></li>
+                      <li><a href="/buildimage"> Build Image </a></li>
+                    </ul>
+                  </li>
+                  <li><a><i class="fa fa-truck"></i> Deployment <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                      <li><a href="/deployapp"> Deploy Application </a></li>
+                      <li><a href="/deployserver"> Deploy Server </a></li>
+                    </ul>
+                  </li>
+                  <li><a><i class="fa fa-sitemap"></i> Consul View <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu">
+                        <li><a href="/consulview"> Consul Overview <span class="label label-success pull-right"> Coming Soon</a>
+                        <li><a href="/consulkv"> Consul KV Store <span class="label label-success pull-right"> Coming Soon </span></a>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+
+            </div>
+{{end}}

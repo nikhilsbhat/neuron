@@ -1,0 +1,162 @@
+package BuildServer
+
+import (
+        b64 "encoding/base64"
+        "encoding/json"
+        "fmt"
+        "log"
+        "net/http"
+        "neuron/awsinterface"
+        "neuron/logger"
+        "neuron/cloudoperations/server/delete"
+        "strings"
+        "time"
+)
+
+type BuildServerCreateInput struct {
+        AppVersion   string
+        UniqueId     string
+        InstanceName string
+        SubnetId     string
+        KeyName      string
+        Flavor       string
+        Cloud        string
+        Region       string
+        AssignPubIp  bool
+}
+
+type artifactAvailableInput struct {
+        StatusCode int
+        AppVersion string
+        UniqueId   string
+}
+
+type BuildServerResponse struct {
+        ServerResponse        DengineAwsInterface.ServerResponse `json:"ServerResponse,omitempty"`
+        ArtifactArchiveStatus string                 `json:"ArtifactArchiveStatus,omitempty"`
+        BuildMessCleanUp      string `json:"BuildMessCleanUp,omitempty"`
+        DefaultResponse       interface{} `json:"DefaultResponse,omitempty"`
+}
+
+// being create_network my job is to create network and give back the response who called me
+func (server *BuildServerCreateInput) BuildServerCreate() BuildServerResponse {
+
+        var Server_Response BuildServerResponse
+        switch strings.ToLower(server.Cloud) {
+        case "aws":
+
+                // I will establish session so that we can carry out the process in cloud
+                session_input := DengineAwsInterface.EstablishConnectionInput{server.Region, "ec2"}
+                session_input.EstablishConnection()
+                image_id,_ := DengineAwsInterface.FindImageId("build")
+                fmt.Println(image_id)
+                encoded_data := encodeusrdata(server.AppVersion, server.UniqueId)
+                // I will call CreateServer of interface and get the things done
+
+                server_create_input := DengineAwsInterface.CreateServerInput{server.InstanceName, strings.Join(image_id[:1], ""), server.Flavor, server.KeyName, 1, 1, server.SubnetId, encoded_data, server.AssignPubIp}
+                response_server,_ := server_create_input.CreateServer()
+
+                var art_status, mess_state string
+                c1 := make(chan int, 1)
+                go func() {
+                        c1 <- checkAppAvailability(server.AppVersion, server.UniqueId)
+                }()
+
+                select {
+                case res := <-c1:
+                        if res == 200 {
+                                art_status = "successful"
+                                var state string
+                                status := destroyBuildMachine([]string{response_server.InstanceId}, server.Cloud, server.Region)
+                                for _, conditions := range status {
+                                        for _, condition := range conditions.AwsResponse {
+                                                state = condition.InstanceDeleteState
+                                        }
+                                }
+                                if state == "terminated" {
+                                        mess_stateptr := &mess_state
+                                        *mess_stateptr = "Mess Cleaned Up"
+                                        Server_Response = BuildServerResponse{ServerResponse: response_server, ArtifactArchiveStatus: art_status, BuildMessCleanUp: "Mess Cleaned Up"}
+                                } else if state == "running" {
+                                        mess_stateptr := &mess_state
+                                        *mess_stateptr = "Mess Not Cleaned Up"
+                                        Server_Response = BuildServerResponse{ServerResponse: response_server, ArtifactArchiveStatus: art_status, BuildMessCleanUp: "Mess Not Cleaned Up"}
+                                } else {
+                                        mess_stateptr := &mess_state
+                                        *mess_stateptr = "Timed Out"
+                                        Server_Response = BuildServerResponse{ServerResponse: response_server, ArtifactArchiveStatus: art_status, BuildMessCleanUp: "TimeOut..!!!. The process is taking unusual long time"}
+                                }
+                        }
+                case <-time.After(10 * time.Minute):
+                        log := NeuronLogger.AppLogInput{"[ERROR] "}
+                        log.AppLog("+++++++++++++++++++++++++++++++++++++++++++++++++")
+                        log.AppLog("This is logged from Create Build Package")
+                        log.AppLog("")
+                        log.AppLog("This will be entered if build takes more time than anticipated")
+                        log.AppLog("!!!!!!!!!!timeout it is exceeding 10 min!!!!!!!!!!!")
+                        log.AppLog("")
+                        log.AppLog("+++++++++++++++++++++++++++++++++++++++++++++++++")
+                        art_status = "unsuccessful"
+                }
+
+                Server_Response = BuildServerResponse{ServerResponse: response_server, ArtifactArchiveStatus: art_status, BuildMessCleanUp: "TimeOut..!!!. The process is taking unusual long time"}
+        case "azure":
+        Server_Response = BuildServerResponse{DefaultResponse: "We have not reached to openstack yet"}
+        case "gcp":
+        Server_Response = BuildServerResponse{DefaultResponse: "We have not reached to openstack yet"}
+        case "openstack":
+        Server_Response = BuildServerResponse{DefaultResponse: "We have not reached to openstack yet"}
+
+        }
+        return Server_Response
+}
+
+func convdatatojson(data interface{}) string {
+
+        json_val, _ := json.MarshalIndent(data, "", " ")
+        return strings.ToLower(string(json_val))
+
+}
+
+func encodeusrdata(app_version, unique_id string) string {
+
+        userdata := fmt.Sprintf("#!/bin/sh \n mkdir -p /var/tmp/application \n git clone https://github.com/Nikhilsbhat/game-of-life.git /var/tmp/application \n cd /var/tmp/application/ \n mvn clean install -Drelease.version=%s -Dbuild.number=%s \n curl -u admin:password -X PUT 'http://ec2-13-126-216-231.ap-south-1.compute.amazonaws.com:8081/artifactory/libs-snapshot-local/gameoflife/gameoflife-web-%s-%s.war' -T /var/tmp/application/gameoflife-web/target/gameoflife.war", app_version, unique_id, app_version, unique_id)
+        enc_data := b64.StdEncoding.EncodeToString([]byte(userdata))
+        return enc_data
+
+}
+
+func checkAppAvailability(app_version, unique_id string) int {
+
+        url := fmt.Sprintf("http://ec2-13-126-216-231.ap-south-1.compute.amazonaws.com:8081/artifactory/libs-snapshot-local/gameoflife/gameoflife-web-%s-%s.war", app_version, unique_id)
+        req, err := http.NewRequest("GET", url, nil)
+
+        if err != nil {
+                log.Fatal(err)
+        }
+        req.SetBasicAuth("admin", "password")
+        resp, _ := http.DefaultClient.Do(req)
+        defer resp.Body.Close()
+
+        time.Sleep(5 * time.Second)
+        art_status := isArtifactAvailable(artifactAvailableInput{resp.StatusCode, app_version, unique_id})
+        return art_status
+
+}
+
+func isArtifactAvailable(code artifactAvailableInput) int {
+
+        if code.StatusCode == 200 {
+        } else if code.StatusCode == 404 {
+                checkAppAvailability(code.AppVersion, code.UniqueId)
+        }
+        return 200
+}
+
+func destroyBuildMachine(instances []string, cloud, region string) []deleteServer.DeleteServerResponse {
+
+        delete_server_details := deleteServer.DeleteServersInput{instances, cloud, region}
+        delete_server_response,_ := delete_server_details.DeleteServer()
+
+        return delete_server_response
+}

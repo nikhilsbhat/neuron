@@ -1,0 +1,120 @@
+{{define "cloudviewaws"}}
+        <!-- page content -->
+              <!-- Instance details -->
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2>Details of the Instances running in your project</h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+                    <p class="text-muted font-13 m-b-30">
+                      Below table is a collective data of all the instances running across all the regions
+                    </p>
+
+                    <table id="datatable-buttons" class="table table-striped table-bordered dt-responsive nowrap" cellspacing="0" width="100%">
+                      <thead>
+                        <tr>
+                        {{ range $k, $v := index .AllServer 0 }}
+                          {{ if ne $k "" }}
+                          <th>{{ $k }}</th>
+                          {{ end }}
+                        {{ end }}
+                        </tr>
+                      </thead>
+                      <tbody>
+                      {{ range .AllServer }}
+                        <tr>
+                        {{ range $k, $v := . }}
+                          {{ if ne $v "" }}
+                          <td>{{ $v }}</td>
+                          {{ end }}
+                        {{ end }}
+                        </tr>
+                      {{ end }}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+
+           <!-- network details-->
+              <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                  <div class="x_title">
+                    <h2> Details of the Networks present in your project </h2>
+                    <ul class="nav navbar-right panel_toolbox">
+                      <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                      </li>
+                      <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                        <ul class="dropdown-menu" role="menu">
+                          <li><a href="#">Settings 1</a>
+                          </li>
+                        </ul>
+                      </li>
+                      <li><a class="close-link"><i class="fa fa-close"></i></a>
+                      </li>
+                    </ul>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="x_content">
+
+                    <!-- start accordion -->
+                    <div class="accordion" id="accordion1" role="tablist" aria-multiselectable="true">
+                        {{ range $index, $networks := .AllNetwork}}
+			<div class="panel">
+                        <a class="panel-heading" role="tab" id="heading{{ $index }}1" data-toggle="collapse" data-parent="#accordion1" href="#collapse{{ $index }}1" aria-expanded="false" aria-controls="collapse{{ $index }}">
+                          <h4 class="panel-title">Region : <strong>{{ .Region }}</strong></h4>
+                        </a>
+                        <div id="collapse{{ $index }}1" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="heading{{ $index }}">
+                          <div class="panel-body">
+                            <table class="table table-striped">
+                              <thead>
+                                <tr>
+                                  <th>Name</th>
+                                  <th>VpcId</th>
+                                  <th>State</th>
+                                  <th>IsDefault</th>
+				  <th>Subnets</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+				{{ range .AllNet }}
+                                <tr>
+                                  <td>{{ index . "Name"}}</td>
+				  <td>{{ index . "VpcId"}}</td>
+				  <td>{{ index . "State"}}</td>
+				  <td>{{ index . "IsDefault"}}</td>
+                                  <td>{{ index . "Subnets"}}</td>
+                                </tr>
+				{{ end }}
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+		      {{ end }}
+                    </div>
+                    <!-- end of accordion -->
+
+
+                  </div>
+                </div>
+              </div>
+
+
+{{end}}

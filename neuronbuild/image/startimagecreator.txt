@@ -1,0 +1,137 @@
+package BuildImage
+
+import (
+  "fmt"
+  "time"
+  "strings"
+  "encoding/json"
+  "neuron/awsinterface"
+  "neuron/cloudoperations/server/delete"
+  b64 "encoding/base64"
+)
+
+type PackerServerCreateInput struct {
+  AppVersion    string
+  AppName       string
+  RepoEmail     string
+  RepoUsername  string
+  RepoPasswd    string
+  ArtDomain     string
+  ArtUsername   string
+  ArtPasswd     string
+  InstanceName  string
+  SubnetId      string
+  KeyName       string
+  Flavor        string
+  Cloud         string
+  Region        string
+  AssignPubIp   bool
+}
+
+type artifactAvailableInput struct {
+  StatusCode  int
+  AppVersion  string
+  UniqueId    string
+}
+
+type encodeUsrdataInput struct {
+  RepoEmail     string
+  RepoUsername  string
+  RepoPasswd    string
+  AppName       string
+  AppVersion    string
+  ArtDomain     string
+  ArtUsername   string
+  ArtPasswd     string
+}
+
+type BuildServerResponse struct {
+  ImageBuildStatus   string
+}
+
+// being create_network my job is to create network and give back the response who called me
+func (server *PackerServerCreateInput) BuildServerCreate() (BuildServerResponse, error) {
+
+  var Server_Response BuildServerResponse
+  switch strings.ToLower(server.Cloud) {
+  case "aws" :
+
+      // I will establish session so that we can carry out the process in cloud
+      session_input := DengineAwsInterface.EstablishConnectionInput{server.Region,"ec2"}
+      session_input.EstablishConnection()
+
+      // On below grounds I will make a call whether the process is complete or not
+	  server_image, _ := DengineAwsInterface.FindImageId(server.AppName)
+      app_img_first_state := len(server_image)
+
+      image_id, _ := DengineAwsInterface.FindImageId("packer")
+      encoded_data_input := encodeUsrdataInput{server.RepoEmail,server.RepoUsername,server.RepoPasswd,server.AppName,server.AppVersion,server.ArtDomain,server.ArtUsername,server.ArtPasswd}
+      encoded_data := encoded_data_input.encodeusrdata()
+      // I will call CreateServer of interface and get the things done
+
+      server_create_input := DengineAwsInterface.CreateServerInput{server.InstanceName,strings.Join(image_id[:1], ""),server.Flavor,server.KeyName,1,1,server.SubnetId,encoded_data,server.AssignPubIp}
+      response_server,_ := server_create_input.CreateServer()
+
+      then_time := time.Now()
+      decisionMaker(then_time, app_img_first_state, server.AppName)
+
+      time_now := time.Now()
+      if time_now.Sub(time_now) > (10 * time.Minute) {
+       Server_Response = BuildServerResponse{"TimeOut"}
+      } else {
+       Server_Response = BuildServerResponse{"Successfull"}
+       //destroyBuildMachine([]string{response_server.InstanceId},server.Cloud,server.Region)
+       fmt.Println(response_server.InstanceId)
+          }
+  case "azure" :
+  case "gcp"   :
+  case "openstack" :
+
+  }
+  return Server_Response,nil
+}
+
+func decisionMaker(tim time.Time, state int, server string) {
+
+    time.Sleep(30 * time.Second)
+    time_now := time.Now()
+	image, err := DengineAwsInterface.FindImageId(server)
+	if err != nil {
+		fmt.Println("Encountered error while fetching image")
+	} else {
+        if time_now.Sub(tim) <= (10 * time.Minute) {
+        switch {
+        case (len(image)-state) > 0:
+          break
+                case (len(image)-state) < 0:
+          decisionMaker(tim, state, server)
+        }
+        }
+	}
+
+}
+
+func convdatatojson(data interface{}) string {
+
+  json_val, _ := json.MarshalIndent(data, "", " ")
+  return strings.ToLower(string(json_val))
+
+}
+
+func (data *encodeUsrdataInput) encodeusrdata() string {
+
+  userdata := fmt.Sprintf("#!/bin/sh \n sudo su - \n mkdir -p /var/tmp/packer-data/ \n cd /var/tmp/packer-data/ \n git init \n git config user.email '%s' \n git config user.name '%s' \n git pull https://%s:%s@bitbucket.org/devopsiac/appinfi.git \n sudo sed -i 's/13.232.42.255/%s/g; s/gameoflife-web/%s/g; s/1.0/%s/g; s/admin/%s/g; s/password/%s/g' /var/tmp/packer-data/chef-repo/roles/neuron.json \n cd /var/tmp/packer-data \n packer build /var/tmp/packer-data/chef-repo/roles/app-image.json ",data.RepoEmail,data.RepoUsername,data.RepoUsername,data.RepoPasswd,data.ArtDomain,data.AppName,data.AppVersion,data.ArtUsername,data.ArtPasswd)
+  enc_data := b64.StdEncoding.EncodeToString([]byte(userdata))
+  fmt.Println(userdata)
+  fmt.Println(enc_data)
+  return enc_data
+
+}
+
+func destroyBuildMachine(instances []string ,cloud,region string) []deleteServer.DeleteServerResponse {
+
+    delete_server_details := deleteServer.DeleteServersInput{instances,cloud,region}
+    delete_server_response,_ := delete_server_details.DeleteServer()
+
+    return delete_server_response
+}
