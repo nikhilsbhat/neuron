@@ -65,7 +65,7 @@ func GetCiData(ci string, d ...database.DataDetail) (database.CiData, error) {
 			return database.CiData{}, err.UnknownDbType()
 		}
 	}
-	return database.CiData{},fmt.Errorf("Database is not configured, we are not supporting filesystem now")
+	return database.CiData{}, fmt.Errorf("Database is not configured, we are not supporting filesystem now")
 }
 
 func CreateUser(d database.DataDetail, data database.UserData) (interface{}, error) {

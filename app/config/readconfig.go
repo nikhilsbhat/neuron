@@ -1,12 +1,12 @@
 package config
 
 import (
+	"bytes"
 	"encoding/json"
+	"io/ioutil"
 	neuerr "neuron/error"
 	log "neuron/logger"
 	"os"
-	"bytes"
-	"io/ioutil"
 	//"path/filepath"
 )
 

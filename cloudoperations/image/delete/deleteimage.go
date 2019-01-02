@@ -39,8 +39,8 @@ func (img *DeleteImageInput) DeleteImage() (DeleteImageResponse, error) {
 		if err != nil {
 			return DeleteImageResponse{}, err
 		}
-		response := make([]image.ImageResponse,0)
-		response = append(response,result)
+		response := make([]image.ImageResponse, 0)
+		response = append(response, result)
 		return DeleteImageResponse{AwsResponse: response}, nil
 
 	case "azure":

@@ -1,6 +1,6 @@
 package handlers
 
-import "net/http"
+/*import "net/http"
 
 type Route struct {
 	Name        string
@@ -63,4 +63,4 @@ var UiRoutes = UiRouts{
 	UiRoute{"SetCi", "/setci", setci},
 	UiRoute{"JenkinsView", "/jenkinsview", jenkinsview},
 	UiRoute{"CloudView2", "/cloudview2", cloudview2},
-}
+}*/

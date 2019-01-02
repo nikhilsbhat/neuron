@@ -19,7 +19,8 @@ type Credentials struct {
 }
 
 var (
-        result Credentials
+	result Credentials
+
 //        subscription string
 )
 

@@ -40,7 +40,7 @@ func (net *NetworkCreateInput) CreateNetwork() (CreateNetworkResponse, error) {
 		networkin.SubCidrs = net.SubCidr
 		networkin.Type = net.Type
 		networkin.Ports = net.Ports
-        networkin.GetRaw = net.GetRaw
+		networkin.GetRaw = net.GetRaw
 		response, net_err := networkin.CreateNetwork(authinpt)
 		if net_err != nil {
 			return CreateNetworkResponse{}, net_err

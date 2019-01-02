@@ -1,9 +1,9 @@
 package awsinstance
 
 import (
-	aws "neuron/cloud/aws/interface"
-	"github.com/aws/aws-sdk-go/service/ec2"
 	"fmt"
+	"github.com/aws/aws-sdk-go/service/ec2"
+	aws "neuron/cloud/aws/interface"
 )
 
 type CommonComputeInput struct {

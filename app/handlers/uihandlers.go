@@ -112,102 +112,102 @@ func ciview(w http.ResponseWriter, r *http.Request) {
 
 func cisetting(w http.ResponseWriter, r *http.Request) {
 
-/*	if database.Db == nil {
-		if _, dir_err := os.Stat("/var/lib/neuron/neuron.json"); os.IsNotExist(dir_err) {
-			fmt.Println("I did not find any configuration file to read CI data")
-			config_byt := []byte(`{"ci": [{"name": "Not Connected","domain": "Not Connected" }]}`)
-			var dumy_config map[string]interface{}
-			if err := json.Unmarshal(config_byt, &dumy_config); err != nil {
-				panic(err)
-			}
+	/*	if database.Db == nil {
+			if _, dir_err := os.Stat("/var/lib/neuron/neuron.json"); os.IsNotExist(dir_err) {
+				fmt.Println("I did not find any configuration file to read CI data")
+				config_byt := []byte(`{"ci": [{"name": "Not Connected","domain": "Not Connected" }]}`)
+				var dumy_config map[string]interface{}
+				if err := json.Unmarshal(config_byt, &dumy_config); err != nil {
+					panic(err)
+				}
 
-			t := template.Must(template.ParseGlob(UiTemplatePath))
-			err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-				Title  string
-				Cont   string
-				Cred   string
-				Pas    uiTemp
-				CiCred interface{}
-			}{Title: "CISettings", Cont: "cisettings", Cred: "no", Pas: uiTemp{Pass: dumy_config["ci"].([]interface{})}, CiCred: "dummy"})
-			if err != nil {
-				log.Fatal("Cannot Get View ", err)
-			}
+				t := template.Must(template.ParseGlob(UiTemplatePath))
+				err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+					Title  string
+					Cont   string
+					Cred   string
+					Pas    uiTemp
+					CiCred interface{}
+				}{Title: "CISettings", Cont: "cisettings", Cred: "no", Pas: uiTemp{Pass: dumy_config["ci"].([]interface{})}, CiCred: "dummy"})
+				if err != nil {
+					log.Fatal("Cannot Get View ", err)
+				}
 
-		} else {
-			fmt.Println("Found configuration file and reading CI data from there")
-			if config == nil {
-				fmt.Fprintf(w, "Encountered error while reading config file")
 			} else {
-				if (database.Db) != nil {
-					fmt.Println("Found Database connecting to fetch further data")
-					t := template.Must(template.ParseGlob(UiTemplatePath))
-					err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-						Title  string
-						Cont   string
-						Cred   string
-						CiCred interface{}
-					}{Title: "CISettings", Cont: "cisettings", Cred: "no", CiCred: "dummy"})
-					if err != nil {
-						log.Fatal("Cannot Get View ", err)
-					}
+				fmt.Println("Found configuration file and reading CI data from there")
+				if config == nil {
+					fmt.Fprintf(w, "Encountered error while reading config file")
 				} else {
-					ci_dat_file := fmt.Sprintf("%s/data/ci_cred.json", config["home"])
-					if _, dir_err := os.Stat(ci_dat_file); os.IsNotExist(dir_err) {
-						fmt.Println("couldn't find credentials of CI, guess you've not set that")
-
-						// redering template with no CI credentials
+					if (database.Db) != nil {
+						fmt.Println("Found Database connecting to fetch further data")
 						t := template.Must(template.ParseGlob(UiTemplatePath))
 						err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
 							Title  string
 							Cont   string
 							Cred   string
-							Pas    uiTemp
 							CiCred interface{}
 						}{Title: "CISettings", Cont: "cisettings", Cred: "no", CiCred: "dummy"})
 						if err != nil {
 							log.Fatal("Cannot Get View ", err)
 						}
-
 					} else {
-						fmt.Println(ci_dat_file)
-						fetch_data := readCiCred(ci_dat_file)
-						fmt.Println(fetch_data)
-						fmt.Println("Fetching credentials of the CI you've set")
-						// redering template with CI credentials
-						t := template.Must(template.ParseGlob(UiTemplatePath))
-						err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-							Title  string
-							Cont   string
-							Cred   string
-							Pas    uiTemp
-							CiCred interface{}
-						}{Title: "CISettings", Cont: "cisettings", Cred: "yes", CiCred: fetch_data["ci"].([]interface{})})
-						if err != nil {
-							log.Fatal("Cannot Get View ", err)
+						ci_dat_file := fmt.Sprintf("%s/data/ci_cred.json", config["home"])
+						if _, dir_err := os.Stat(ci_dat_file); os.IsNotExist(dir_err) {
+							fmt.Println("couldn't find credentials of CI, guess you've not set that")
+
+							// redering template with no CI credentials
+							t := template.Must(template.ParseGlob(UiTemplatePath))
+							err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+								Title  string
+								Cont   string
+								Cred   string
+								Pas    uiTemp
+								CiCred interface{}
+							}{Title: "CISettings", Cont: "cisettings", Cred: "no", CiCred: "dummy"})
+							if err != nil {
+								log.Fatal("Cannot Get View ", err)
+							}
+
+						} else {
+							fmt.Println(ci_dat_file)
+							fetch_data := readCiCred(ci_dat_file)
+							fmt.Println(fetch_data)
+							fmt.Println("Fetching credentials of the CI you've set")
+							// redering template with CI credentials
+							t := template.Must(template.ParseGlob(UiTemplatePath))
+							err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+								Title  string
+								Cont   string
+								Cred   string
+								Pas    uiTemp
+								CiCred interface{}
+							}{Title: "CISettings", Cont: "cisettings", Cred: "yes", CiCred: fetch_data["ci"].([]interface{})})
+							if err != nil {
+								log.Fatal("Cannot Get View ", err)
+							}
 						}
 					}
 				}
 			}
-		}
-	} else {
-
-		records, err := dbcommon.FetchCiData(database.DataDetail{"nikhil", "ci"})
-		if err != nil {
-			fmt.Fprintf(w, fmt.Sprintf("%s", err))
 		} else {
-			t := template.Must(template.ParseGlob(UiTemplatePath))
-			err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-				Title  string
-				Cont   string
-				Cred   string
-				Pas    uiTemp
-				CiCred interface{}
-			}{Title: "CISettings", Cont: "cisettings", Cred: "yes", CiCred: records})
+
+			records, err := dbcommon.FetchCiData(database.DataDetail{"nikhil", "ci"})
 			if err != nil {
-				log.Fatal("Cannot Get View ", err)
+				fmt.Fprintf(w, fmt.Sprintf("%s", err))
+			} else {
+				t := template.Must(template.ParseGlob(UiTemplatePath))
+				err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+					Title  string
+					Cont   string
+					Cred   string
+					Pas    uiTemp
+					CiCred interface{}
+				}{Title: "CISettings", Cont: "cisettings", Cred: "yes", CiCred: records})
+				if err != nil {
+					log.Fatal("Cannot Get View ", err)
+				}
 			}
-		}
-	} */
+		} */
 }
 
 func setci(w http.ResponseWriter, r *http.Request) {

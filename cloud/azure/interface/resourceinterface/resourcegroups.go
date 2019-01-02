@@ -1,22 +1,22 @@
 package azurenetwork
 
 import (
-        "context"
-        "fmt"
-        "github.com/Azure/azure-sdk-for-go/services/resources/mgmt/2018-05-01/resources"
-        "github.com/Azure/go-autorest/autorest"
-        "github.com/Azure/go-autorest/autorest/to"
-        "neuron/cloud/azure/access"
+	"context"
+	"fmt"
+	"github.com/Azure/azure-sdk-for-go/services/resources/mgmt/2018-05-01/resources"
+	"github.com/Azure/go-autorest/autorest"
+	"github.com/Azure/go-autorest/autorest/to"
+	"neuron/cloud/azure/access"
 )
 
 var (
-        token, _, subscription = auth.GetServicePrincipalToken()
-        ctx = context.Background()
+	token, _, subscription = auth.GetServicePrincipalToken()
+	ctx                    = context.Background()
 )
 
 type GroupsIn struct {
-        ResourceGroup string
-        Location string      `json:"location,omitempty"`
+	ResourceGroup string
+	Location      string `json:"location,omitempty"`
 }
 
 func getGroupsClient() resources.GroupsClient {

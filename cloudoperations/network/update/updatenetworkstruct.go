@@ -5,7 +5,7 @@ type NetworkUpdateInput struct {
 	Cloud     string
 	Region    string
 	Profile   string
-	GetRaw   bool
+	GetRaw    bool
 }
 
 type Catageory struct {

@@ -68,5 +68,5 @@ func CreateServerMock() (ServerCreateResponse, error) {
 		defaults[defaultval.Type().Field(i).Name] = defaultval.Type().Field(i).Type
 	}
 
-	return ServerCreateResponse{DefaultResponse: defaults},nil
+	return ServerCreateResponse{DefaultResponse: defaults}, nil
 }

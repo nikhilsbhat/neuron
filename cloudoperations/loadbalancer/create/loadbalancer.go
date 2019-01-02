@@ -17,7 +17,7 @@ type LoadBalanceResponse struct {
 }
 
 // being create_loadbalancer my job is to create required loadbalancer and give back the response who called me
-func (lb *LbCreateInput) CreateLoadBalancer() (LoadBalanceResponse,error) {
+func (lb *LbCreateInput) CreateLoadBalancer() (LoadBalanceResponse, error) {
 
 	switch strings.ToLower(lb.Cloud) {
 	case "aws":

@@ -15,9 +15,9 @@ func getIPClient() network.PublicIPAddressesClient {
 }
 
 type IpIn struct {
-        ResourceGroup string
-        IpName string        `json:"ipname,omitempty"`
-        Location string      `json:"location,omitempty"`
+	ResourceGroup string
+	IpName        string `json:"ipname,omitempty"`
+	Location      string `json:"location,omitempty"`
 }
 
 // CreatePublicIP creates a new public IP
@@ -54,62 +54,62 @@ func (pubip IpIn) CreatePublicIP() (ip network.PublicIPAddress, err error) {
 }
 
 func (pubip IpIn) DeletePublicIP() (ar autorest.Response, err error) {
-        ipClient := getIPClient()
-        future, err := ipClient.Delete(
-                ctx,
-                pubip.ResourceGroup,
-                pubip.IpName,
-                )
-        if err != nil {
-                return ar, fmt.Errorf("cannot delete ip: %v", err)
-        }
+	ipClient := getIPClient()
+	future, err := ipClient.Delete(
+		ctx,
+		pubip.ResourceGroup,
+		pubip.IpName,
+	)
+	if err != nil {
+		return ar, fmt.Errorf("cannot delete ip: %v", err)
+	}
 
-        err = future.WaitForCompletion(ctx, ipClient.Client)
-        if err != nil {
-                return ar, fmt.Errorf("cannot get ip delete future response: %v", err)
-        }
+	err = future.WaitForCompletion(ctx, ipClient.Client)
+	if err != nil {
+		return ar, fmt.Errorf("cannot get ip delete future response: %v", err)
+	}
 
-        return  future.Result(ipClient)
+	return future.Result(ipClient)
 }
 
 func (pubip IpIn) GetPublicIP() (ip network.PublicIPAddress, err error) {
-        ipClient := getIPClient()
-        future, err := ipClient.Get(
-                ctx,
-                pubip.ResourceGroup,
-                pubip.IpName,
-                "")
+	ipClient := getIPClient()
+	future, err := ipClient.Get(
+		ctx,
+		pubip.ResourceGroup,
+		pubip.IpName,
+		"")
 
-        if err != nil {
-                return ip, fmt.Errorf("cannot list ip: %v", err)
-        }
+	if err != nil {
+		return ip, fmt.Errorf("cannot list ip: %v", err)
+	}
 
-        return  future, err
+	return future, err
 }
 
 func (pubip IpIn) ListPublicIP() (ip []network.PublicIPAddress, err error) {
-        ipClient := getIPClient()
-        future, err := ipClient.List(
-                ctx,
-                pubip.ResourceGroup,
-                )
+	ipClient := getIPClient()
+	future, err := ipClient.List(
+		ctx,
+		pubip.ResourceGroup,
+	)
 
-        if err != nil {
-                return ip, fmt.Errorf("cannot list IPs: %v", err)
-        }
+	if err != nil {
+		return ip, fmt.Errorf("cannot list IPs: %v", err)
+	}
 
-        return  future.Values(), err
+	return future.Values(), err
 }
 
 func (pubip IpIn) ListAllPublicIP() (ip []network.PublicIPAddress, err error) {
-        ipClient := getIPClient()
-        future, err := ipClient.ListAll(
-                ctx,
-                )
+	ipClient := getIPClient()
+	future, err := ipClient.ListAll(
+		ctx,
+	)
 
-        if err != nil {
-                return ip, fmt.Errorf("cannot list ip: %v", err)
-        }
+	if err != nil {
+		return ip, fmt.Errorf("cannot list ip: %v", err)
+	}
 
-        return  future.Values(), err
+	return future.Values(), err
 }

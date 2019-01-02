@@ -113,7 +113,7 @@ func TimeoutHandler(next http.Handler) http.Handler {
 		case <-cCtx.Done():
 			/*w.WriteHeader(tw.status)
 			w.Write(tw.buf.Bytes())*/
-                        return
+			return
 		case <-tCtx.Done():
 			if err := tCtx.Err(); err == context.DeadlineExceeded {
 				cCancel()
@@ -157,5 +157,5 @@ func (loger *Login) Logger(next http.Handler) http.Handler {
 }
 
 func logformatter(r *http.Request, start time.Time) string {
-	return "[" + start.Format("2006-01-02 15:04:05") + "]" + " - " + r.Method + " " + r.RequestURI + " " + r.RemoteAddr + " " + time.Since(start).String() + " " + r.Proto 
+	return "[" + start.Format("2006-01-02 15:04:05") + "]" + " - " + r.Method + " " + r.RequestURI + " " + r.RemoteAddr + " " + time.Since(start).String() + " " + r.Proto
 }

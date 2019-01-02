@@ -15,20 +15,20 @@ func getNsgClient() network.SecurityGroupsClient {
 }
 
 type NsgIn struct {
-        ResourceGroup string
-        NsgName string      `json:"nsgname,omitempty"`
-//        SubnetID  string      `json:"subnet,omitempty"`
-        Location string      `json:"location,omitempty"`
+	ResourceGroup string
+	NsgName       string `json:"nsgname,omitempty"`
+	//        SubnetID  string      `json:"subnet,omitempty"`
+	Location string `json:"location,omitempty"`
 }
 
 // CreateNetworkSecurityGroup creates a new network security group.
 
 func (ns NsgIn) CreateNetworkSecurityGroup() (nsg network.SecurityGroup, err error) {
 
-        nsgParams := network.SecurityGroup{
-                Name: to.StringPtr(ns.NsgName),
-                Location:  to.StringPtr(ns.Location),
-                }
+	nsgParams := network.SecurityGroup{
+		Name:     to.StringPtr(ns.NsgName),
+		Location: to.StringPtr(ns.Location),
+	}
 
 	nsgClient := getNsgClient()
 	future, err := nsgClient.CreateOrUpdate(
@@ -50,65 +50,64 @@ func (ns NsgIn) CreateNetworkSecurityGroup() (nsg network.SecurityGroup, err err
 	return future.Result(nsgClient)
 }
 
-
 func (ns NsgIn) DeleteNetworkSecurityGroup() (ar autorest.Response, err error) {
-        nsgClient := getNsgClient()
-        future, err := nsgClient.Delete(
-                ctx,
-                ns.ResourceGroup,
-                ns.NsgName,
-                )
+	nsgClient := getNsgClient()
+	future, err := nsgClient.Delete(
+		ctx,
+		ns.ResourceGroup,
+		ns.NsgName,
+	)
 
-        if err != nil {
-                return ar, fmt.Errorf("cannot delete nsg: %v", err)
-        }
+	if err != nil {
+		return ar, fmt.Errorf("cannot delete nsg: %v", err)
+	}
 
-        err = future.WaitForCompletion(ctx, nsgClient.Client)
-        if err != nil {
-                return ar, fmt.Errorf("cannot get nsg delete future response: %v", err)
-        }
+	err = future.WaitForCompletion(ctx, nsgClient.Client)
+	if err != nil {
+		return ar, fmt.Errorf("cannot get nsg delete future response: %v", err)
+	}
 
-        return  future.Result(nsgClient)
+	return future.Result(nsgClient)
 }
 
 func (ns NsgIn) GetNetworkSecurityGroup() (nsg network.SecurityGroup, err error) {
-        nsgClient := getNsgClient()
-        future, err := nsgClient.Get(
-                ctx,
-                ns.ResourceGroup,
-                ns.NsgName,
-                "")
+	nsgClient := getNsgClient()
+	future, err := nsgClient.Get(
+		ctx,
+		ns.ResourceGroup,
+		ns.NsgName,
+		"")
 
-        if err != nil {
-                return nsg, fmt.Errorf("cannot list nsg: %v", err)
-        }
+	if err != nil {
+		return nsg, fmt.Errorf("cannot list nsg: %v", err)
+	}
 
-        return  future, err
+	return future, err
 }
 
 func (ns NsgIn) ListNetworkSecurityGroup() (nsg []network.SecurityGroup, err error) {
-        nsgClient := getNsgClient()
-        future, err := nsgClient.List(
-                ctx,
-                ns.ResourceGroup,
-                )
+	nsgClient := getNsgClient()
+	future, err := nsgClient.List(
+		ctx,
+		ns.ResourceGroup,
+	)
 
-        if err != nil {
-                return nsg, fmt.Errorf("cannot list nsg: %v", err)
-        }
+	if err != nil {
+		return nsg, fmt.Errorf("cannot list nsg: %v", err)
+	}
 
-        return  future.Values(), err
+	return future.Values(), err
 }
 
 func ListAllNetworkSecurityGroup() (nsg []network.SecurityGroup, err error) {
-        nsgClient := getNsgClient()
-        future, err := nsgClient.ListAll(
-                ctx,
-                )
+	nsgClient := getNsgClient()
+	future, err := nsgClient.ListAll(
+		ctx,
+	)
 
-        if err != nil {
-                return nsg, fmt.Errorf("cannot list NSGs: %v", err)
-        }
+	if err != nil {
+		return nsg, fmt.Errorf("cannot list NSGs: %v", err)
+	}
 
-        return  future.Values(), err
+	return future.Values(), err
 }
