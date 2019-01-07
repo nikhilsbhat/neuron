@@ -6,23 +6,46 @@ import (
 	network "neuron/cloud/aws/operations/network"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type GetSubnetsResponse struct {
-	AwsResponse     network.NetworkResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                  `json:"AzureResponse,omitempty"`
-	DefaultResponse string                  `json:"DefaultResponse,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse network.NetworkResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"DefaultResponse,omitempty"`
 }
 
-// being GetSubnets my job is to call appropriate function of operations and give back the response who called me
+// Being GetSubnets, job of him is to fetch the details of subnets entered
+// and give back the response who called this.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (sub GetNetworksInput) GetSubnets() (GetSubnetsResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(sub.Cloud)); status != true {
+		log.Info("")
+		log.Error(common.DefaultCloudResponse + "GetSubnets")
+		log.Info("")
+		return GetSubnetsResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetSubnets")
+	}
 
 	switch strings.ToLower(sub.Cloud) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: sub.Profile, Cloud: sub.Cloud})
+		creds, err := common.GetCredentials(
+			&common.GetCredentialsInput{
+				Profile: sub.Profile,
+				Cloud:   sub.Cloud,
+			},
+		)
+
 		if err != nil {
 			return GetSubnetsResponse{}, err
 		}
@@ -61,10 +84,6 @@ func (sub GetNetworksInput) GetSubnets() (GetSubnetsResponse, error) {
 	case "openstack":
 		return GetSubnetsResponse{}, fmt.Errorf(common.DefaultOpResponse)
 	default:
-		log.Info("")
-		log.Error("I feel we are lost in getting list of SUBNETS, was unable to find the appropriate cloud :S")
-		log.Error("You have entered wrong cloud name else misspelled the name of it, please check it before passing")
-		log.Info("")
 		return GetSubnetsResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetSubnets")
 	}
 }

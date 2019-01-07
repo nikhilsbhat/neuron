@@ -21,6 +21,23 @@ func StartNeuron() error {
 	if conferr != nil {
 		return conferr
 	}
+	_ = config
+	return nil
+}
+
+func EnableNeuronApi() error {
+
+        //Initializing log first before anyother thing
+        logerr := log.Init()
+        if logerr != nil {
+                return logerr
+        }
+
+        //configuring neuron to prepare it for operations
+        config, conferr := conf.ConfigNeuron()
+        if conferr != nil {
+                return conferr
+        }
 
 	//Initializing router to prepare neuron to serve endpoints
 	rout := new(rou.MuxIn)

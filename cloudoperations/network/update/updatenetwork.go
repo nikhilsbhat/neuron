@@ -1,22 +1,40 @@
 package networkUpdate
 
 import (
+	"fmt"
 	auth "neuron/cloud/aws/interface"
 	awsnetwork "neuron/cloud/aws/operations/network"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type UpdateNetworkResponse struct {
-	AwsResponse     awsnetwork.NetworkResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                     `json:"AzureResponse,omitempty"`
-	DefaultResponse string                     `json:"DefaultResponse,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse awsnetwork.NetworkResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"DefaultResponse,omitempty"`
 }
 
-// being create_network my job is to create network and give back the response who called me
+// Being UpdateNetwork, job of him is to update the network and its components
+// and give back the response who called him.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (net *NetworkUpdateInput) UpdateNetwork() (UpdateNetworkResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud)); status != true {
+		log.Info("")
+		log.Error(common.DefaultCloudResponse + "UpdateNetwork")
+		log.Info("")
+		return UpdateNetworkResponse{}, fmt.Errorf(common.DefaultCloudResponse + "UpdateNetwork")
+	}
 
 	switch strings.ToLower(net.Cloud) {
 	case "aws":
@@ -66,10 +84,11 @@ func (net *NetworkUpdateInput) UpdateNetwork() (UpdateNetworkResponse, error) {
 	case "openstack":
 		return UpdateNetworkResponse{DefaultResponse: common.DefaultOpResponse}, nil
 	default:
-		log.Info("")
-		log.Error("I feel we are lost in updating NETWORK, was unable to find the appropriate cloud ")
-		log.Error("You might have entered wrong cloud name else misspelled it, please check it before passing")
-		log.Info("")
 		return UpdateNetworkResponse{DefaultResponse: common.DefaultCloudResponse + "NetworkUpdate"}, nil
 	}
+}
+
+func New() *NetworkUpdateInput {
+	net := &NetworkUpdateInput{}
+	return net
 }

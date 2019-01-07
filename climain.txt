@@ -1,0 +1,12 @@
+// This is the temporary package to deal with cli.
+// Once the cli is integrated with complete application
+// this package will be removed
+package main
+
+import (
+	cli "neuron/cli"
+)
+
+func main() {
+	cli.CliMain()
+}

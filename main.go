@@ -4,6 +4,7 @@ import (
 	log "neuron/logger"
 	err "neuron/error"
 	"neuron/app"
+	cli "neuron/cli"
 )
 
 //This function is responsible for starting the application.
@@ -14,4 +15,5 @@ func main() {
                 log.Error(neuerr)
 		log.Error(err.FailStartError())
 	}
+	cli.CliMain()
 }
