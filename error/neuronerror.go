@@ -33,6 +33,7 @@ const (
 	notValidSession     = "Did not get session to perform action, cannot proceed further"
 	instanceNotFound    = "Couldn't find server equivalent to the Id which you entered. Without server I cannot capture image"
 	imageNotFound       = "Couldn't find the image with the Id passed, and hence cannot proceed further with the action specified."
+	fileNotFound        = "We were unable to find the file you specified"
 )
 
 type error interface {
@@ -149,4 +150,8 @@ func ImageNotFound() error {
 
 func InvalidCiDataFile() error {
 	return errors.New(invalidUsersFile)
+}
+
+func NoFileFoundError() error {
+	return errors.New(fileNotFound)
 }

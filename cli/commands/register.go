@@ -7,6 +7,7 @@ import (
 	  image "neuron/cli/commands/images"
 	  load "neuron/cli/commands/loadbalancers"*/
 	"fmt"
+	config "neuron/cli/commands/config"
 	network "neuron/cli/commands/networks"
 	//server "neuron/cli/commands/servers"
 )
@@ -32,6 +33,7 @@ func Register(name string, fn *cobra.Command) {
 
 func getCmds() *cobra.Command {
 	neucmd := new(neucmds)
+	neucmd.commands = append(neucmd.commands, config.GetInitCmds())
 	neucmd.commands = append(neucmd.commands, network.GetNetCmds())
 	//future subcommands will go here
 

@@ -1,19 +1,19 @@
 package main
 
 import (
-	log "neuron/logger"
-	err "neuron/error"
-	"neuron/app"
+	//"neuron/app"
 	cli "neuron/cli"
+	/*err "neuron/error"
+	log "neuron/logger"*/
 )
 
 //This function is responsible for starting the application.
 func main() {
 
-	neuerr := neuron.StartNeuron()
-	if neuerr != nil {
-                log.Error(neuerr)
-		log.Error(err.FailStartError())
-	}
+	/*neuerr := neuron.StartNeuron()
+		if neuerr != nil {
+	                log.Error(neuerr)
+			log.Error(err.FailStartError())
+		}*/
 	cli.CliMain()
 }
