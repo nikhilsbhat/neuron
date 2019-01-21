@@ -21,7 +21,7 @@ func GetInitCmds() *cobra.Command {
 	var cmdInit = &cobra.Command{
 		Use:   "init [To configure neuron]",
 		Short: "command to initializa/configure neuron",
-		Long:  `This will help user to bring up neuron with the help of configuration file and make is usable.`,
+		Long:  `This will help user to bring up neuron with the help of configuration file and make it usable.`,
 		Run:   initNeuron,
 	}
 	registernwFlags(cmdInit)
