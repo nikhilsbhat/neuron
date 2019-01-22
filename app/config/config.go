@@ -41,6 +41,9 @@ type AppConfig struct {
 	// By enabling this you are telling application to expose its API.
 	EnableAPI bool `json:"enableapi"`
 
+	// By enabling this you are asking neuron to serve UI.
+	EnableUI bool `json:"enableui"`
+
 	// It holds the details of the database that has to be connected with neuron.
 	Database []*db `json:"database"`
 }
@@ -55,6 +58,7 @@ type ConfigResponse struct {
 	UiTemplatePath string
 	ApiLogPath     io.Writer
 	NoUi           bool
+	EnableAPI      bool
 }
 
 func (c *AppConfig) createDirectories() error {
@@ -101,6 +105,10 @@ func ConfigNeuron(path string) (ConfigResponse, error) {
 	}
 
 	log.Info("Found configuration, configuring application as per the config file.....")
+
+	if (conf.EnableAPI == false) && (conf.EnableUI == true) {
+		return ConfigResponse{}, fmt.Errorf("You cannot enable ui alone without api. Quitting installation")
+	}
 
 	//creatinig directories
 	// just append to this array if in case any new directories has to be created for neuron in future
@@ -187,16 +195,27 @@ func (conf *AppConfig) configDB() {
 // Configuring API happens here.
 func (conf *AppConfig) ConfigApi() (ConfigResponse, error) {
 
+	var ui ConfigResponse
 	// configuring ui
-	ui, uierr := conf.configUI()
+	if conf.EnableUI == true {
+		uiresp, uierr := conf.configUI()
+		if uierr != nil {
+			return ConfigResponse{}, uierr
+		}
+		if reflect.DeepEqual(uiresp, ConfigResponse{}) {
+			uiresp.NoUi = true
+		}
+		ui = uiresp
+	}
+
+	// configuring api log path
+	apilogpath, uierr := conf.configapilogs()
 	if uierr != nil {
 		return ConfigResponse{}, uierr
 	}
-	if ui == (ConfigResponse{}) {
-		ui.NoUi = true
-	}
-
+	ui.ApiLogPath = apilogpath
 	ui.Port = conf.Port
+	ui.EnableAPI = conf.EnableAPI
 	log.Info(printSpace)
 	log.Info(endOfLog)
 	log.Info(printSpace)
@@ -220,12 +239,7 @@ func (conf *AppConfig) configUI() (ConfigResponse, error) {
 		}
 		response.UiDir = conf.UiDir
 		response.UiTemplatePath = fmt.Sprintf("%s/pages/*", conf.UiDir)
-		// configuring ui log path
-		uilogpath, uierr := conf.configapilogs()
-		if uierr != nil {
-			return ConfigResponse{}, uierr
-		}
-		response.ApiLogPath = uilogpath
+
 		log.Info("...Awesome UI configured successfully...")
 		log.Info("")
 		return response, nil

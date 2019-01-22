@@ -20,7 +20,7 @@ func GetInitCmds() *cobra.Command {
 	// Creating "init" happens here.
 	var cmdInit = &cobra.Command{
 		Use:   "init [To configure neuron]",
-		Short: "command to initializa/configure neuron",
+		Short: "command to initialize/configure neuron",
 		Long:  `This will help user to bring up neuron with the help of configuration file and make it usable.`,
 		Run:   initNeuron,
 	}

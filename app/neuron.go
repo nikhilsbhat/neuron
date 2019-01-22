@@ -38,7 +38,7 @@ func (c *Config) ConfigureNeuron() error {
 	}
 
 	// Passing object of Config directly with out passing the UiDir doesn't work it throws error.
-	if (c.EnableAPI == true) || (config.NoUi == false) {
+	if (c.EnableAPI == true) || (config.NoUi == false) || (config.EnableAPI == true) {
 		EnableNeuronApi(config)
 	}
 	ConfResponse = config
