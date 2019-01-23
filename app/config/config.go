@@ -48,8 +48,8 @@ type AppConfig struct {
 	Database []*db `json:"database"`
 }
 type db struct {
-	name *string `json:"name"`
-	addr *string `json:"addr"`
+	Name *string `json:"name"`
+	Addr *string `json:"addr"`
 }
 
 type ConfigResponse struct {
@@ -151,11 +151,12 @@ func (conf *AppConfig) configDB() {
 		if val := reflect.DeepEqual(*dataBase, db{}); val != true {
 			log.Info("Found Config for database")
 			log.Info(fmt.Sprintf(" Provided configs are: %s ", conf.Database))
-			if strings.ToLower(*dataBase.name) == "mongodb" {
+			if strings.ToLower(*dataBase.Name) == "mongodb" {
 				log.Info("Found a compatible databse. Establishing connection....")
-				db_session, dberr := mgo.Dial(*dataBase.addr)
+				db_session, dberr := mgo.Dial(*dataBase.Addr)
+fmt.Println(*dataBase.Addr)
 				if dberr != nil {
-					log.Error(fmt.Sprintf("Unable to reach %s which you provided", *dataBase.name))
+					log.Error(fmt.Sprintf("Unable to reach %s which you provided", *dataBase.Name))
 					log.Warn(switchToFs)
 					_, data_err := dbcommon.ConfigDb(database.Storage{Fs: fmt.Sprintf("%s/data/", conf.Home)})
 					if data_err != nil {

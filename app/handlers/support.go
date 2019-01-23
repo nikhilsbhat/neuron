@@ -26,7 +26,7 @@ body {
 <body>
 <h1 class="b" align="center"><font color="#23545B">Hey buddy you have not enabled UI for NeuRon</h1>
 <p  class="b" align="center"><font color="#64717B">Please mention the UI directory path in the neuron.json (refer the README.md for more info)</p>
-<p  class="b" align="center"><font color="#64717B">Even after setting the UI path and you are seeing this page the you have to look into the app's logfile once &#9786;</p>
+<p  class="b" align="center"><font color="#64717B">Even after setting the UI path you are seeing this page then have a look at the app's logfile for more info &#9786;</p>
 </body>
 </html>`
 
