@@ -154,7 +154,6 @@ func (conf *AppConfig) configDB() {
 			if strings.ToLower(*dataBase.Name) == "mongodb" {
 				log.Info("Found a compatible databse. Establishing connection....")
 				db_session, dberr := mgo.Dial(*dataBase.Addr)
-fmt.Println(*dataBase.Addr)
 				if dberr != nil {
 					log.Error(fmt.Sprintf("Unable to reach %s which you provided", *dataBase.Name))
 					log.Warn(switchToFs)

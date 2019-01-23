@@ -9,6 +9,7 @@ import (
 	"neuron/database/mongodb"
 	err "neuron/error"
 	"io/ioutil"
+        "encoding/json"
 )
 
 func ConfigDb(d database.Storage) (interface{}, error) {
@@ -17,10 +18,10 @@ func ConfigDb(d database.Storage) (interface{}, error) {
 		switch (d.Db).(type) {
 		case *mgo.Session:
 			database.Db = d.Db
-            //os.Setenv("NEURONDB", d.Db)
-            d1 := (d.Db).([]byte)
-            err1 := ioutil.WriteFile("/root/test", d1, 0644)
-            fmt.Println(err1)
+			/*os.Setenv("NEURONDB", d.Db)
+			id1 := (d.Db).([]byte)
+			  err1 := ioutil.WriteFile("/root/test", d1, 0644)
+			  fmt.Println(err1)*/
 			return nil, nil
 		default:
 			return nil, err.UnknownDbType()
@@ -28,9 +29,9 @@ func ConfigDb(d database.Storage) (interface{}, error) {
 	}
 	if d.Fs != "" {
 		database.Db = d.Fs
-	            d1 := []byte(d.Fs)
-            err1 := ioutil.WriteFile("/root/test", d1, 0644)
-            fmt.Println(err1)
+		d1 := []byte(d.Fs)
+		err1 := ioutil.WriteFile("/root/test", d1, 0644)
+		fmt.Println(err1)
 		return nil, nil
 	}
 	return nil, fmt.Errorf("Oops..!! an error occured. We did not receive valid input to configure DB")
