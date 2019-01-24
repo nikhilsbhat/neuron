@@ -165,7 +165,13 @@ func (cm *cliMeta) echoNetwork(cmd *cobra.Command, args []string) error {
 	if cm.CliSet == false {
 		return err.CliNoStart()
 	}
-	fmt.Printf("I will do nothing, all I do is with the help of my flags.")
-	fmt.Printf("Please do pass flags to get the help of this.")
+	printMessage()
+	cmd.Usage()
 	return nil
+}
+
+func printMessage() {
+	fmt.Printf("I will do nothing, all I do is with the help of my flags\n")
+	fmt.Printf("Please do pass flags to get help out of me \n")
+	fmt.Printf("\n")
 }
