@@ -34,6 +34,9 @@ const (
 	instanceNotFound    = "Couldn't find server equivalent to the Id which you entered. Without server I cannot capture image"
 	imageNotFound       = "Couldn't find the image with the Id passed, and hence cannot proceed further with the action specified."
 	fileNotFound        = "We were unable to find the file you specified"
+    clierror            = "Oops..!! error occured while initializing neuron cli"
+    cliproceederror     = "Without basic configuration we cannot proceed further"
+    clinotstarting      = "Neuron CLI was not initialized properly, please check and call it again"
 )
 
 type error interface {
@@ -154,4 +157,16 @@ func InvalidCiDataFile() error {
 
 func NoFileFoundError() error {
 	return errors.New(fileNotFound)
+}
+
+func UninitializedCli() error {
+	return errors.New(clierror)
+}
+
+func CliFailure() error {
+	return errors.New(cliproceederror)
+}
+
+func CliNoStart() error {
+	return errors.New(clinotstarting)
 }

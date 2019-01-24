@@ -48,8 +48,8 @@ type AppConfig struct {
 	Database []*db `json:"database"`
 }
 type db struct {
-	Name *string `json:"name"`
-	Addr *string `json:"addr"`
+	name *string `json:"name"`
+	addr *string `json:"addr"`
 }
 
 type ConfigResponse struct {
@@ -59,6 +59,10 @@ type ConfigResponse struct {
 	ApiLogPath     io.Writer
 	NoUi           bool
 	EnableAPI      bool
+}
+
+type CliMeta struct {
+	CliSet bool
 }
 
 func (c *AppConfig) createDirectories() error {
@@ -83,7 +87,6 @@ func (c *AppConfig) createDirectories() error {
 // This will configure the application by reading the configuration file at '/var/lib/neuron'.
 func ConfigNeuron(path string) (ConfigResponse, error) {
 
-	var conf AppConfig
 	var pathtofile string
 
 	if path != "" {
@@ -122,7 +125,7 @@ func ConfigNeuron(path string) (ConfigResponse, error) {
 	conf.configDB()
 
 	if conf.EnableAPI == true {
-		api, apierr := conf.ConfigApi()
+		api, apierr := conf.configApi()
 		if apierr != nil {
 			return ConfigResponse{}, apierr
 		}
@@ -151,12 +154,11 @@ func (conf *AppConfig) configDB() {
 		if val := reflect.DeepEqual(*dataBase, db{}); val != true {
 			log.Info("Found Config for database")
 			log.Info(fmt.Sprintf(" Provided configs are: %s ", conf.Database))
-			if strings.ToLower(*dataBase.Name) == "mongodb" {
+			if strings.ToLower(*dataBase.name) == "mongodb" {
 				log.Info("Found a compatible databse. Establishing connection....")
-				db_session, dberr := mgo.Dial(*dataBase.Addr)
-fmt.Println(*dataBase.Addr)
+				db_session, dberr := mgo.Dial(*dataBase.addr)
 				if dberr != nil {
-					log.Error(fmt.Sprintf("Unable to reach %s which you provided", *dataBase.Name))
+					log.Error(fmt.Sprintf("Unable to reach %s which you provided", *dataBase.name))
 					log.Warn(switchToFs)
 					_, data_err := dbcommon.ConfigDb(database.Storage{Fs: fmt.Sprintf("%s/data/", conf.Home)})
 					if data_err != nil {
@@ -194,7 +196,7 @@ fmt.Println(*dataBase.Addr)
 }
 
 // Configuring API happens here.
-func (conf *AppConfig) ConfigApi() (ConfigResponse, error) {
+func (conf *AppConfig) configApi() (ConfigResponse, error) {
 
 	var ui ConfigResponse
 	// configuring ui
@@ -296,4 +298,80 @@ func (conf *AppConfig) configapilogs() (io.Writer, error) {
 		}
 		return path, nil
 	}
+}
+
+func GetCliMeta() (CliMeta, error) {
+
+	conf, conferr := readConfig("/var/lib/neuron/neuron.json")
+	if conferr != nil {
+		return CliMeta{}, conferr
+	}
+
+	if reflect.DeepEqual(conf, AppConfig{}) {
+		log.Info(printSpace)
+		log.Error(err.UninitializedCli())
+		log.Info(printSpace)
+		log.Error(err.ConfigNotfound())
+		return CliMeta{}, err.CliFailure()
+	}
+	dberr := conf.prepareMinimalCli()
+	if dberr != nil {
+		return CliMeta{}, dberr
+	}
+	return CliMeta{CliSet: true}, nil
+}
+
+// Database will be set here if it was mentioned in config file.
+func (conf *AppConfig) prepareMinimalCli() error {
+
+	for _, dataBase := range conf.Database {
+		if val := reflect.DeepEqual(*dataBase, db{}); val != true {
+			if strings.ToLower(*dataBase.name) == "mongodb" {
+				dberr := dataBase.switchtoDB(conf.Home)
+				if dberr != nil {
+					return dberr
+				}
+				return nil
+			}
+			if database.Db == nil {
+				fserr := switchtoFS(conf.Home)
+				if fserr != nil {
+					return fserr
+				}
+				return nil
+			}
+		} else {
+			fserr := switchtoFS(conf.Home)
+			if fserr != nil {
+				return fserr
+			}
+			return nil
+		}
+	}
+	return fmt.Errorf("An Unknown error occured while prepearing cli")
+}
+
+func switchtoFS(home string) error {
+	_, data_err := dbcommon.ConfigDb(database.Storage{Fs: fmt.Sprintf("%s/data/", home)})
+	if data_err != nil {
+		return err.DbSessionError()
+	}
+	return nil
+}
+
+func (data *db) switchtoDB(home string) error {
+
+	db_session, dberr := mgo.Dial(*data.addr)
+	if dberr != nil {
+		_, data_err := dbcommon.ConfigDb(database.Storage{Fs: fmt.Sprintf("%s/data/", home)})
+		if data_err != nil {
+			return err.DbSessionError()
+		}
+		return nil
+	}
+	_, data_err := dbcommon.ConfigDb(database.Storage{Db: db_session})
+	if data_err != nil {
+		return err.DbSessionError()
+	}
+	return nil
 }

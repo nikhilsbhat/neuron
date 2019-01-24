@@ -56,7 +56,7 @@ func readConfig(pathtofile string) (AppConfig, error) {
 	conf_file, confneuerr := ioutil.ReadFile(pathtofile)
 	if confneuerr != nil {
 		log.Error(neuerr.InvalidConfig())
-		return AppConfig{}, neuerr.InvalidConfig()
+		return AppConfig{}, confneuerr
 	}
 
 	decoder := json.NewDecoder(bytes.NewReader([]byte(conf_file)))

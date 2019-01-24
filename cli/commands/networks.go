@@ -1,20 +1,31 @@
 // This package takes care of registering flags,subcommands and returns the
 // command to the function who creates or holds the root command.
-package networkcmds
+package commands
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
+	nwcreate "neuron/cloudoperations/network/create"
+	nwdelete "neuron/cloudoperations/network/delete"
+	nwget "neuron/cloudoperations/network/get"
+	nwupdate "neuron/cloudoperations/network/update"
+	err "neuron/error"
+	"os"
 	"strings"
 )
 
 var (
 	networkcmds map[string]*cobra.Command
+	createnw    = nwcreate.New()
+	deletenw    = nwdelete.New()
+	updatenw    = nwupdate.New()
+	getnw       = nwget.New()
 )
 
 // The function that helps in registering the subcommands with the respective main command.
 // Make sure you call this, and this is the only way to register the subcommands.
-func NwRegister(name string, fn *cobra.Command) {
+func nwRegister(name string, fn *cobra.Command) {
 	if networkcmds == nil {
 		networkcmds = make(map[string]*cobra.Command)
 	}
@@ -27,14 +38,14 @@ func NwRegister(name string, fn *cobra.Command) {
 
 // The only way to create network command is to call this function and
 // package commands will take care of calling this.
-func GetNetCmds() *cobra.Command {
+func getNetCmds() *cobra.Command {
 
 	// Creating "network" happens here.
 	var cmdNetwork = &cobra.Command{
 		Use:   "network [network related activities]",
 		Short: "command to carry out network activities",
 		Long:  `This will help user to create/update/get/delete network in cloud.`,
-		Run:   echoNetwork,
+		RunE:  cc.echoNetwork,
 	}
 	registernwFlags("network", cmdNetwork)
 
@@ -76,4 +87,85 @@ func registernwFlags(cmdname string, cmd *cobra.Command) {
 	case "network":
 		// As of now nothing to go here but as time arrives this case will be filled.
 	}
+}
+
+func (cm *cliMeta) createNetwork(cmd *cobra.Command, args []string) error {
+	if cm.CliSet == false {
+		return err.CliNoStart()
+	}
+	createnw.Cloud = getCloud(cmd)
+	createnw.Region = getRegion(cmd)
+	createnw.Profile = getProfile(cmd)
+	createnw.GetRaw = getGetRaw(cmd)
+	server_response, ser_resp_err := createnw.CreateNetwork()
+	if ser_resp_err != nil {
+		fmt.Fprintf(os.Stdout, "%v\n", ser_resp_err)
+	} else {
+		json_val, _ := json.MarshalIndent(server_response, "", " ")
+		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+	}
+	return nil
+}
+
+func (cm *cliMeta) deleteNetwork(cmd *cobra.Command, args []string) error {
+	if cm.CliSet == false {
+		return err.CliNoStart()
+	}
+	deletenw.Cloud = getCloud(cmd)
+	deletenw.Region = getRegion(cmd)
+	deletenw.Profile = getProfile(cmd)
+	deletenw.GetRaw = getGetRaw(cmd)
+	delete_network_response, net_err := deletenw.DeleteNetwork()
+	if net_err != nil {
+		fmt.Fprintf(os.Stdout, "%v\n", net_err)
+	} else {
+		json_val, _ := json.MarshalIndent(delete_network_response, "", " ")
+		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+	}
+	return nil
+}
+
+func (cm *cliMeta) getNetwork(cmd *cobra.Command, args []string) error {
+	if cm.CliSet == false {
+		return err.CliNoStart()
+	}
+	getnw.Cloud = getCloud(cmd)
+	getnw.Region = getRegion(cmd)
+	getnw.Profile = getProfile(cmd)
+	getnw.GetRaw = getGetRaw(cmd)
+	get_network_response, net_get_err := getnw.GetNetworks()
+	if net_get_err != nil {
+		fmt.Fprintf(os.Stdout, "%v\n", net_get_err)
+	} else {
+		json_val, _ := json.MarshalIndent(get_network_response, "", " ")
+		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+	}
+	return nil
+}
+
+func (cm *cliMeta) updateNetwork(cmd *cobra.Command, args []string) error {
+	if cm.CliSet == false {
+		return err.CliNoStart()
+	}
+	updatenw.Cloud = getCloud(cmd)
+	updatenw.Region = getRegion(cmd)
+	updatenw.Profile = getProfile(cmd)
+	updatenw.GetRaw = getGetRaw(cmd)
+	net_update_response, net_up_err := updatenw.UpdateNetwork()
+	if net_up_err != nil {
+		fmt.Fprintf(os.Stdout, "%v\n", net_up_err)
+	} else {
+		json_val, _ := json.MarshalIndent(net_update_response, "", " ")
+		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+	}
+	return nil
+}
+
+func (cm *cliMeta) echoNetwork(cmd *cobra.Command, args []string) error {
+	if cm.CliSet == false {
+		return err.CliNoStart()
+	}
+	fmt.Printf("I will do nothing, all I do is with the help of my flags.")
+	fmt.Printf("Please do pass flags to get the help of this.")
+	return nil
 }

@@ -1,17 +1,9 @@
 package commands
 
 import (
-	"github.com/spf13/cobra"
-	/*ci "neuron/cli/commands/ci"
-	  data "neuron/cli/commands/database"
-	  image "neuron/cli/commands/images"
-	  load "neuron/cli/commands/loadbalancers"*/
 	"fmt"
-	config "neuron/cli/commands/config"
-	network "neuron/cli/commands/networks"
-	version "neuron/cli/commands/version"
-	//neuversion "neuron/version"
-	//server "neuron/cli/commands/servers"
+	"github.com/spf13/cobra"
+	err "neuron/error"
 )
 
 var (
@@ -35,9 +27,9 @@ func Register(name string, fn *cobra.Command) {
 
 func getCmds() *cobra.Command {
 	neucmd := new(neucmds)
-	neucmd.commands = append(neucmd.commands, config.GetInitCmds())
-	neucmd.commands = append(neucmd.commands, version.GetVersionCmds())
-	neucmd.commands = append(neucmd.commands, network.GetNetCmds())
+	neucmd.commands = append(neucmd.commands, getInitCmds())
+	neucmd.commands = append(neucmd.commands, getNetCmds())
+	neucmd.commands = append(neucmd.commands, getVersionCmds())
 	//future subcommands will go here
 
 	// This gets the full and final command with all subcommands and flags for neuron
@@ -53,7 +45,7 @@ func (c *neucmds) prepareCmds() *cobra.Command {
 	return rootCmd
 }
 
-func SetCmds() *cobra.Command {
+func SetNeuronCmds() *cobra.Command {
 	cmd := getCmds()
 	return cmd
 }
@@ -64,15 +56,19 @@ func getNeuronCmds() *cobra.Command {
 		Use:   "neuron [command]",
 		Short: "command to deal with neuron and its activities",
 		Long:  `This will help user to use neuron to get things done in various aspects including cloud/ci/database etc.`,
-		Run:   echoNeuron,
+		RunE:  cc.echoNeuron,
 	}
 	neuronCmd.SetUsageTemplate(getUsageTemplate())
 	registerFlags(neuronCmd)
 	return neuronCmd
 }
 
-func echoNeuron(cmd *cobra.Command, args []string) {
+func (cm *cliMeta) echoNeuron(cmd *cobra.Command, args []string) error {
+	if cm.CliSet == false {
+		return err.CliNoStart()
+	}
 	cmd.Usage()
+	return nil
 }
 
 // This function will return the custom template for usage function,

@@ -16,7 +16,7 @@ func CliMain() {
 
 func Execute(args []string) error {
 
-	cmd := command.SetCmds()
+	cmd := command.SetNeuronCmds()
 	cmd.SetArgs(args)
 	_, err := cmd.ExecuteC()
 	if err != nil {

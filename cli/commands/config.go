@@ -1,6 +1,6 @@
 // This package takes care of registering flags,subcommands and returns the
 // command to the function who creates or holds the root command.
-package configcmds
+package commands
 
 import (
 	"fmt"
@@ -15,16 +15,16 @@ var (
 
 // The only way to create init command is to call this function and
 // package commands will take care of calling this.
-func GetInitCmds() *cobra.Command {
+func getInitCmds() *cobra.Command {
 
 	// Creating "init" happens here.
 	var cmdInit = &cobra.Command{
 		Use:   "init [To configure neuron]",
-		Short: "command to initialize/configure neuron",
+		Short: "command to initializa/configure neuron",
 		Long:  `This will help user to bring up neuron with the help of configuration file and make it usable.`,
 		Run:   initNeuron,
 	}
-	registernwFlags(cmdInit)
+	registerinitFlags(cmdInit)
 
 	return cmdInit
 }
@@ -42,6 +42,6 @@ func initNeuron(cmd *cobra.Command, args []string) {
 }
 
 // Registering all the flags for init command.
-func registernwFlags(cmd *cobra.Command) {
+func registerinitFlags(cmd *cobra.Command) {
 	cmd.Flags().BoolVarP(&start.EnableAPI, "enableapi", "e", false, "enable this flag if you wish to enable api for neuron.")
 }

@@ -78,3 +78,21 @@ func EnableNeuronApi(config conf.ConfigResponse) {
 		log.Fatal(httperr)
 	}
 }
+
+// All one has to do is to call this function to config neuron.
+func NeuronCliMeta() (conf.CliMeta, error) {
+
+	//Initializing log first before anyother thing
+	logerr := neulog.Init()
+	if logerr != nil {
+		return conf.CliMeta{}, logerr
+	}
+
+	//configuring neuron to prepare it for operations
+	config, conferr := conf.GetCliMeta()
+	if conferr != nil {
+		return conf.CliMeta{}, conferr
+	}
+
+	return config, nil
+}
