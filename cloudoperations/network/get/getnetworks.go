@@ -121,7 +121,7 @@ func (net GetNetworksInput) GetAllNetworks() ([]GetNetworksResponse, error) {
 				get_all_network_response = append(get_all_network_response, GetAllNetworksResponse{AwsResponse: region_detail})
 		}*/
 		network_response := make([]GetNetworksResponse, 0)
-		for _, region := range regions {
+		for _, region := range regions.Regions {
 			//authorizing to request further
 			authinpt := auth.EstablishConnectionInput{Region: region, Resource: "ec2", Session: sess}
 

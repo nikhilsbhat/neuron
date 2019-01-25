@@ -73,4 +73,11 @@ func init() {
 		Args:         cobra.MinimumNArgs(1),
 		SilenceUsage: true,
 	})
+	msRegister("regionsGet", &cobra.Command{
+		Use:          "regions [flags]",
+		Short:        "command to list regions",
+		Long:         `This will help you to list available regions from the cloud you wish.`,
+		RunE:         cc.getRegions,
+		SilenceUsage: true,
+	})
 }

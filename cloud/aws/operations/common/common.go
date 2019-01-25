@@ -1,6 +1,7 @@
 package awscommon
 
 import (
+	"github.com/aws/aws-sdk-go/service/ec2"
 	"neuron/cloud/aws/interface"
 	"sort"
 	"strconv"
@@ -13,8 +14,14 @@ type Tag struct {
 }
 
 type CommonInput struct {
-	AvailabilityZone string   `json:"AvailabilityZone,omitempty"`
-	SortInput        []string `json:"SortInput,omitempty"`
+	AvailabilityZone string
+	SortInput        []string
+	GetRaw           bool
+}
+
+type CommonResponse struct {
+	Regions       []string
+	GetRegionsRaw *ec2.DescribeRegionsOutput
 }
 
 func (r *CommonInput) GetAvailabilityZones(con neuronaws.EstablishConnectionInput) ([]string, error) {
@@ -58,22 +65,27 @@ func (t *Tag) CreateTags(con neuronaws.EstablishConnectionInput) (string, error)
 	return t.Value, nil
 }
 
-func (r *CommonInput) GetRegions(con neuronaws.EstablishConnectionInput) ([]string, error) {
+func (r *CommonInput) GetRegions(con neuronaws.EstablishConnectionInput) (CommonResponse, error) {
 
 	ec2, sesserr := con.EstablishConnection()
 	if sesserr != nil {
-		return nil, sesserr
+		return CommonResponse{}, sesserr
 	}
 
 	result, err := ec2.GetRegions()
 	if err != nil {
-		return nil, err
+		return CommonResponse{}, err
 	}
+
+	if r.GetRaw == true {
+		return CommonResponse{GetRegionsRaw: result}, nil
+	}
+
 	regions := make([]string, 0)
 	for _, region := range result.Regions {
 		regions = append(regions, *region.RegionName)
 	}
-	return regions, nil
+	return CommonResponse{Regions: regions}, nil
 }
 
 func (r *CommonInput) GetRegionFromAvail(con neuronaws.EstablishConnectionInput) (string, error) {
