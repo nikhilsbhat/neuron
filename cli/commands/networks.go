@@ -171,6 +171,7 @@ func (cm *cliMeta) echoNetwork(cmd *cobra.Command, args []string) error {
 }
 
 func printMessage() {
+        fmt.Printf("\n")
 	fmt.Printf("I will do nothing, all I do is with the help of my flags.\n")
 	fmt.Printf("Please do pass flags to get help out of me.\n")
 	fmt.Printf("\n")

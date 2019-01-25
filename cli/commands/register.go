@@ -76,7 +76,7 @@ func (cm *cliMeta) echoNeuron(cmd *cobra.Command, args []string) error {
 // only functions/methods inside this package can call this.
 
 func getUsageTemplate() string {
-	return `Usage:{{if .Runnable}}
+	return `{{printf "\n"}}Usage:{{if .Runnable}}
   {{.UseLine}}{{end}}{{if gt (len .Aliases) 0}}{{printf "\n" }}
 Aliases:
   {{.NameAndAliases}}{{end}}{{if .HasExample}}{{printf "\n" }}

@@ -3,8 +3,17 @@ package neuroncli
 import (
 	"fmt"
 	command "neuron/cli/commands"
+        "github.com/spf13/cobra"
 	"os"
 )
+
+var (
+	cmd *cobra.Command
+)
+
+func init() {
+	cmd = command.SetNeuronCmds()
+}
 
 func CliMain() {
 	err := Execute(os.Args[1:])
@@ -16,7 +25,6 @@ func CliMain() {
 
 func Execute(args []string) error {
 
-	cmd := command.SetNeuronCmds()
 	cmd.SetArgs(args)
 	_, err := cmd.ExecuteC()
 	if err != nil {
