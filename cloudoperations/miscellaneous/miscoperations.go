@@ -11,8 +11,8 @@ import (
 )
 
 type GetRegionsResponse struct {
-	Regions         []string `json:"Regions,omitempty"`
-	DefaultResponse string   `json:"DefaultResponse,omitempty"`
+	Regions         awscommon.CommonResponse `json:"Regions,omitempty"`
+	DefaultResponse string                   `json:"DefaultResponse,omitempty"`
 }
 
 // being create_network my job is to create network and give back the response who called me
@@ -34,6 +34,7 @@ func (reg *GetRegionInput) GetRegions() (GetRegionsResponse, error) {
 
 		// I will call create_vpc and get the things done
 		regionin := awscommon.CommonInput{}
+		regionin.GetRaw = reg.GetRaw
 		response, reg_err := regionin.GetRegions(authinpt)
 		if reg_err != nil {
 			return GetRegionsResponse{}, reg_err
@@ -53,4 +54,9 @@ func (reg *GetRegionInput) GetRegions() (GetRegionsResponse, error) {
 		log.Info("")
 		return GetRegionsResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetRegions")
 	}
+}
+
+func New() *GetRegionInput {
+	net := &GetRegionInput{}
+	return net
 }
