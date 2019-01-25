@@ -48,8 +48,8 @@ type AppConfig struct {
 	Database []*db `json:"database"`
 }
 type db struct {
-	name *string `json:"name"`
-	addr *string `json:"addr"`
+	Name *string `json:"name"`
+	Addr *string `json:"addr"`
 }
 
 type ConfigResponse struct {
@@ -154,11 +154,11 @@ func (conf *AppConfig) configDB() {
 		if val := reflect.DeepEqual(*dataBase, db{}); val != true {
 			log.Info("Found Config for database")
 			log.Info(fmt.Sprintf(" Provided configs are: %s ", conf.Database))
-			if strings.ToLower(*dataBase.name) == "mongodb" {
+			if strings.ToLower(*dataBase.Name) == "mongodb" {
 				log.Info("Found a compatible databse. Establishing connection....")
-				db_session, dberr := mgo.Dial(*dataBase.addr)
+				db_session, dberr := mgo.Dial(*dataBase.Addr)
 				if dberr != nil {
-					log.Error(fmt.Sprintf("Unable to reach %s which you provided", *dataBase.name))
+					log.Error(fmt.Sprintf("Unable to reach %s which you provided", *dataBase.Name))
 					log.Warn(switchToFs)
 					_, data_err := dbcommon.ConfigDb(database.Storage{Fs: fmt.Sprintf("%s/data/", conf.Home)})
 					if data_err != nil {
@@ -326,7 +326,7 @@ func (conf *AppConfig) prepareMinimalCli() error {
 
 	for _, dataBase := range conf.Database {
 		if val := reflect.DeepEqual(*dataBase, db{}); val != true {
-			if strings.ToLower(*dataBase.name) == "mongodb" {
+			if strings.ToLower(*dataBase.Name) == "mongodb" {
 				dberr := dataBase.switchtoDB(conf.Home)
 				if dberr != nil {
 					return dberr
@@ -361,7 +361,7 @@ func switchtoFS(home string) error {
 
 func (data *db) switchtoDB(home string) error {
 
-	db_session, dberr := mgo.Dial(*data.addr)
+	db_session, dberr := mgo.Dial(*data.Addr)
 	if dberr != nil {
 		_, data_err := dbcommon.ConfigDb(database.Storage{Fs: fmt.Sprintf("%s/data/", home)})
 		if data_err != nil {
