@@ -107,8 +107,8 @@ func (serv *GetServersInput) GetAllServers() ([]GetServerResponse, error) {
 			return nil, regerr
 		}
 
-		reg := make(chan []server.ServerResponse, len(regions))
-		serv.getservers(regions, reg, creds)
+		reg := make(chan []server.ServerResponse, len(regions.Regions))
+		serv.getservers(regions.Regions, reg, creds)
 
 		server_response := make([]GetServerResponse, 0)
 		for region_detail := range reg {
