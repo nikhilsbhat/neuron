@@ -11,6 +11,7 @@ type cloudGeneral struct {
 	GetRaw  bool
 	Config  string
 	Version string
+	all     bool
 }
 
 // Registering all the flags to the command neuron itself.
@@ -22,4 +23,5 @@ func registerFlags(cmd *cobra.Command) {
 	cmd.PersistentFlags().StringVarP(&neu.Profile, "profile", "p", "", "name of the cloud profile saved, so that we can fetch the credentials saved")
 	cmd.PersistentFlags().BoolVarP(&neu.GetRaw, "getraw", "", false, "enable this flag if you prefer to get unfiltered response, filtered result will give you a crisp information of the resource")
 	cmd.PersistentFlags().StringVarP(&neu.Config, "config", "c", "", "pass the location of config file here, so that neuron gets configured as per the entries in config file.")
+	cmd.PersistentFlags().BoolVarP(&neu.all, "all", "a", false, "turn this on if you need get result of all. (Note: this is meant to work only for certain commands)")
 }

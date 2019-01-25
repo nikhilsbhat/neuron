@@ -29,6 +29,7 @@ func getCmds() *cobra.Command {
 	neucmd := new(neucmds)
 	neucmd.commands = append(neucmd.commands, getInitCmds())
 	neucmd.commands = append(neucmd.commands, getNetCmds())
+	neucmd.commands = append(neucmd.commands, getServCmds())
 	neucmd.commands = append(neucmd.commands, getVersionCmds())
 	//future subcommands will go here
 

@@ -54,3 +54,8 @@ func (serv *UpdateServersInput) UpdateServers() (UpdateServersResponse, error) {
 		return UpdateServersResponse{}, fmt.Errorf(common.DefaultCloudResponse + "UpdateServers")
 	}
 }
+
+func New() *UpdateServersInput {
+	net := &UpdateServersInput{}
+	return net
+}

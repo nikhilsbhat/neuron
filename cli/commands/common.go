@@ -37,3 +37,11 @@ func getGetRaw(cmd *cobra.Command) bool {
 	}
 	return raw
 }
+
+func isAll(cmd *cobra.Command) bool {
+	raw, rwerr := cmd.Flags().GetBool("all")
+	if rwerr != nil {
+		fmt.Println("flag all not used")
+	}
+	return raw
+}

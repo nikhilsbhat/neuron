@@ -161,3 +161,8 @@ func (serv *GetServersInput) getservers(regions []string, reg chan []server.Serv
 	default:
 	}
 }
+
+func New() *GetServersInput {
+	net := &GetServersInput{}
+	return net
+}

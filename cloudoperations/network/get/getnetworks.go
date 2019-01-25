@@ -63,7 +63,7 @@ func (net *GetNetworksInput) GetNetworks() (GetNetworksResponse, error) {
 		networkin.GetRaw = net.GetRaw
 		response, net_err := networkin.GetNetwork(authinpt)
 		if net_err != nil {
-			return GetNetworksResponse{}, nil
+			return GetNetworksResponse{}, net_err
 		}
 		return GetNetworksResponse{AwsResponse: response}, nil
 

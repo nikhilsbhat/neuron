@@ -4,8 +4,7 @@ import (
 	//"neuron/app"
 	cli "neuron/cli"
 	/*err "neuron/error"
-	log "neuron/logger"*/
-)
+	log "neuron/logger"*/)
 
 //This function is responsible for starting the application.
 func main() {

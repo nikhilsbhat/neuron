@@ -99,7 +99,7 @@ func (cm *cliMeta) createNetwork(cmd *cobra.Command, args []string) error {
 	createnw.GetRaw = getGetRaw(cmd)
 	server_response, ser_resp_err := createnw.CreateNetwork()
 	if ser_resp_err != nil {
-		fmt.Fprintf(os.Stdout, "%v\n", ser_resp_err)
+		return ser_resp_err
 	} else {
 		json_val, _ := json.MarshalIndent(server_response, "", " ")
 		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
@@ -117,7 +117,7 @@ func (cm *cliMeta) deleteNetwork(cmd *cobra.Command, args []string) error {
 	deletenw.GetRaw = getGetRaw(cmd)
 	delete_network_response, net_err := deletenw.DeleteNetwork()
 	if net_err != nil {
-		fmt.Fprintf(os.Stdout, "%v\n", net_err)
+		return net_err
 	} else {
 		json_val, _ := json.MarshalIndent(delete_network_response, "", " ")
 		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
@@ -135,7 +135,7 @@ func (cm *cliMeta) getNetwork(cmd *cobra.Command, args []string) error {
 	getnw.GetRaw = getGetRaw(cmd)
 	get_network_response, net_get_err := getnw.GetNetworks()
 	if net_get_err != nil {
-		fmt.Fprintf(os.Stdout, "%v\n", net_get_err)
+		return net_get_err
 	} else {
 		json_val, _ := json.MarshalIndent(get_network_response, "", " ")
 		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
@@ -153,7 +153,7 @@ func (cm *cliMeta) updateNetwork(cmd *cobra.Command, args []string) error {
 	updatenw.GetRaw = getGetRaw(cmd)
 	net_update_response, net_up_err := updatenw.UpdateNetwork()
 	if net_up_err != nil {
-		fmt.Fprintf(os.Stdout, "%v\n", net_up_err)
+		return net_up_err
 	} else {
 		json_val, _ := json.MarshalIndent(net_update_response, "", " ")
 		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
@@ -171,7 +171,7 @@ func (cm *cliMeta) echoNetwork(cmd *cobra.Command, args []string) error {
 }
 
 func printMessage() {
-	fmt.Printf("I will do nothing, all I do is with the help of my flags\n")
-	fmt.Printf("Please do pass flags to get help out of me \n")
+	fmt.Printf("I will do nothing, all I do is with the help of my flags.\n")
+	fmt.Printf("Please do pass flags to get help out of me.\n")
 	fmt.Printf("\n")
 }

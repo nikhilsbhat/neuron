@@ -67,3 +67,8 @@ func (serv *DeleteServersInput) DeleteServer() (DeleteServerResponse, error) {
 		return DeleteServerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "DeleteServer")
 	}
 }
+
+func New() *DeleteServersInput {
+	net := &DeleteServersInput{}
+	return net
+}

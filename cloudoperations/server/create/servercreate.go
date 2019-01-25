@@ -70,3 +70,8 @@ func CreateServerMock() (ServerCreateResponse, error) {
 
 	return ServerCreateResponse{DefaultResponse: defaults}, nil
 }
+
+func New() *ServerCreateInput {
+	net := &ServerCreateInput{}
+	return net
+}
