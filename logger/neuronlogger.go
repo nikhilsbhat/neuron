@@ -39,7 +39,7 @@ func Init() error {
 	}
 	login := new(NeuronLogInput)
 	/*ui := NeuronUi{&UiWriter{os.Stdout}}
-	login.Ui = &ui*/
+	  login.Ui = &ui*/
 	login.Logpath = conf
 	logerr := login.neuronlogInitializer()
 	if logerr != nil {
@@ -122,7 +122,7 @@ func Info(data interface{}) {
 	login := loggerOptions{
 		level:   " [INFO] ",
 		appname: AppName,
-		msg:     ui.Info(getStringOfMessage(data)),
+		msg:     getStringOfMessage(data),
 		logpath: Logpath,
 	}
 	if _, file, no, ok := runtime.Caller(3); ok {
@@ -135,7 +135,7 @@ func Error(data interface{}) {
 	login := loggerOptions{
 		level:   " [ERROR] ",
 		appname: AppName,
-		msg:     ui.Error(getStringOfMessage(data)),
+		msg:     getStringOfMessage(data),
 		logpath: Logpath,
 	}
 	if _, file, no, ok := runtime.Caller(1); ok {
@@ -148,7 +148,7 @@ func Warn(data interface{}) {
 	login := loggerOptions{
 		level:   " [WARN] ",
 		appname: AppName,
-		msg:     ui.Warn(getStringOfMessage(data)),
+		msg:     getStringOfMessage(data),
 		logpath: Logpath,
 	}
 	if _, file, no, ok := runtime.Caller(3); ok {
@@ -161,7 +161,7 @@ func Debug(data interface{}) {
 	login := loggerOptions{
 		level:   " [DEBUG] ",
 		appname: AppName,
-		msg:     ui.Debug(getStringOfMessage(data)),
+		msg:     getStringOfMessage(data),
 		logpath: Logpath,
 	}
 	if _, file, no, ok := runtime.Caller(3); ok {
@@ -176,7 +176,16 @@ func (loger *loggerOptions) appLog() {
 		newlog.SetPrefix(time.Now().Format("2006-01-02 15:04:05") + loger.level)
 		newlog.Println(loger.caller + loger.appname + ": " + loger.msg)
 	}
-	fmt.Println(loger.level + loger.caller + loger.appname + ": " + loger.msg)
+	switch loger.level {
+	case " [WARN] ":
+		fmt.Println(ui.Warn(loger.level + loger.caller + loger.appname + ": " + loger.msg))
+	case " [DEBUG] ":
+		fmt.Println(ui.Debug(loger.level + loger.caller + loger.appname + ": " + loger.msg))
+	case " [ERROR] ":
+		fmt.Println(ui.Error(loger.level + loger.caller + loger.appname + ": " + loger.msg))
+	case " [INFO] ":
+		fmt.Println(ui.Info(loger.level + loger.caller + loger.appname + ": " + loger.msg))
+	}
 }
 
 func getStringOfMessage(g interface{}) string {
