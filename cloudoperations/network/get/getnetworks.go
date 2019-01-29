@@ -7,8 +7,8 @@ import (
 	network "neuron/cloud/aws/operations/network"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
-        support "neuron/cloudoperations/support"
-	log "neuron/logger"
+	support "neuron/cloudoperations/support"
+	//log "neuron/logger"
 	"strings"
 )
 
@@ -31,9 +31,6 @@ type GetNetworksResponse struct {
 func (net *GetNetworksInput) GetNetworks() (GetNetworksResponse, error) {
 
 	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud)); status != true {
-		log.Info("")
-		log.Error(common.DefaultCloudResponse + "GetNetworks")
-		log.Info("")
 		return GetNetworksResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
 	}
 
@@ -85,9 +82,6 @@ func (net *GetNetworksInput) GetNetworks() (GetNetworksResponse, error) {
 func (net GetNetworksInput) GetAllNetworks() ([]GetNetworksResponse, error) {
 
 	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud)); status != true {
-		log.Info("")
-		log.Error(common.DefaultCloudResponse + "GetAllNetworks")
-		log.Info("")
 		return nil, fmt.Errorf(common.DefaultCloudResponse + "GetAllNetworks")
 	}
 

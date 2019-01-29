@@ -7,7 +7,7 @@ import (
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
 	support "neuron/cloudoperations/support"
-	log "neuron/logger"
+	//log "neuron/logger"
 	"strings"
 )
 
@@ -30,9 +30,6 @@ type GetSubnetsResponse struct {
 func (sub GetNetworksInput) GetSubnets() (GetSubnetsResponse, error) {
 
 	if status := support.DoesCloudSupports(strings.ToLower(sub.Cloud)); status != true {
-		log.Info("")
-		log.Error(common.DefaultCloudResponse + "GetSubnets")
-		log.Info("")
 		return GetSubnetsResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetSubnets")
 	}
 

@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"log"
+	ui "neuron/cli/ui"
 	err "neuron/error"
 	"os"
 	"runtime"
@@ -37,6 +38,8 @@ func Init() error {
 		return conferr
 	}
 	login := new(NeuronLogInput)
+	/*ui := NeuronUi{&UiWriter{os.Stdout}}
+	login.Ui = &ui*/
 	login.Logpath = conf
 	logerr := login.neuronlogInitializer()
 	if logerr != nil {
@@ -119,7 +122,7 @@ func Info(data interface{}) {
 	login := loggerOptions{
 		level:   " [INFO] ",
 		appname: AppName,
-		msg:     getStringOfMessage(data),
+		msg:     ui.Info(getStringOfMessage(data)),
 		logpath: Logpath,
 	}
 	if _, file, no, ok := runtime.Caller(3); ok {
@@ -132,7 +135,7 @@ func Error(data interface{}) {
 	login := loggerOptions{
 		level:   " [ERROR] ",
 		appname: AppName,
-		msg:     getStringOfMessage(data),
+		msg:     ui.Error(getStringOfMessage(data)),
 		logpath: Logpath,
 	}
 	if _, file, no, ok := runtime.Caller(1); ok {
@@ -145,7 +148,7 @@ func Warn(data interface{}) {
 	login := loggerOptions{
 		level:   " [WARN] ",
 		appname: AppName,
-		msg:     getStringOfMessage(data),
+		msg:     ui.Warn(getStringOfMessage(data)),
 		logpath: Logpath,
 	}
 	if _, file, no, ok := runtime.Caller(3); ok {
@@ -158,7 +161,7 @@ func Debug(data interface{}) {
 	login := loggerOptions{
 		level:   " [DEBUG] ",
 		appname: AppName,
-		msg:     getStringOfMessage(data),
+		msg:     ui.Debug(getStringOfMessage(data)),
 		logpath: Logpath,
 	}
 	if _, file, no, ok := runtime.Caller(3); ok {

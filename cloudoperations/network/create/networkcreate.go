@@ -7,7 +7,7 @@ import (
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
 	support "neuron/cloudoperations/support"
-	log "neuron/logger"
+	//log "neuron/logger"
 	"strings"
 )
 
@@ -30,9 +30,6 @@ type CreateNetworkResponse struct {
 func (net *NetworkCreateInput) CreateNetwork() (CreateNetworkResponse, error) {
 
 	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud)); status != true {
-		log.Info("")
-		log.Error(common.DefaultCloudResponse + "CreateNetwork")
-		log.Info("")
 		return CreateNetworkResponse{}, fmt.Errorf(common.DefaultCloudResponse + "CreateNetwork")
 	}
 

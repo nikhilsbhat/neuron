@@ -11,7 +11,6 @@ import (
 	svget "neuron/cloudoperations/server/get"
 	svupdate "neuron/cloudoperations/server/update"
 	err "neuron/error"
-	"os"
 	"strings"
 )
 
@@ -45,7 +44,7 @@ func getServCmds() *cobra.Command {
 		Use:   "server [flags]",
 		Short: "command to carry out server activities",
 		Long:  `This will help user to create/update/get/delete server in cloud.`,
-		RunE:  cc.echoServer,
+		Run:   cc.echoServer,
 	}
 	registersvFlags("server", cmdServer)
 
@@ -81,9 +80,9 @@ func registersvFlags(cmdname string, cmd *cobra.Command) {
 	}
 }
 
-func (cm *cliMeta) createServer(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) createServer(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 	createsv.Cloud = getCloud(cmd)
 	createsv.Region = getRegion(cmd)
@@ -91,17 +90,16 @@ func (cm *cliMeta) createServer(cmd *cobra.Command, args []string) error {
 	createsv.GetRaw = getGetRaw(cmd)
 	server_response, ser_resp_err := createsv.CreateServer()
 	if ser_resp_err != nil {
-		return ser_resp_err
+		cm.NeuronSaysItsError(ser_resp_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(server_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) deleteServer(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) deleteServer(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 	deletesv.Cloud = getCloud(cmd)
 	deletesv.Region = getRegion(cmd)
@@ -109,17 +107,16 @@ func (cm *cliMeta) deleteServer(cmd *cobra.Command, args []string) error {
 	deletesv.GetRaw = getGetRaw(cmd)
 	delete_sv_response, sv_err := deletesv.DeleteServer()
 	if sv_err != nil {
-		return sv_err
+		cm.NeuronSaysItsError(sv_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(delete_sv_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) getServer(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) getServer(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 
 	getsv.Cloud = getCloud(cmd)
@@ -130,27 +127,25 @@ func (cm *cliMeta) getServer(cmd *cobra.Command, args []string) error {
 	if isAll(cmd) {
 		get_server_response, sv_get_err := getsv.GetAllServers()
 		if sv_get_err != nil {
-			return sv_get_err
+			cm.NeuronSaysItsError(sv_get_err.Error())
 		} else {
 			json_val, _ := json.MarshalIndent(get_server_response, "", " ")
-			fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+			cm.NeuronSaysItsInfo(string(json_val))
 		}
-		return nil
 	}
 
 	get_server_response, sv_get_err := getsv.GetServersDetails()
 	if sv_get_err != nil {
-		return sv_get_err
+		cm.NeuronSaysItsError(sv_get_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(get_server_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) updateServer(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) updateServer(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 	updatesv.Cloud = getCloud(cmd)
 	updatesv.Region = getRegion(cmd)
@@ -158,19 +153,17 @@ func (cm *cliMeta) updateServer(cmd *cobra.Command, args []string) error {
 	updatesv.GetRaw = getGetRaw(cmd)
 	sv_update_response, sv_up_err := updatesv.UpdateServers()
 	if sv_up_err != nil {
-		return sv_up_err
+		cm.NeuronSaysItsError(sv_up_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(sv_update_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) echoServer(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) echoServer(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	printMessage()
+	cm.printMessage()
 	cmd.Usage()
-	return nil
 }

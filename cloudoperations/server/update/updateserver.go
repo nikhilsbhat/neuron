@@ -6,23 +6,44 @@ import (
 	server "neuron/cloud/aws/operations/server"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type UpdateServersResponse struct {
-	AwsResponse     []server.ServerResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                  `json:"AzureResponse,omitempty"`
-	DefaultResponse string                  `json:"Response,omitempty"`
+
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse []server.ServerResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"Response,omitempty"`
 }
 
-// being update_servers my job is to update servers (start/stop, change ebs etc) and give back the response who called me
+// Being GetServersDetails, job of him is to update servers (start/stop, change ebs etc)
+//  with the instructions passed to him and give back the response who called this.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (serv *UpdateServersInput) UpdateServers() (UpdateServersResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud)); status != true {
+		return UpdateServersResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
 
 	switch strings.ToLower(serv.Cloud) {
 	case "aws":
 
-		creds, crederr := common.GetCredentials(&common.GetCredentialsInput{Profile: serv.Profile, Cloud: serv.Cloud})
+		creds, crederr := common.GetCredentials(
+			&common.GetCredentialsInput{
+				Profile: serv.Profile,
+				Cloud:   serv.Cloud,
+			},
+		)
+
 		if crederr != nil {
 			return UpdateServersResponse{}, crederr
 		}

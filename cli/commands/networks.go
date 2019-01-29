@@ -11,7 +11,6 @@ import (
 	nwget "neuron/cloudoperations/network/get"
 	nwupdate "neuron/cloudoperations/network/update"
 	err "neuron/error"
-	"os"
 	"strings"
 )
 
@@ -45,7 +44,7 @@ func getNetCmds() *cobra.Command {
 		Use:   "network [network related activities]",
 		Short: "command to carry out network activities",
 		Long:  `This will help user to create/update/get/delete network in cloud.`,
-		RunE:  cc.echoNetwork,
+		Run:   cc.echoNetwork,
 	}
 	registernwFlags("network", cmdNetwork)
 
@@ -65,7 +64,7 @@ func registernwFlags(cmdname string, cmd *cobra.Command) {
 		cmd.Flags().StringVarP(&createnw.VpcCidr, "vpcidr", "v", "", "pass CIDR for the vpc to be created ")
 		cmd.Flags().StringSliceVarP(&createnw.SubCidr, "subcidr", "s", nil, "pass the CIDR for the subnet to be created, has to be passed in a array. Can pass multiple CIDR's if in case of requirement of multiple subnets")
 		cmd.Flags().StringVarP(&createnw.Type, "type", "t", "", "type of network to be created. [public/private are the valid inputs]")
-		cmd.Flags().StringSliceVarP(&createnw.Ports, "ports", "p", []string{"22"}, "pass the ports in an array to be opened for the network")
+		cmd.Flags().StringSliceVarP(&createnw.Ports, "ports", "", []string{"22"}, "pass the ports in an array to be opened for the network")
 	case "networkdelete":
 		cmd.Flags().StringSliceVarP(&deletenw.VpcIds, "vpcids", "v", nil, "pass ID's of vpc's, pass comma separated value.")
 		cmd.Flags().StringSliceVarP(&deletenw.SubnetIds, "subnetids", "s", nil, "pass ID's of subnets, pass comma separated value")
@@ -89,9 +88,9 @@ func registernwFlags(cmdname string, cmd *cobra.Command) {
 	}
 }
 
-func (cm *cliMeta) createNetwork(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) createNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 	createnw.Cloud = getCloud(cmd)
 	createnw.Region = getRegion(cmd)
@@ -99,17 +98,16 @@ func (cm *cliMeta) createNetwork(cmd *cobra.Command, args []string) error {
 	createnw.GetRaw = getGetRaw(cmd)
 	server_response, ser_resp_err := createnw.CreateNetwork()
 	if ser_resp_err != nil {
-		return ser_resp_err
+		cm.NeuronSaysItsError(ser_resp_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(server_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) deleteNetwork(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) deleteNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 	deletenw.Cloud = getCloud(cmd)
 	deletenw.Region = getRegion(cmd)
@@ -117,17 +115,16 @@ func (cm *cliMeta) deleteNetwork(cmd *cobra.Command, args []string) error {
 	deletenw.GetRaw = getGetRaw(cmd)
 	delete_network_response, net_err := deletenw.DeleteNetwork()
 	if net_err != nil {
-		return net_err
+		cm.NeuronSaysItsError(net_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(delete_network_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) getNetwork(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) getNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 	getnw.Cloud = getCloud(cmd)
 	getnw.Region = getRegion(cmd)
@@ -135,17 +132,16 @@ func (cm *cliMeta) getNetwork(cmd *cobra.Command, args []string) error {
 	getnw.GetRaw = getGetRaw(cmd)
 	get_network_response, net_get_err := getnw.GetNetworks()
 	if net_get_err != nil {
-		return net_get_err
+		cm.NeuronSaysItsError(net_get_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(get_network_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) updateNetwork(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) updateNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 	updatenw.Cloud = getCloud(cmd)
 	updatenw.Region = getRegion(cmd)
@@ -153,26 +149,23 @@ func (cm *cliMeta) updateNetwork(cmd *cobra.Command, args []string) error {
 	updatenw.GetRaw = getGetRaw(cmd)
 	net_update_response, net_up_err := updatenw.UpdateNetwork()
 	if net_up_err != nil {
-		return net_up_err
+		cm.NeuronSaysItsError(net_up_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(net_update_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) echoNetwork(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) echoNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	printMessage()
+	cm.printMessage()
 	cmd.Usage()
-	return nil
 }
 
-func printMessage() {
+func (cm *cliMeta) printMessage() {
 	fmt.Printf("\n")
-	fmt.Printf("I will do nothing, all I do is with the help of my flags.\n")
-	fmt.Printf("Please do pass flags to get help out of me.\n")
-	fmt.Printf("\n")
+	cm.NeuronSaysItsInfo("I will do nothing, all I do is with the help of my flags.\n")
+	cm.NeuronSaysItsInfo("Please do pass flags to get help out of me.\n")
 }

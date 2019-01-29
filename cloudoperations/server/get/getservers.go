@@ -7,27 +7,46 @@ import (
 	server "neuron/cloud/aws/operations/server"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	db "neuron/database"
 	log "neuron/logger"
 	"strings"
 	"sync"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type GetServerResponse struct {
-	AwsResponse     []server.ServerResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                  `json:"AzureResponse,omitempty"`
-	DefaultResponse string                  `json:"Response,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse []server.ServerResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"Response,omitempty"`
 }
 
-// being getserversdetails my job is to call appropriate function to get serversdetails and give back the response who called me.
+// Being GetServersDetails, job of him is to fetch the details of servers with the instructions passed to him
+// and give back the response who called this.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (serv *GetServersInput) GetServersDetails() (GetServerResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud)); status != true {
+		return GetServerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
 
 	switch strings.ToLower(serv.Cloud) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: serv.Profile, Cloud: serv.Cloud})
-		if err != nil {
-			return GetServerResponse{}, err
+		creds, crederr := common.GetCredentials(
+			&common.GetCredentialsInput{
+				Profile: serv.Profile,
+				Cloud:   serv.Cloud,
+			},
+		)
+		if crederr != nil {
+			return GetServerResponse{}, crederr
 		}
 		// I will establish session so that we can carry out the process in cloud
 		session_input := awssess.CreateSessionInput{Region: serv.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
@@ -38,21 +57,27 @@ func (serv *GetServersInput) GetServersDetails() (GetServerResponse, error) {
 		// I will call CreateServer of interface and get the things done
 
 		if serv.InstanceIds != nil {
-			serverin := server.DescribeInstanceInput{InstanceIds: serv.InstanceIds, GetRaw: serv.GetRaw}
+			serverin := server.DescribeInstanceInput{}
+			serverin.InstanceIds = serv.InstanceIds
+			serverin.GetRaw = serv.GetRaw
 			server_response, serverr := serverin.GetServersDetails(authinpt)
 			if serverr != nil {
 				return GetServerResponse{}, serverr
 			}
 			return GetServerResponse{AwsResponse: server_response}, nil
 		} else if serv.SubnetIds != nil {
-			serverin := server.DescribeInstanceInput{SubnetIds: serv.SubnetIds, GetRaw: serv.GetRaw}
+			serverin := server.DescribeInstanceInput{}
+			serverin.SubnetIds = serv.SubnetIds
+			serverin.GetRaw = serv.GetRaw
 			server_response, serverr := serverin.GetServersFromSubnet(authinpt)
 			if serverr != nil {
 				return GetServerResponse{}, serverr
 			}
 			return GetServerResponse{AwsResponse: server_response}, nil
 		} else if serv.VpcIds != nil {
-			serverin := server.DescribeInstanceInput{VpcIds: serv.VpcIds, GetRaw: serv.GetRaw}
+			serverin := server.DescribeInstanceInput{}
+			serverin.VpcIds = serv.VpcIds
+			serverin.GetRaw = serv.GetRaw
 			server_response, serverr := serverin.GetServersFromNetwork(authinpt)
 			if serverr != nil {
 				return GetServerResponse{}, serverr
@@ -82,10 +107,23 @@ func (serv *GetServersInput) GetServersDetails() (GetServerResponse, error) {
 	}
 }
 
+// Being GetAllServers, job of him is to fetch the details of all servers across the cloud
+// and give back the response who called this.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (serv *GetServersInput) GetAllServers() ([]GetServerResponse, error) {
 
+	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud)); status != true {
+		return nil, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
+
 	//fetchinig credentials from loged-in user to establish the connection with appropriate cloud.
-	creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: serv.Profile, Cloud: serv.Cloud})
+	creds, err := common.GetCredentials(
+		&common.GetCredentialsInput{
+			Profile: serv.Profile,
+			Cloud:   serv.Cloud,
+		},
+	)
 	if err != nil {
 		return nil, err
 	}
@@ -125,13 +163,12 @@ func (serv *GetServersInput) GetAllServers() ([]GetServerResponse, error) {
 	case "openstack":
 		return nil, fmt.Errorf(common.DefaultOpResponse)
 	default:
-		log.Info("")
-		log.Error("I feel we are lost in getting details of all the server :S, guess you have entered wrong cloud")
-		log.Info("")
 		return nil, fmt.Errorf(common.DefaultCloudResponse + "GetAllServers")
 	}
 }
 
+// this will be called by getallservers, he is the one who gets the details of all the servers,
+// and send over a channel.
 func (serv *GetServersInput) getservers(regions []string, reg chan []server.ServerResponse, creds db.CloudProfiles) {
 
 	switch strings.ToLower(serv.Cloud) {

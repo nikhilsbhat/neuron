@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 	misc "neuron/cloudoperations/miscellaneous"
 	err "neuron/error"
-	"os"
 	"strings"
 )
 
@@ -39,7 +38,7 @@ func getMiscCmds() *cobra.Command {
 		Use:   "common [flags]",
 		Short: "command for miscellaneous operation",
 		Long:  `This will help you to perform miscellaneous operation which we call on the cloud you wish.`,
-		RunE:  cc.echoCommon,
+		Run:   cc.echoCommon,
 	}
 	registermiscFlags("server", cmdMisc)
 
@@ -59,9 +58,9 @@ func registermiscFlags(cmdname string, cmd *cobra.Command) {
 	}
 }
 
-func (cm *cliMeta) getRegions(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) getRegions(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 
 	getrg.Cloud = getCloud(cmd)
@@ -71,19 +70,17 @@ func (cm *cliMeta) getRegions(cmd *cobra.Command, args []string) error {
 
 	get_regions_response, reg_get_err := getrg.GetRegions()
 	if reg_get_err != nil {
-		return reg_get_err
+		cm.NeuronSaysItsError(reg_get_err.Error())
 	} else {
 		json_val, _ := json.MarshalIndent(get_regions_response, "", " ")
-		fmt.Fprintf(os.Stdout, "%v\n", string(json_val))
+		cm.NeuronSaysItsInfo(string(json_val))
 	}
-	return nil
 }
 
-func (cm *cliMeta) echoCommon(cmd *cobra.Command, args []string) error {
+func (cm *cliMeta) echoCommon(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
-		return err.CliNoStart()
+		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	printMessage()
+	cm.printMessage()
 	cmd.Usage()
-	return nil
 }

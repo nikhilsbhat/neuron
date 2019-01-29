@@ -2,16 +2,15 @@ package commands
 
 import (
 	"fmt"
-	//"github.com/spf13/cobra"
-	//err "neuron/error"
-	//"github.com/fatih/color"
 	neuron "neuron/app"
 	config "neuron/app/config"
+	"neuron/cli/ui"
 	"os"
 )
 
 type cliMeta struct {
 	*config.CliMeta
+	*ui.NeuronUi
 }
 
 var (
@@ -25,5 +24,7 @@ func init() {
 		fmt.Println(clierr)
 		os.Exit(3)
 	}
-	cc = &cliMeta{&meta}
+	nui := ui.NeuronUi{&ui.UiWriter{os.Stdout}}
+	cc = &cliMeta{&meta, &nui}
+
 }
