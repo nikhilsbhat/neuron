@@ -6,23 +6,42 @@ import (
 	loadbalance "neuron/cloud/aws/operations/loadbalancer"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type LoadBalanceResponse struct {
-	AwsResponse     loadbalance.LoadBalanceResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                          `json:"AzureResponse,omitempty"`
-	DefaultResponse string                          `json:"Response,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse loadbalance.LoadBalanceResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"Response,omitempty"`
 }
 
-// being create_loadbalancer my job is to create required loadbalancer and give back the response who called me
+// Being CreateLoadBalancer, job of him is to create loadbalancer of choice passed
+// and give back the response who called this.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (lb *LbCreateInput) CreateLoadBalancer() (LoadBalanceResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(lb.Cloud)); status != true {
+		return LoadBalanceResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
 
 	switch strings.ToLower(lb.Cloud) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: lb.Profile, Cloud: lb.Cloud})
+		creds, err := common.GetCredentials(
+			&common.GetCredentialsInput{
+				Profile: lb.Profile,
+				Cloud:   lb.Cloud,
+			},
+		)
 		if err != nil {
 			return LoadBalanceResponse{}, err
 		}
@@ -77,4 +96,9 @@ func (lb *LbCreateInput) CreateLoadBalancer() (LoadBalanceResponse, error) {
 		log.Info("")
 		return LoadBalanceResponse{}, fmt.Errorf(common.DefaultCloudResponse + "CreateLoadBalancer")
 	}
+}
+
+func New() *LbCreateInput {
+	net := &LbCreateInput{}
+	return net
 }
