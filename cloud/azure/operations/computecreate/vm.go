@@ -1,3 +1,5 @@
+// Running this package will create a vnet, subnet. nsg, ip, nic and with all the above mentioned a VM will be created in the subnet just created.
+
 package main
 
 import (
@@ -8,7 +10,7 @@ import (
 )
 
 func main() {
-	v := azurenetwork.VnetIn{"test", "test", "192.168.0.0/16", "CentralIndia"}
+	v := azurenetwork.VnetIn{"test", "test", "192.168.0.0/16", "CentralIndia"} // resource group and vnet name is "test"
 	vnet, _ := v.CreateVirtualNetwork()
 	jsonMarshall(vnet)
 

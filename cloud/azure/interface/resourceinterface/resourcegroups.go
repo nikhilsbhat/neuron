@@ -26,6 +26,8 @@ func getGroupsClient() resources.GroupsClient {
 	return groupsClient
 }
 
+// Creates a new resource group
+
 func (g GroupsIn) CreateResourceGroup() (resources.Group, error) {
 	groupsClient := getGroupsClient()
 	fmt.Printf("\n creating resource group '%s' on location: %v", g.ResourceGroup, g.Location)

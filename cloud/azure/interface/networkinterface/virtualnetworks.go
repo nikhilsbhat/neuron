@@ -57,6 +57,7 @@ func (net VnetIn) CreateVirtualNetwork() (vnet network.VirtualNetwork, err error
 	return future.Result(vnetClient)
 }
 
+// CreateVirtualNetwork gets a virtual network
 func (net VnetIn) GetVirtualNetwork() (vnet network.VirtualNetwork, err error) {
 	vnetClient := getVnetClient()
 	future, err := vnetClient.Get(
@@ -72,6 +73,7 @@ func (net VnetIn) GetVirtualNetwork() (vnet network.VirtualNetwork, err error) {
 	return future, err
 }
 
+// CreateVirtualNetwork deletes a virtual network
 func (net VnetIn) DeleteVirtualNetwork() (ar autorest.Response, err error) {
 	vnetClient := getVnetClient()
 	future, err := vnetClient.Delete(
@@ -92,6 +94,7 @@ func (net VnetIn) DeleteVirtualNetwork() (ar autorest.Response, err error) {
 	return future.Result(vnetClient)
 }
 
+// CreateVirtualNetwork lists a virtual network
 func (net VnetIn) ListVirtualNetwork() (vnet []network.VirtualNetwork, err error) {
 	vnetClient := getVnetClient()
 	future, err := vnetClient.List(
@@ -105,6 +108,8 @@ func (net VnetIn) ListVirtualNetwork() (vnet []network.VirtualNetwork, err error
 	return future.Values(), err
 }
 
+
+// // CreateVirtualNetwork lists all virtual networks
 func ListAllVirtualNetwork() (vnet []network.VirtualNetwork, err error) {
 	vnetClient := getVnetClient()
 	future, err := vnetClient.ListAll(
