@@ -1,3 +1,8 @@
+// This package will help one in creating loabalancers.
+// But this is tailor made for this application if one needs
+// customized result, has to write one similar to this for them by calling the (master) interface.
+// This package is capable of returining both custom response
+// and raw from cloud depending on what you pass.
 package loadbalancer
 
 import (
@@ -9,6 +14,8 @@ import (
 	"strings"
 )
 
+// CreateLoadBalancer depends on this and inorder to call it one have to initiaze this struct.
+// It has various parameter which helps in taking decision for creating loabalancer and other aspects of it.
 type LoadBalanceCreateInput struct {
 	//optional parameter; If you provide the name to the loadbalancer well and good, else we will name it with a default one.
 	Name string `json:"Name"`
@@ -55,6 +62,8 @@ type LoadBalanceCreateInput struct {
 	GetRaw bool `json:"GetRaw"`
 }
 
+// This struct is the output of CreateLoadBalancer, this holds both filetered and unfiletred response from cloud.
+// But one has to enable flag 'GetRaw' in LoadBalanceCreateInput to get unfiletred output.
 type LoadBalanceResponse struct {
 	Name                   string                           `json:"Name,omitempty""`
 	Type                   string                           `json:"Type,omitempty""`
@@ -77,6 +86,8 @@ type LoadBalanceResponse struct {
 	GetApplicationLbRaw    ApplicationLbRaw                 `json:"GetApplicationLbRaw,omitempty"`
 }
 
+// This struct is a not used alone, but is used along with LoadBalanceResponse.
+// This means, no function will which is accessible to user will send this in response but is passed via LoadBalanceResponse.
 type ApplicationLbRaw struct {
 	CreateApplicationLbRaw *elbv2.CreateLoadBalancerOutput    `json:"CreateApplicationLbRaw,omitempty"`
 	GetApplicationLbsRaw   *elbv2.DescribeLoadBalancersOutput `json:"GetApplicationLbsRaw,omitempty"`
@@ -87,6 +98,8 @@ type ApplicationLbRaw struct {
 	GetListnersRaw         *elbv2.DescribeListenersOutput     `json:"GetListnersRaw,omitempty"`
 }
 
+// This is actual spoc for creating loadbalancer in aws and it can create both classica and applciation loabalancers.
+// This return both custom and raw response, pass appropriate value to get the result.
 func (load *LoadBalanceCreateInput) CreateLoadBalancer(con aws.EstablishConnectionInput) (LoadBalanceResponse, error) {
 
 	// creating LB according to the input ex: application/classic
