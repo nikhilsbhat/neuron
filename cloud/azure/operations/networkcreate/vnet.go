@@ -1,3 +1,5 @@
+// This package will create, list, delete and gets the network that you pass
+
 package main
 
 import (

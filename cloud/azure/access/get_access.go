@@ -1,3 +1,6 @@
+// This package is used to initialize the credentials from a credentials file (~/.azure/credentials).
+// file shoud be in Json and the credentials will be initialized based on the username passed.
+
 package auth
 
 import (
@@ -20,8 +23,6 @@ type Credentials struct {
 
 var (
 	result Credentials
-
-//        subscription string
 )
 
 func init() {
@@ -38,7 +39,7 @@ func init() {
 	}
 	for _, t := range data {
 
-		if t.Profile == "ranjith" {
+		if t.Profile == "ranjith" { // for now hardcoded as 'ranjith'
 			result = t
 			break
 		} else if t.Profile != "ranjith" {
@@ -46,7 +47,7 @@ func init() {
 		}
 	}
 	if (Credentials{}) == result {
-		fmt.Println("I don't know the user")
+		fmt.Println("I have no credentials with the user you passed")
 	}
 }
 
