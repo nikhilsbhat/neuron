@@ -6,39 +6,40 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func getRegion(cmd *cobra.Command) string {
+func (cm *cliMeta) getRegion(cmd *cobra.Command) string {
 	reg, regrr := cmd.Flags().GetString("region")
 	if regrr != nil {
-		fmt.Println("region not passed for the cloud selected")
+		cm.NeuronSaysItsError("region not passed for the cloud selected")
 	}
 	return reg
 }
 
-func getCloud(cmd *cobra.Command) string {
+func (cm *cliMeta) getCloud(cmd *cobra.Command) string {
 	cld, clderr := cmd.Flags().GetString("cloud")
 	if clderr != nil {
-		fmt.Println("flag cloud is empty")
+		cm.NeuronSaysItsError("flag cloud is empty")
 	}
 	return cld
 }
 
-func getProfile(cmd *cobra.Command) string {
+func (cm *cliMeta) getProfile(cmd *cobra.Command) string {
 	prf, prferr := cmd.Flags().GetString("profile")
 	if prferr != nil {
-		fmt.Println("flag profile not passed")
+		cm.NeuronSaysItsError("flag profile not passed")
 	}
 	return prf
 }
 
-func getGetRaw(cmd *cobra.Command) bool {
-	raw, rwerr := cmd.Flags().GetBool("filter")
-	if rwerr != nil {
-		fmt.Println("flag filter not used")
-	}
-	return !raw
+func (cm *cliMeta) getGetRaw(cmd *cobra.Command) bool {
+	raw, rwerr := cmd.Flags().GetBool("getraw")
+	_ = rwerr
+	/*if rwerr != nil {
+		cm.NeuronSaysItsError("flag getraw not used")
+	}*/
+	return raw
 }
 
-func isAll(cmd *cobra.Command) bool {
+func (cm *cliMeta) isAll(cmd *cobra.Command) bool {
 	raw, rwerr := cmd.Flags().GetBool("all")
 	if rwerr != nil {
 		fmt.Println("flag all not used")

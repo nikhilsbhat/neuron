@@ -84,10 +84,10 @@ func (cm *cliMeta) createServer(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	createsv.Cloud = getCloud(cmd)
-	createsv.Region = getRegion(cmd)
-	createsv.Profile = getProfile(cmd)
-	createsv.GetRaw = getGetRaw(cmd)
+	createsv.Cloud = cm.getCloud(cmd)
+	createsv.Region = cm.getRegion(cmd)
+	createsv.Profile = cm.getProfile(cmd)
+	createsv.GetRaw = cm.getGetRaw(cmd)
 	server_response, ser_resp_err := createsv.CreateServer()
 	if ser_resp_err != nil {
 		cm.NeuronSaysItsError(ser_resp_err.Error())
@@ -101,10 +101,10 @@ func (cm *cliMeta) deleteServer(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	deletesv.Cloud = getCloud(cmd)
-	deletesv.Region = getRegion(cmd)
-	deletesv.Profile = getProfile(cmd)
-	deletesv.GetRaw = getGetRaw(cmd)
+	deletesv.Cloud = cm.getCloud(cmd)
+	deletesv.Region = cm.getRegion(cmd)
+	deletesv.Profile = cm.getProfile(cmd)
+	deletesv.GetRaw = cm.getGetRaw(cmd)
 	delete_sv_response, sv_err := deletesv.DeleteServer()
 	if sv_err != nil {
 		cm.NeuronSaysItsError(sv_err.Error())
@@ -119,12 +119,12 @@ func (cm *cliMeta) getServer(cmd *cobra.Command, args []string) {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 
-	getsv.Cloud = getCloud(cmd)
-	getsv.Region = getRegion(cmd)
-	getsv.Profile = getProfile(cmd)
-	getsv.GetRaw = getGetRaw(cmd)
+	getsv.Cloud = cm.getCloud(cmd)
+	getsv.Region = cm.getRegion(cmd)
+	getsv.Profile = cm.getProfile(cmd)
+	getsv.GetRaw = cm.getGetRaw(cmd)
 
-	if isAll(cmd) {
+	if cm.isAll(cmd) {
 		get_server_response, sv_get_err := getsv.GetAllServers()
 		if sv_get_err != nil {
 			cm.NeuronSaysItsError(sv_get_err.Error())
@@ -147,10 +147,10 @@ func (cm *cliMeta) updateServer(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	updatesv.Cloud = getCloud(cmd)
-	updatesv.Region = getRegion(cmd)
-	updatesv.Profile = getProfile(cmd)
-	updatesv.GetRaw = getGetRaw(cmd)
+	updatesv.Cloud = cm.getCloud(cmd)
+	updatesv.Region = cm.getRegion(cmd)
+	updatesv.Profile = cm.getProfile(cmd)
+	updatesv.GetRaw = cm.getGetRaw(cmd)
 	sv_update_response, sv_up_err := updatesv.UpdateServers()
 	if sv_up_err != nil {
 		cm.NeuronSaysItsError(sv_up_err.Error())

@@ -63,6 +63,7 @@ type ConfigResponse struct {
 
 type CliMeta struct {
 	CliSet bool
+    *AppConfig
 }
 
 func (c *AppConfig) createDirectories() error {
@@ -85,14 +86,10 @@ func (c *AppConfig) createDirectories() error {
 }
 
 // This will configure the application by reading the configuration file at '/var/lib/neuron'.
-func ConfigNeuron(path string) (ConfigResponse, error) {
+// Be sure what you pass as path to this, because only the first element is considered while setting path.
+func ConfigNeuron(path ...string) (ConfigResponse, error) {
 
-	var pathtofile string
-
-	if path != "" {
-		pathtofile = path
-	}
-	conf, conferr := findConfig(pathtofile)
+	conf, conferr := findConfig(setCOnfigPath(path))
 	if conferr != nil {
 		return ConfigResponse{}, conferr
 	}
@@ -300,9 +297,10 @@ func (conf *AppConfig) configapilogs() (io.Writer, error) {
 	}
 }
 
-func GetCliMeta() (CliMeta, error) {
+// Be sure what you pass as path to this, because only the first element is considered while setting path.
+func GetCliMeta(path ...string) (CliMeta, error) {
 
-	conf, conferr := readConfig("/var/lib/neuron/neuron.json")
+	conf, conferr := readConfig(setCOnfigPath(path))
 	if conferr != nil {
 		return CliMeta{}, conferr
 	}
@@ -318,7 +316,7 @@ func GetCliMeta() (CliMeta, error) {
 	if dberr != nil {
 		return CliMeta{}, dberr
 	}
-	return CliMeta{CliSet: true}, nil
+	return CliMeta{true, &conf}, nil
 }
 
 // Database will be set here if it was mentioned in config file.
@@ -374,4 +372,12 @@ func (data *db) switchtoDB(home string) error {
 		return err.DbSessionError()
 	}
 	return nil
+}
+
+func setCOnfigPath(path []string) string {
+
+    if path != nil {
+        return path[0]
+	}
+	return "/var/lib/neuron/neuron.json"
 }

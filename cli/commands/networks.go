@@ -92,10 +92,10 @@ func (cm *cliMeta) createNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	createnw.Cloud = getCloud(cmd)
-	createnw.Region = getRegion(cmd)
-	createnw.Profile = getProfile(cmd)
-	createnw.GetRaw = getGetRaw(cmd)
+	createnw.Cloud = cm.getCloud(cmd)
+	createnw.Region = cm.getRegion(cmd)
+	createnw.Profile = cm.getProfile(cmd)
+	createnw.GetRaw = cm.getGetRaw(cmd)
 	server_response, ser_resp_err := createnw.CreateNetwork()
 	if ser_resp_err != nil {
 		cm.NeuronSaysItsError(ser_resp_err.Error())
@@ -109,10 +109,10 @@ func (cm *cliMeta) deleteNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	deletenw.Cloud = getCloud(cmd)
-	deletenw.Region = getRegion(cmd)
-	deletenw.Profile = getProfile(cmd)
-	deletenw.GetRaw = getGetRaw(cmd)
+	deletenw.Cloud = cm.getCloud(cmd)
+	deletenw.Region = cm.getRegion(cmd)
+	deletenw.Profile = cm.getProfile(cmd)
+	deletenw.GetRaw = cm.getGetRaw(cmd)
 	delete_network_response, net_err := deletenw.DeleteNetwork()
 	if net_err != nil {
 		cm.NeuronSaysItsError(net_err.Error())
@@ -126,10 +126,10 @@ func (cm *cliMeta) getNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	getnw.Cloud = getCloud(cmd)
-	getnw.Region = getRegion(cmd)
-	getnw.Profile = getProfile(cmd)
-	getnw.GetRaw = getGetRaw(cmd)
+	getnw.Cloud = cm.getCloud(cmd)
+	getnw.Region = cm.getRegion(cmd)
+	getnw.Profile = cm.getProfile(cmd)
+	getnw.GetRaw = cm.getGetRaw(cmd)
 	get_network_response, net_get_err := getnw.GetNetworks()
 	if net_get_err != nil {
 		cm.NeuronSaysItsError(net_get_err.Error())
@@ -143,10 +143,10 @@ func (cm *cliMeta) updateNetwork(cmd *cobra.Command, args []string) {
 	if cm.CliSet == false {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
-	updatenw.Cloud = getCloud(cmd)
-	updatenw.Region = getRegion(cmd)
-	updatenw.Profile = getProfile(cmd)
-	updatenw.GetRaw = getGetRaw(cmd)
+	updatenw.Cloud = cm.getCloud(cmd)
+	updatenw.Region = cm.getRegion(cmd)
+	updatenw.Profile = cm.getProfile(cmd)
+	updatenw.GetRaw = cm.getGetRaw(cmd)
 	net_update_response, net_up_err := updatenw.UpdateNetwork()
 	if net_up_err != nil {
 		cm.NeuronSaysItsError(net_up_err.Error())
