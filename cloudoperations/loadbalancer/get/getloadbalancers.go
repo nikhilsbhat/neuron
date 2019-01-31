@@ -6,18 +6,32 @@ import (
 	loadbalance "neuron/cloud/aws/operations/loadbalancer"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type GetLoadbalancerResponse struct {
-	AwsResponse     []loadbalance.LoadBalanceResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                            `json:"AzureResponse,omitempty"`
-	DefaultResponse string                            `json:"Response,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse []loadbalance.LoadBalanceResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"Response,omitempty"`
 }
 
-// being get_all_loadbalancers my job is to gather info on all the loadbalancer and give back the response who called me
+// Being GetLoadbalancers, job of him is to gather info on the loadbalancer asked for
+// and give back the response who called him.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (lb *GetLoadbalancerInput) GetLoadbalancers() (GetLoadbalancerResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(lb.Cloud)); status != true {
+		return GetLoadbalancerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
 
 	switch strings.ToLower(lb.Cloud) {
 	case "aws":
@@ -66,7 +80,13 @@ func (lb *GetLoadbalancerInput) GetLoadbalancers() (GetLoadbalancerResponse, err
 	}
 }
 
+// Being GetLoadbalancers, job of him is to gather info on all the loadbalancers
+// and give back the response who called him.
 func (lb *GetLoadbalancerInput) GetAllLoadbalancer() (GetLoadbalancerResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(lb.Cloud)); status != true {
+		return GetLoadbalancerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
 
 	switch strings.ToLower(lb.Cloud) {
 	case "aws":
@@ -122,4 +142,9 @@ func (lb *GetLoadbalancerInput) GetAllLoadbalancer() (GetLoadbalancerResponse, e
 		log.Info("")
 		return GetLoadbalancerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetLoadbalancers")
 	}
+}
+
+func New() *GetLoadbalancerInput {
+	net := &GetLoadbalancerInput{}
+	return net
 }

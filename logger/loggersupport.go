@@ -50,8 +50,8 @@ func getloglocation() (string, error) {
 		return "", err.InvalidConfig()
 	}
 
-	if confdata["config"].(map[string]interface{})["loglocation"] != nil {
-		return (confdata["config"].(map[string]interface{})["loglocation"]).(string), nil
+	if confdata["loglocation"] != nil {
+		return (confdata["loglocation"]).(string), nil
 	}
 	return "", err.LogNotFound()
 }

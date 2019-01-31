@@ -6,18 +6,32 @@ import (
 	network "neuron/cloud/aws/operations/network"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
-	log "neuron/logger"
+	support "neuron/cloudoperations/support"
+	//log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type DeleteNetworkResponse struct {
-	AwsResponse     network.DeleteNetworkResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                        `json:"AzureResponse,omitempty"`
-	DefaultResponse string                        `json:"DefaultResponse,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse network.DeleteNetworkResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"DefaultResponse,omitempty"`
 }
 
-// being create_network my job is to create network and give back the response who called me
+// Being DeleteNetwork, job of him is to delete the network and its components
+// and give back the response who called him.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (net *DeleteNetworkInput) DeleteNetwork() (DeleteNetworkResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud)); status != true {
+		return DeleteNetworkResponse{}, fmt.Errorf(common.DefaultCloudResponse + "UpdateNetwork")
+	}
 
 	switch strings.ToLower(net.Cloud) {
 	case "aws":
@@ -50,9 +64,11 @@ func (net *DeleteNetworkInput) DeleteNetwork() (DeleteNetworkResponse, error) {
 	case "openstack":
 		return DeleteNetworkResponse{}, fmt.Errorf(common.DefaultOpResponse)
 	default:
-		log.Info("")
-		log.Error(common.DefaultCloudResponse + "DeleteNetwork")
-		log.Info("")
 		return DeleteNetworkResponse{}, fmt.Errorf(common.DefaultCloudResponse + "DeleteNetwork")
 	}
+}
+
+func New() *DeleteNetworkInput {
+	net := &DeleteNetworkInput{}
+	return net
 }

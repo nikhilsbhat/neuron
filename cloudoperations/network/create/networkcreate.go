@@ -6,23 +6,43 @@ import (
 	network "neuron/cloud/aws/operations/network"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
-	log "neuron/logger"
+	support "neuron/cloudoperations/support"
+	//log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type CreateNetworkResponse struct {
-	AwsResponse     network.NetworkResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                  `json:"AzureResponse,omitempty"`
-	DefaultResponse string                  `json:"DefaultResponse,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse network.NetworkResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"DefaultResponse,omitempty"`
 }
 
-// being create_network my job is to create network and give back the response who called me
+// Being CreateNetwork, job of him is to create network
+// and give back the response who called this.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (net *NetworkCreateInput) CreateNetwork() (CreateNetworkResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud)); status != true {
+		return CreateNetworkResponse{}, fmt.Errorf(common.DefaultCloudResponse + "CreateNetwork")
+	}
 
 	switch strings.ToLower(net.Cloud) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: net.Profile, Cloud: net.Cloud})
+		creds, err := common.GetCredentials(
+			&common.GetCredentialsInput{
+				Profile: net.Profile,
+				Cloud:   net.Cloud,
+			},
+		)
+
 		if err != nil {
 			return CreateNetworkResponse{}, err
 		}
@@ -54,9 +74,11 @@ func (net *NetworkCreateInput) CreateNetwork() (CreateNetworkResponse, error) {
 	case "openstack":
 		return CreateNetworkResponse{}, fmt.Errorf(common.DefaultOpResponse)
 	default:
-		log.Info("")
-		log.Error(common.DefaultCloudResponse + "CreateNetwork")
-		log.Info("")
 		return CreateNetworkResponse{}, fmt.Errorf(common.DefaultCloudResponse + "CreateNetwork")
 	}
+}
+
+func New() *NetworkCreateInput {
+	net := &NetworkCreateInput{}
+	return net
 }

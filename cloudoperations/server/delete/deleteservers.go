@@ -6,25 +6,44 @@ import (
 	server "neuron/cloud/aws/operations/server"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
-	log "neuron/logger"
+	support "neuron/cloudoperations/support"
+        //log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type DeleteServerResponse struct {
-	AwsResponse     []server.ServerResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                  `json:"AzureResponse,omitempty"`
-	DefaultResponse string                  `json:"Response,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse []server.ServerResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"Response,omitempty"`
 }
 
-// being delete server, my job is to delete servers/vms and give back the response who called me
+// Being DeleteServer, job of him is to delete servers as per the instructions passed to him
+// and give back the response who called this.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (serv *DeleteServersInput) DeleteServer() (DeleteServerResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud)); status != true {
+		return DeleteServerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
 
 	switch strings.ToLower(serv.Cloud) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: serv.Profile, Cloud: serv.Cloud})
-		if err != nil {
-			return DeleteServerResponse{}, err
+		creds, crederr := common.GetCredentials(
+			&common.GetCredentialsInput{
+				Profile: serv.Profile,
+				Cloud:   serv.Cloud,
+			},
+		)
+		if crederr != nil {
+			return DeleteServerResponse{}, crederr
 		}
 		// I will establish session so that we can carry out the process in cloud
 		session_input := awssess.CreateSessionInput{Region: serv.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
@@ -35,35 +54,39 @@ func (serv *DeleteServersInput) DeleteServer() (DeleteServerResponse, error) {
 
 		// I will call DeleteServer of interface and get the things done
 		if serv.InstanceIds != nil {
-			serverin := server.DeleteServerInput{InstanceIds: serv.InstanceIds, GetRaw: serv.GetRaw}
+			serverin := server.DeleteServerInput{}
+			serverin.InstanceIds = serv.InstanceIds
+			serverin.GetRaw = serv.GetRaw
 			server_response, serverr := serverin.DeleteServer(authinpt)
 			if serverr != nil {
 				return DeleteServerResponse{}, serverr
 			}
 			return DeleteServerResponse{AwsResponse: server_response}, nil
 		} else if serv.VpcId != "" {
-			serverin := server.DeleteServerInput{VpcId: serv.VpcId, GetRaw: serv.GetRaw}
+			serverin := server.DeleteServerInput{}
+			serverin.VpcId = serv.VpcId
+			serverin.GetRaw = serv.GetRaw
 			server_response, serverr := serverin.DeleteServerFromVpc(authinpt)
 			if serverr != nil {
 				return DeleteServerResponse{}, serverr
 			}
 			return DeleteServerResponse{AwsResponse: server_response}, nil
 		} else {
-			return DeleteServerResponse{}, fmt.Errorf("You have not passed valid input to get details of server, the input struct looks like empty")
+			return DeleteServerResponse{}, fmt.Errorf("You have not passed valid input to get details of server, the input looks like empty")
 		}
 
 	case "azure":
-		return DeleteServerResponse{DefaultResponse: common.DefaultAzResponse}, nil
+		return DeleteServerResponse{}, fmt.Errorf(common.DefaultAzResponse)
 	case "gcp":
-		return DeleteServerResponse{DefaultResponse: common.DefaultGcpResponse}, nil
+		return DeleteServerResponse{}, fmt.Errorf(common.DefaultGcpResponse)
 	case "openstack":
-		return DeleteServerResponse{DefaultResponse: common.DefaultOpResponse}, nil
+		return DeleteServerResponse{}, fmt.Errorf(common.DefaultOpResponse)
 	default:
-
-		log.Info("")
-		log.Error("I feel we are lost in getting details of all the server :S, guess you have entered wrong cloud")
-		log.Info("")
-
 		return DeleteServerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "DeleteServer")
 	}
+}
+
+func New() *DeleteServersInput {
+	net := &DeleteServersInput{}
+	return net
 }

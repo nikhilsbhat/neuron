@@ -6,23 +6,42 @@ import (
 	loadbalance "neuron/cloud/aws/operations/loadbalancer"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	log "neuron/logger"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type LoadBalancerDeleteResponse struct {
-	AwsResponse     []loadbalance.LoadBalanceDeleteResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                                  `json:"AzureResponse,omitempty"`
-	DefaultResponse string                                  `json:"DefaultResponse,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse []loadbalance.LoadBalanceDeleteResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse string `json:"DefaultResponse,omitempty"`
 }
 
-// being create_loadbalancer my job is to create required loadbalancer and give back the response who called me
+// Being GetLoadbalancers, job of him is to create loadbalancer asked for
+// and give back the response who called him.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (d *LbDeleteInput) DeleteLoadBalancer() (LoadBalancerDeleteResponse, error) {
+
+	if status := support.DoesCloudSupports(strings.ToLower(d.Cloud)); status != true {
+		return LoadBalancerDeleteResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
 
 	switch strings.ToLower(d.Cloud) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: d.Profile, Cloud: d.Cloud})
+		creds, err := common.GetCredentials(
+			&common.GetCredentialsInput{
+				Profile: d.Profile,
+				Cloud:   d.Cloud,
+			},
+		)
 		if err != nil {
 			return LoadBalancerDeleteResponse{}, err
 		}
@@ -64,4 +83,9 @@ func (d *LbDeleteInput) DeleteLoadBalancer() (LoadBalancerDeleteResponse, error)
 		log.Info("")
 		return LoadBalancerDeleteResponse{}, fmt.Errorf(common.DefaultCloudResponse + "DeleteLoadBalancer")
 	}
+}
+
+func New() *LbDeleteInput {
+	net := &LbDeleteInput{}
+	return net
 }

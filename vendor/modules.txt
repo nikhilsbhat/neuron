@@ -77,8 +77,14 @@ github.com/golang/protobuf/ptypes/duration
 github.com/gorilla/context
 # github.com/gorilla/mux v1.6.2
 github.com/gorilla/mux
+# github.com/inconshreveable/mousetrap v1.0.0
+github.com/inconshreveable/mousetrap
 # github.com/jmespath/go-jmespath v0.0.0-20180206201540-c2b33e8439af
 github.com/jmespath/go-jmespath
+# github.com/spf13/cobra v0.0.3
+github.com/spf13/cobra
+# github.com/spf13/pflag v1.0.3
+github.com/spf13/pflag
 # go.opencensus.io v0.18.1-0.20181204023538-aab39bd6a98b
 go.opencensus.io/plugin/ochttp
 go.opencensus.io/plugin/ochttp/propagation/tracecontext

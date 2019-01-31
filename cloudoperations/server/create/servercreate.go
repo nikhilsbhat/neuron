@@ -6,24 +6,42 @@ import (
 	server "neuron/cloud/aws/operations/server"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
-	log "neuron/logger"
+	support "neuron/cloudoperations/support"
+	//log "neuron/logger"
 	"reflect"
 	"strings"
 )
 
+// The struct that will return the filtered/unfiltered responses of variuos clouds.
 type ServerCreateResponse struct {
-	AwsResponse     []server.ServerResponse `json:"AwsResponse,omitempty"`
-	AzureResponse   string                  `json:"AzureResponse,omitempty"`
-	DefaultResponse interface{}             `json:"Response,omitempty"`
+	// Contains filtered/unfiltered response of AWS.
+	AwsResponse []server.ServerResponse `json:"AwsResponse,omitempty"`
+
+	// Contains filtered/unfiltered response of Azure.
+	AzureResponse string `json:"AzureResponse,omitempty"`
+
+	// Default response if no inputs or matching the values required.
+	DefaultResponse interface{} `json:"DefaultResponse,omitempty"`
 }
 
-// being create_network my job is to create network and give back the response who called me
+// Being CreateServer, job of him is to create the server with the requirement passed to him
+// and give back the response who called this.
+// Below method will take care of fetching details of
+// appropriate user and his cloud profile details which was passed while calling it.
 func (serv ServerCreateInput) CreateServer() (ServerCreateResponse, error) {
 
+	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud)); status != true {
+		return ServerCreateResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
+	}
 	switch strings.ToLower(serv.Cloud) {
 	case "aws":
 
-		creds, crederr := common.GetCredentials(&common.GetCredentialsInput{Profile: serv.Profile, Cloud: serv.Cloud})
+		creds, crederr := common.GetCredentials(
+			&common.GetCredentialsInput{
+				Profile: serv.Profile,
+				Cloud:   serv.Cloud,
+			},
+		)
 		if crederr != nil {
 			return ServerCreateResponse{}, crederr
 		}
@@ -36,7 +54,16 @@ func (serv ServerCreateInput) CreateServer() (ServerCreateResponse, error) {
 
 		// I will call CreateServer of interface and get the things done
 
-		serverin := server.CreateServerInput{InstanceName: serv.InstanceName, ImageId: serv.ImageId, InstanceType: serv.Flavor, KeyName: serv.KeyName, MaxCount: serv.Count, SubnetId: serv.SubnetId, UserData: serv.UserData, AssignPubIp: serv.AssignPubIp, GetRaw: serv.GetRaw}
+		serverin := server.CreateServerInput{}
+		serverin.InstanceName = serv.InstanceName
+		serverin.ImageId = serv.ImageId
+		serverin.InstanceType = serv.Flavor
+		serverin.KeyName = serv.KeyName
+		serverin.MaxCount = serv.Count
+		serverin.SubnetId = serv.SubnetId
+		serverin.UserData = serv.UserData
+		serverin.AssignPubIp = serv.AssignPubIp
+		serverin.GetRaw = serv.GetRaw
 		response, err := serverin.CreateServer(authinpt)
 		if err != nil {
 			return ServerCreateResponse{}, err
@@ -44,16 +71,13 @@ func (serv ServerCreateInput) CreateServer() (ServerCreateResponse, error) {
 		return ServerCreateResponse{AwsResponse: response}, nil
 
 	case "azure":
-		return ServerCreateResponse{DefaultResponse: common.DefaultAzResponse}, nil
+		return ServerCreateResponse{}, fmt.Errorf(common.DefaultAzResponse)
 	case "gcp":
-		return ServerCreateResponse{DefaultResponse: common.DefaultGcpResponse}, nil
+		return ServerCreateResponse{}, fmt.Errorf(common.DefaultGcpResponse)
 	case "openstack":
-		return ServerCreateResponse{DefaultResponse: common.DefaultOpResponse}, nil
+		return ServerCreateResponse{}, fmt.Errorf(common.DefaultOpResponse)
 	default:
 
-		log.Info("")
-		log.Error("I feel we are lost in getting details of all the server :S, guess you have entered wrong cloud")
-		log.Info("")
 		return ServerCreateResponse{}, fmt.Errorf(common.DefaultCloudResponse + "CreateServer")
 	}
 }
@@ -69,4 +93,9 @@ func CreateServerMock() (ServerCreateResponse, error) {
 	}
 
 	return ServerCreateResponse{DefaultResponse: defaults}, nil
+}
+
+func New() *ServerCreateInput {
+	net := &ServerCreateInput{}
+	return net
 }

@@ -10,7 +10,19 @@ import (
 	//"path/filepath"
 )
 
-func findConfig() (config, error) {
+func findConfig(pathtofile string) (AppConfig, error) {
+
+	if pathtofile != "" {
+		if _, dir_neuerr := os.Stat(pathtofile); os.IsNotExist(dir_neuerr) {
+			return AppConfig{}, neuerr.NoFileFoundError()
+		} else {
+			config_data, confneuerr := readConfig(pathtofile)
+			if confneuerr != nil {
+				return AppConfig{}, confneuerr
+			}
+			return config_data, nil
+		}
+	}
 
 	if _, dir_neuerr := os.Stat("/var/lib/neuron/neuron.json"); os.IsNotExist(dir_neuerr) {
 
@@ -18,45 +30,41 @@ func findConfig() (config, error) {
 		log.Info("")
 		log.Info("You did not provide the configuration file hence setting configurations to default")
 
-		decoder := json.NewDecoder(bytes.NewReader([]byte(`{"port": "80","logfile": "neuron.log","logfile_location": "/var/log/neuron/", "home": "/var/lib/neuron"}`)))
-		var config_data map[string]interface{}
+		decoder := json.NewDecoder(bytes.NewReader([]byte(`{"port": "80","logfile": "neuron.log","loglocation": "/var/log/neuron/", "home": "/var/lib/neuron"}`)))
+		var config_data AppConfig
 		if decodneuerr := decoder.Decode(&config_data); decodneuerr != nil {
 			log.Error(neuerr.JsonDecodeError())
 			log.Error("Please provide us valid file")
 			log.Error("Hence quitting installation...")
-			return config{}, neuerr.JsonDecodeError()
+			return AppConfig{}, neuerr.JsonDecodeError()
 		}
-		conf := new(config)
-		conf.appconfig = config_data
-		return *conf, nil
+		return config_data, nil
 	} else {
 
 		log.Info("+++++++++++++++++++++++++++++++++++++++++++++++++++++++")
 		log.Info("")
 		log.Info("Found configuration file, configuring application as per the entries")
-		config_data, confneuerr := readConfig()
+		config_data, confneuerr := readConfig("/var/lib/neuron/neuron.json")
 		if confneuerr != nil {
-			return config{}, confneuerr
+			return AppConfig{}, confneuerr
 		}
-		conf := new(config)
-		conf.appconfig = config_data
-		return *conf, nil
+		return config_data, nil
 	}
 }
 
-func readConfig() (map[string]interface{}, error) {
-	conf_file, confneuerr := ioutil.ReadFile("/var/lib/neuron/neuron.json")
+func readConfig(pathtofile string) (AppConfig, error) {
+	conf_file, confneuerr := ioutil.ReadFile(pathtofile)
 	if confneuerr != nil {
 		log.Error(neuerr.InvalidConfig())
-		return nil, neuerr.InvalidConfig()
+		return AppConfig{}, confneuerr
 	}
 
 	decoder := json.NewDecoder(bytes.NewReader([]byte(conf_file)))
-	var confdata map[string]interface{}
+	var confdata AppConfig
 	if decodneuerr := decoder.Decode(&confdata); decodneuerr != nil {
 		log.Error(neuerr.JsonDecodeError())
 		log.Error("Hence quitting installation...")
-		return nil, neuerr.JsonDecodeError()
+		return AppConfig{}, decodneuerr
 	}
-	return confdata["config"].(map[string]interface{}), nil
+	return confdata, nil
 }
