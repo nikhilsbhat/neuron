@@ -1,3 +1,5 @@
+// this package will delete the VM along with the components associated with it.
+
 package main
 
 import (

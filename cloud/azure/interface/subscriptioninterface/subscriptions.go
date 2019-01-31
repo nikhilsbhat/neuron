@@ -24,6 +24,8 @@ func getSubscriptionClient() subscription.SubscriptionsClient {
 	return subscriptionClient
 }
 
+// This function will get the subcription from subscriptions that are associated with a tenant in azure account.
+
 func (s SubcriptionIn) GetSubscription() (sub subscription.Model, err error) {
 	subscriptionClient := getSubscriptionClient()
 	future, err := subscriptionClient.Get(
@@ -37,6 +39,8 @@ func (s SubcriptionIn) GetSubscription() (sub subscription.Model, err error) {
 
 	return future, err
 }
+
+// This function will list the subcriptions that are associated with a tenant in azure account.
 
 func ListSubscription() (sub []subscription.Model, err error) {
 	subscriptionClient := getSubscriptionClient()
