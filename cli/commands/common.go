@@ -31,11 +31,11 @@ func getProfile(cmd *cobra.Command) string {
 }
 
 func getGetRaw(cmd *cobra.Command) bool {
-	raw, rwerr := cmd.Flags().GetBool("getraw")
+	raw, rwerr := cmd.Flags().GetBool("filter")
 	if rwerr != nil {
-		fmt.Println("flag getraw not used")
+		fmt.Println("flag filter not used")
 	}
-	return raw
+	return !raw
 }
 
 func isAll(cmd *cobra.Command) bool {

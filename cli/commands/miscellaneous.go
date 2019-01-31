@@ -68,6 +68,7 @@ func (cm *cliMeta) getRegions(cmd *cobra.Command, args []string) {
 	getrg.Profile = getProfile(cmd)
 	getrg.GetRaw = getGetRaw(cmd)
 
+        fmt.Println(getrg.GetRaw)
 	get_regions_response, reg_get_err := getrg.GetRegions()
 	if reg_get_err != nil {
 		cm.NeuronSaysItsError(reg_get_err.Error())
