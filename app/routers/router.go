@@ -6,6 +6,7 @@ import (
 	"net/http"
 	handle "neuron/app/handlers"
 	mid "neuron/app/middleware"
+	"github.com/gobuffalo/packr/v2"
 )
 
 type MuxIn struct {
@@ -46,7 +47,8 @@ func (log *MuxIn) NewRouter() *mux.Router {
 			//rout.Use(mid.GzipHandler)
 		}
 		//rout.NotFoundHandler = http.HandlerFunc(notfound)
-		rout.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(log.UiDir))))
+		box := packr.New("neuronBox", "/root/neuron/web")
+		rout.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(box)))
 		http.Handle("/", rout)
 	} else {
 		rout.HandleFunc("/", handle.Nouifound)
