@@ -3,11 +3,11 @@ package config
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	neuerr "neuron/error"
 	log "neuron/logger"
 	"os"
-	//"path/filepath"
 )
 
 func findConfig(pathtofile string) (AppConfig, error) {
@@ -59,12 +59,70 @@ func readConfig(pathtofile string) (AppConfig, error) {
 		return AppConfig{}, confneuerr
 	}
 
-	decoder := json.NewDecoder(bytes.NewReader([]byte(conf_file)))
 	var confdata AppConfig
-	if decodneuerr := decoder.Decode(&confdata); decodneuerr != nil {
+	if decodneuerr := JsonDecode([]byte(conf_file), &confdata); decodneuerr != nil {
 		log.Error(neuerr.JsonDecodeError())
 		log.Error("Hence quitting installation...")
 		return AppConfig{}, decodneuerr
 	}
 	return confdata, nil
+}
+
+// below functions are placed here temporarily, once respective package is created will be moved to it.
+func JsonDecode(data []byte, i interface{}) error {
+	err := json.Unmarshal(data, i)
+	if err != nil {
+
+		switch err.(type) {
+		case *json.UnmarshalTypeError:
+			return unknownTypeError(data, err)
+		case *json.SyntaxError:
+			return syntaxError(data, err)
+		}
+	}
+
+	return nil
+}
+
+func syntaxError(data []byte, err error) error {
+	syntaxErr, ok := err.(*json.SyntaxError)
+	if !ok {
+		return err
+	}
+
+	newline := []byte{'\x0a'}
+
+	start := bytes.LastIndex(data[:syntaxErr.Offset], newline) + 1
+	end := len(data)
+	if index := bytes.Index(data[start:], newline); index >= 0 {
+		end = start + index
+	}
+
+	line := bytes.Count(data[:start], newline) + 1
+
+	err = fmt.Errorf("error occured at line %d, %s\n%s",
+		line, syntaxErr, data[start:end])
+	return err
+}
+
+func unknownTypeError(data []byte, err error) error {
+	unknownTypeErr, ok := err.(*json.UnmarshalTypeError)
+	if !ok {
+		return err
+	}
+
+	newline := []byte{'\x0a'}
+
+	fmt.Println(bytes.LastIndex(data[:unknownTypeErr.Offset], newline))
+	start := bytes.LastIndex(data[:unknownTypeErr.Offset], newline) + 1
+	end := len(data)
+	if index := bytes.Index(data[start:], newline); index >= 0 {
+		end = start + index
+	}
+
+	line := bytes.Count(data[:start], newline) + 1
+
+	err = fmt.Errorf("error occured at line %d, %s\n%s\nThe data type you entered for the value is wrong",
+		line, unknownTypeErr, data[start:end])
+	return err
 }

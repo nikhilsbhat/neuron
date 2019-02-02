@@ -46,10 +46,18 @@ type AppConfig struct {
 
 	// It holds the details of the database that has to be connected with neuron.
 	Database []*db `json:"database"`
+
+	Cloud []*Cloud
 }
 type db struct {
 	Name *string `json:"name"`
 	Addr *string `json:"addr"`
+}
+
+type Cloud struct {
+	Name    string `json:"name"`
+	Region  string `json:"region"`
+	Default bool   `json:"default"`
 }
 
 type ConfigResponse struct {
@@ -63,7 +71,7 @@ type ConfigResponse struct {
 
 type CliMeta struct {
 	CliSet bool
-    *AppConfig
+	*AppConfig
 }
 
 func (c *AppConfig) createDirectories() error {
@@ -376,8 +384,8 @@ func (data *db) switchtoDB(home string) error {
 
 func setCOnfigPath(path []string) string {
 
-    if path != nil {
-        return path[0]
+	if path != nil {
+		return path[0]
 	}
 	return "/var/lib/neuron/neuron.json"
 }
