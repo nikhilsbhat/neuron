@@ -5,39 +5,39 @@ package networkCreate
 // The struct which impliments method CreateNetwork.
 type NetworkCreateInput struct {
 	// The name for the Network that has to be created.
-	Name string `json:"Name"`
+	Name string `json:"name"`
 
 	// The CIDR block which will be used to create VPC and this
 	// contains info that how many IP should be present in the network
 	// so decide that in prior before calling this.
-	VpcCidr string `json:"VpcCidr"`
+	VpcCidr string `json:"vpccidr"`
 
 	// The CIDR for the subnet that has to be created in the VPC.
 	// Pass an array of CIDR's and neuron will take care of creating
 	// appropriate number of subnets and attaching to created VPC.
-	SubCidr []string `json:"SubCidr"`
+	SubCidr []string `json:"subcidr"`
 
 	// The type of the network that has to be created, public or private.
 	// Accordingly IGW will be created and attached.
-	Type string `json:"Type"`
+	Type string `json:"type"`
 
 	// The ports that has to be opened for the network,
 	// if not passed, by default 22 will be made open so that
 	// one can access machines that will be created inside the created network.
-	Ports []string `json:"Ports"`
+	Ports []string `json:"ports"`
 
 	// Pass the cloud in which the resource has to be created. usage: "aws","azure" etc.
-	Cloud string `json:"Cloud"`
+	Cloud string `json:"cloud"`
 
 	// Along with cloud, pass region in which resource has to be created.
-	Region string `json:"Region"`
+	Region string `json:"region"`
 
 	// Passing the profile is important, because this will help in fetching the the credentials
 	// of cloud stored along with user details.
-	Profile string `json:"Profile"`
+	Profile string `json:"profile"`
 
 	// Use this option if in case you need unfiltered output from cloud.
-	GetRaw bool `json:"GetRaw"`
+	GetRaw bool `json:"getraw"`
 }
 
 //Nothing much from this file. This file contains only the structs for network/create

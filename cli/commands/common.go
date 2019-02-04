@@ -76,6 +76,6 @@ func (cm *cliMeta) getCloudFormConfig() string {
 			return cloud.Name
 		}
 	}
-	cm.NeuronSaysItsError("you neither passed cloud, nor set a default cloud")
+	cm.NeuronSaysItsError("you neither passed cloud in flag, nor set a default cloud")
 	return ""
 }
