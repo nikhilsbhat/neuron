@@ -29,28 +29,28 @@ type DeleteNetworkResponse struct {
 // appropriate user and his cloud profile details which was passed while calling it.
 func (net *DeleteNetworkInput) DeleteNetwork() (DeleteNetworkResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud.Name)); status != true {
 		return DeleteNetworkResponse{}, fmt.Errorf(common.DefaultCloudResponse + "UpdateNetwork")
 	}
 
-	switch strings.ToLower(net.Cloud) {
+	switch strings.ToLower(net.Cloud.Name) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: net.Profile, Cloud: net.Cloud})
+		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: net.Cloud.Profile, Cloud: net.Cloud.Name})
 		if err != nil {
 			return DeleteNetworkResponse{}, err
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: net.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: net.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
-		authinpt := auth.EstablishConnectionInput{Region: net.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: net.Cloud.Region, Resource: "ec2", Session: sess}
 
 		// deleteting network from aws
 		networkin := new(network.DeleteNetworkInput)
 		networkin.VpcIds = net.VpcIds
-		networkin.GetRaw = net.GetRaw
+		networkin.GetRaw = net.Cloud.GetRaw
 		response, net_err := networkin.DeleteNetwork(authinpt)
 		if net_err != nil {
 			return DeleteNetworkResponse{}, net_err

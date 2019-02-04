@@ -1,12 +1,13 @@
 package updateServers
 
+import (
+	cmn "neuron/cloudoperations"
+)
+
 type UpdateServersInput struct {
-	InstanceIds []string `json:"InstanceIds"`
-	Action      string   `json:"Action"`
-	Cloud       string   `json:"Cloud"`
-	Region      string   `json:"Region"`
-	Profile     string   `json:"Profile"`
-	GetRaw      bool     `json:"GetRaw"`
+	InstanceIds []string `json:"instanceids"`
+	Action      string   `json:"action"`
+	Cloud       cmn.Cloud
 }
 
 //Nothing much from this file. This file contains only the structs for server/update

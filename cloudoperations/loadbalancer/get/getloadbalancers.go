@@ -29,24 +29,24 @@ type GetLoadbalancerResponse struct {
 // appropriate user and his cloud profile details which was passed while calling it.
 func (lb *GetLoadbalancerInput) GetLoadbalancers() (GetLoadbalancerResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(lb.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(lb.Cloud.Name)); status != true {
 		return GetLoadbalancerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
 	}
 
-	switch strings.ToLower(lb.Cloud) {
+	switch strings.ToLower(lb.Cloud.Name) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: lb.Profile, Cloud: lb.Cloud})
+		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: lb.Cloud.Profile, Cloud: lb.Cloud.Name})
 		if err != nil {
 			return GetLoadbalancerResponse{}, err
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: lb.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: lb.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
 		authinpt := new(auth.EstablishConnectionInput)
-		authinpt.Region = lb.Region
+		authinpt.Region = lb.Cloud.Region
 		authinpt.Session = sess
 		switch strings.ToLower(lb.Type) {
 		case "classic":
@@ -56,7 +56,7 @@ func (lb *GetLoadbalancerInput) GetLoadbalancers() (GetLoadbalancerResponse, err
 		}
 
 		lbin := new(loadbalance.GetLoadbalancerInput)
-		lbin.GetRaw = lb.GetRaw
+		lbin.GetRaw = lb.Cloud.GetRaw
 		lbin.LbNames = lb.LbNames
 		lbin.LbArns = lb.LbArns
 		lbin.Type = lb.Type
@@ -84,28 +84,28 @@ func (lb *GetLoadbalancerInput) GetLoadbalancers() (GetLoadbalancerResponse, err
 // and give back the response who called him.
 func (lb *GetLoadbalancerInput) GetAllLoadbalancer() (GetLoadbalancerResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(lb.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(lb.Cloud.Name)); status != true {
 		return GetLoadbalancerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
 	}
 
-	switch strings.ToLower(lb.Cloud) {
+	switch strings.ToLower(lb.Cloud.Name) {
 	case "aws":
 
-		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: lb.Profile, Cloud: lb.Cloud})
+		creds, err := common.GetCredentials(&common.GetCredentialsInput{Profile: lb.Cloud.Profile, Cloud: lb.Cloud.Name})
 		if err != nil {
 			return GetLoadbalancerResponse{}, err
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: lb.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: lb.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
 		authinpt := new(auth.EstablishConnectionInput)
-		authinpt.Region = lb.Region
+		authinpt.Region = lb.Cloud.Region
 		authinpt.Session = sess
 		authinpt.Resource = "elb12"
 		lbin := new(loadbalance.GetLoadbalancerInput)
-		lbin.GetRaw = lb.GetRaw
+		lbin.GetRaw = lb.Cloud.GetRaw
 
 		switch strings.ToLower(lb.Type) {
 		case "classic":

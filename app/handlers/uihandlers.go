@@ -52,7 +52,10 @@ func buildapp(w http.ResponseWriter, r *http.Request) {
 
 func cloudview(w http.ResponseWriter, r *http.Request) {
 
-	get_server_details := svget.GetServersInput{Cloud: "aws", Region: "ap-south-1", Profile: "niktest"}
+	get_server_details := svget.GetServersInput{}
+	get_server_details.Cloud.Name = "aws"
+	get_server_details.Cloud.Region = "ap-south-1"
+	get_server_details.Cloud.Profile = "niktest"
 	getserver_response, reg_err := get_server_details.GetAllServers()
 	if reg_err != nil {
 		fmt.Fprintf(w, "%v\n", reg_err)
@@ -248,7 +251,10 @@ func jenkinsview(w http.ResponseWriter, r *http.Request) {
 func cloudview2(w http.ResponseWriter, r *http.Request) {
 
 	// Fetching the details of all servers present in the CLOUD AWS
-	get_server_details := svget.GetServersInput{Cloud: "aws", Region: "ap-south-1", Profile: "niktest"}
+	get_server_details := svget.GetServersInput{}
+	get_server_details.Cloud.Name = "aws"
+	get_server_details.Cloud.Region = "ap-south-1"
+	get_server_details.Cloud.Profile = "niktest"
 	getserver_response, serv_err := get_server_details.GetAllServers()
 	var all_server []map[string]interface{}
 	if serv_err != nil {
@@ -273,7 +279,10 @@ func cloudview2(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Fetching the details of all networks present in CLOUD AWS
-	get_networks_details := nwget.GetNetworksInput{Cloud: "aws", Region: "ap-south-1", Profile: "niktest"}
+	get_networks_details := nwget.GetNetworksInput{}
+	get_networks_details.Cloud.Name = "aws"
+	get_networks_details.Cloud.Region = "ap-south-1"
+	get_networks_details.Cloud.Profile = "niktest"
 	getnetworks_response, net_err := get_networks_details.GetAllNetworks()
 
 	type All_Networks struct {

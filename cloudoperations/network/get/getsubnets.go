@@ -29,17 +29,17 @@ type GetSubnetsResponse struct {
 // appropriate user and his cloud profile details which was passed while calling it.
 func (sub GetNetworksInput) GetSubnets() (GetSubnetsResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(sub.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(sub.Cloud.Name)); status != true {
 		return GetSubnetsResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetSubnets")
 	}
 
-	switch strings.ToLower(sub.Cloud) {
+	switch strings.ToLower(sub.Cloud.Name) {
 	case "aws":
 
 		creds, err := common.GetCredentials(
 			&common.GetCredentialsInput{
-				Profile: sub.Profile,
-				Cloud:   sub.Cloud,
+				Profile: sub.Cloud.Profile,
+				Cloud:   sub.Cloud.Name,
 			},
 		)
 
@@ -47,15 +47,15 @@ func (sub GetNetworksInput) GetSubnets() (GetSubnetsResponse, error) {
 			return GetSubnetsResponse{}, err
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: sub.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: sub.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
-		authinpt := auth.EstablishConnectionInput{Region: sub.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: sub.Cloud.Region, Resource: "ec2", Session: sess}
 
 		// I will call getsubnets and get the things done
 		networkin := new(network.GetNetworksInput)
-		networkin.GetRaw = sub.GetRaw
+		networkin.GetRaw = sub.Cloud.GetRaw
 		if sub.SubnetIds != nil {
 			networkin.SubnetIds = sub.SubnetIds
 			response, get_sub_err := networkin.GetSubnets(authinpt)

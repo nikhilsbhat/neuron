@@ -6,6 +6,7 @@ import (
 	image "neuron/cloud/aws/operations/image"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	log "neuron/logger"
 	"strings"
 )
@@ -19,26 +20,30 @@ type CreateImageResponse struct {
 // being create_image my job is to capture image/take server backup and give back the response who called me
 func (img *CreateImageInput) CreateImage() (CreateImageResponse, error) {
 
-	switch strings.ToLower(img.Cloud) {
+	if status := support.DoesCloudSupports(strings.ToLower(img.Cloud.Name)); status != true {
+		return CreateImageResponse{}, fmt.Errorf(common.DefaultCloudResponse + "CreateImage")
+	}
+
+	switch strings.ToLower(img.Cloud.Name) {
 	case "aws":
 
-		creds, crderr := common.GetCredentials(&common.GetCredentialsInput{Profile: img.Profile, Cloud: img.Cloud})
+		creds, crderr := common.GetCredentials(&common.GetCredentialsInput{Profile: img.Cloud.Profile, Cloud: img.Cloud.Name})
 		if crderr != nil {
 			return CreateImageResponse{}, crderr
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: img.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: img.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
-		authinpt := auth.EstablishConnectionInput{Region: img.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: img.Cloud.Region, Resource: "ec2", Session: sess}
 
 		response_image := make([]image.ImageResponse, 0)
 
 		for _, id := range img.InstanceIds {
 			imgcreate := new(image.ImageCreateInput)
 			imgcreate.InstanceId = id
-			imgcreate.GetRaw = img.GetRaw
+			imgcreate.GetRaw = img.Cloud.GetRaw
 			response, imgerr := imgcreate.CreateImage(authinpt)
 			if imgerr != nil {
 				return CreateImageResponse{}, imgerr

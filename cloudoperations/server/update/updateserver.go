@@ -30,17 +30,17 @@ type UpdateServersResponse struct {
 // appropriate user and his cloud profile details which was passed while calling it.
 func (serv *UpdateServersInput) UpdateServers() (UpdateServersResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud.Name)); status != true {
 		return UpdateServersResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
 	}
 
-	switch strings.ToLower(serv.Cloud) {
+	switch strings.ToLower(serv.Cloud.Name) {
 	case "aws":
 
 		creds, crederr := common.GetCredentials(
 			&common.GetCredentialsInput{
-				Profile: serv.Profile,
-				Cloud:   serv.Cloud,
+				Profile: serv.Cloud.Profile,
+				Cloud:   serv.Cloud.Name,
 			},
 		)
 
@@ -48,14 +48,14 @@ func (serv *UpdateServersInput) UpdateServers() (UpdateServersResponse, error) {
 			return UpdateServersResponse{}, crederr
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: serv.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: serv.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
-		authinpt := auth.EstablishConnectionInput{Region: serv.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: serv.Cloud.Region, Resource: "ec2", Session: sess}
 
 		// I will call UpdateServer of interface and get the things done
-		serverin := server.UpdateServerInput{InstanceIds: serv.InstanceIds, Action: serv.Action, GetRaw: serv.GetRaw}
+		serverin := server.UpdateServerInput{InstanceIds: serv.InstanceIds, Action: serv.Action, GetRaw: serv.Cloud.GetRaw}
 		response, err := serverin.UpdateServer(authinpt)
 		if err != nil {
 			return UpdateServersResponse{}, err

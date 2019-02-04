@@ -63,10 +63,10 @@ func (cm *cliMeta) getRegions(cmd *cobra.Command, args []string) {
 		cm.NeuronSaysItsError(err.CliNoStart().Error())
 	}
 
-	getrg.Cloud = cm.getCloud(cmd)
-	getrg.Region = cm.getRegion(cmd)
-	getrg.Profile = cm.getProfile(cmd)
-	getrg.GetRaw = cm.getGetRaw(cmd)
+	getrg.Cloud.Name = cm.getCloud(cmd)
+	getrg.Cloud.Region = cm.getRegion(cmd)
+	getrg.Cloud.Profile = cm.getProfile(cmd)
+	getrg.Cloud.GetRaw = cm.getGetRaw(cmd)
 
 	get_regions_response, reg_get_err := getrg.GetRegions()
 	if reg_get_err != nil {

@@ -29,29 +29,29 @@ type LoadBalancerDeleteResponse struct {
 // appropriate user and his cloud profile details which was passed while calling it.
 func (d *LbDeleteInput) DeleteLoadBalancer() (LoadBalancerDeleteResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(d.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(d.Cloud.Name)); status != true {
 		return LoadBalancerDeleteResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
 	}
 
-	switch strings.ToLower(d.Cloud) {
+	switch strings.ToLower(d.Cloud.Name) {
 	case "aws":
 
 		creds, err := common.GetCredentials(
 			&common.GetCredentialsInput{
-				Profile: d.Profile,
-				Cloud:   d.Cloud,
+				Profile: d.Cloud.Profile,
+				Cloud:   d.Cloud.Name,
 			},
 		)
 		if err != nil {
 			return LoadBalancerDeleteResponse{}, err
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: d.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: d.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
 		authinpt := new(auth.EstablishConnectionInput)
-		authinpt.Region = d.Region
+		authinpt.Region = d.Cloud.Region
 		authinpt.Session = sess
 		switch strings.ToLower(d.Type) {
 		case "classic":
@@ -64,7 +64,7 @@ func (d *LbDeleteInput) DeleteLoadBalancer() (LoadBalancerDeleteResponse, error)
 		lbin.LbNames = d.LbNames
 		lbin.LbArns = d.LbArns
 		lbin.Type = d.Type
-		lbin.GetRaw = d.GetRaw
+		lbin.GetRaw = d.Cloud.GetRaw
 		response, lberr := lbin.DeleteLoadbalancer(*authinpt)
 		if lberr != nil {
 			return LoadBalancerDeleteResponse{}, lberr

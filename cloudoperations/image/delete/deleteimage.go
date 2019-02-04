@@ -6,6 +6,7 @@ import (
 	image "neuron/cloud/aws/operations/image"
 	awssess "neuron/cloud/aws/sessions"
 	common "neuron/cloudoperations/common"
+	support "neuron/cloudoperations/support"
 	log "neuron/logger"
 	"strings"
 )
@@ -19,19 +20,23 @@ type DeleteImageResponse struct {
 // being create_loadbalancer my job is to create required loadbalancer and give back the response who called me
 func (img *DeleteImageInput) DeleteImage() (DeleteImageResponse, error) {
 
-	switch strings.ToLower(img.Cloud) {
+	if status := support.DoesCloudSupports(strings.ToLower(img.Cloud.Name)); status != true {
+		return DeleteImageResponse{}, fmt.Errorf(common.DefaultCloudResponse + "DeleteImage")
+	}
+
+	switch strings.ToLower(img.Cloud.Name) {
 	case "aws":
 
-		creds, crderr := common.GetCredentials(&common.GetCredentialsInput{Profile: img.Profile, Cloud: img.Cloud})
+		creds, crderr := common.GetCredentials(&common.GetCredentialsInput{Profile: img.Cloud.Profile, Cloud: img.Cloud.Name})
 		if crderr != nil {
 			return DeleteImageResponse{}, crderr
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: img.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: img.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
-		authinpt := auth.EstablishConnectionInput{Region: img.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: img.Cloud.Region, Resource: "ec2", Session: sess}
 
 		delimages := new(image.DeleteImageInput)
 		delimages.ImageIds = img.ImageIds

@@ -5,7 +5,7 @@ import (
 )
 
 type GetRegionInput struct {
-	*cmn.Clouds
+	Cloud cmn.Cloud
 }
 
 //Nothing much from this file. This file contains only the structs for server/get

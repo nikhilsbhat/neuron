@@ -29,17 +29,17 @@ type CreateNetworkResponse struct {
 // appropriate user and his cloud profile details which was passed while calling it.
 func (net *NetworkCreateInput) CreateNetwork() (CreateNetworkResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(net.Cloud.Name)); status != true {
 		return CreateNetworkResponse{}, fmt.Errorf(common.DefaultCloudResponse + "CreateNetwork")
 	}
 
-	switch strings.ToLower(net.Cloud) {
+	switch strings.ToLower(net.Cloud.Name) {
 	case "aws":
 
 		creds, err := common.GetCredentials(
 			&common.GetCredentialsInput{
-				Profile: net.Profile,
-				Cloud:   net.Cloud,
+				Profile: net.Cloud.Profile,
+				Cloud:   net.Cloud.Name,
 			},
 		)
 
@@ -47,11 +47,11 @@ func (net *NetworkCreateInput) CreateNetwork() (CreateNetworkResponse, error) {
 			return CreateNetworkResponse{}, err
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: net.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: net.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
-		authinpt := auth.EstablishConnectionInput{Region: net.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: net.Cloud.Region, Resource: "ec2", Session: sess}
 
 		// Fetching all the networks accross cloud aws
 		networkin := new(network.NetworkCreateInput)
@@ -60,7 +60,7 @@ func (net *NetworkCreateInput) CreateNetwork() (CreateNetworkResponse, error) {
 		networkin.SubCidrs = net.SubCidr
 		networkin.Type = net.Type
 		networkin.Ports = net.Ports
-		networkin.GetRaw = net.GetRaw
+		networkin.GetRaw = net.Cloud.GetRaw
 		response, net_err := networkin.CreateNetwork(authinpt)
 		if net_err != nil {
 			return CreateNetworkResponse{}, net_err

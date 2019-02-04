@@ -26,32 +26,32 @@ type GetRegionsResponse struct {
 // being create_network my job is to create network and give back the response who called me
 func (reg *GetRegionInput) GetRegions() (GetRegionsResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(reg.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(reg.Cloud.Name)); status != true {
 		return GetRegionsResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
 	}
 
-	switch strings.ToLower(reg.Cloud) {
+	switch strings.ToLower(reg.Cloud.Name) {
 	case "aws":
 
 		creds, err := common.GetCredentials(
 			&common.GetCredentialsInput{
-				Profile: reg.Profile,
-				Cloud:   reg.Cloud,
+				Profile: reg.Cloud.Profile,
+				Cloud:   reg.Cloud.Name,
 			},
 		)
 		if err != nil {
 			return GetRegionsResponse{}, err
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: reg.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: reg.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
-		authinpt := auth.EstablishConnectionInput{Region: reg.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: reg.Cloud.Region, Resource: "ec2", Session: sess}
 
 		// I will call create_vpc and get the things done
 		regionin := awscommon.CommonInput{}
-		regionin.GetRaw = reg.GetRaw
+		regionin.GetRaw = reg.Cloud.GetRaw
 		response, reg_err := regionin.GetRegions(authinpt)
 		if reg_err != nil {
 			return GetRegionsResponse{}, reg_err

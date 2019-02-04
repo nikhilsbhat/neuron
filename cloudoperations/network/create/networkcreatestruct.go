@@ -2,6 +2,10 @@
 // The decision will be made here to route the request to respective package based on input.
 package networkCreate
 
+import (
+	cmn "neuron/cloudoperations"
+)
+
 // The struct which impliments method CreateNetwork.
 type NetworkCreateInput struct {
 	// The name for the Network that has to be created.
@@ -26,18 +30,7 @@ type NetworkCreateInput struct {
 	// one can access machines that will be created inside the created network.
 	Ports []string `json:"ports"`
 
-	// Pass the cloud in which the resource has to be created. usage: "aws","azure" etc.
-	Cloud string `json:"cloud"`
-
-	// Along with cloud, pass region in which resource has to be created.
-	Region string `json:"region"`
-
-	// Passing the profile is important, because this will help in fetching the the credentials
-	// of cloud stored along with user details.
-	Profile string `json:"profile"`
-
-	// Use this option if in case you need unfiltered output from cloud.
-	GetRaw bool `json:"getraw"`
+	Cloud cmn.Cloud
 }
 
 //Nothing much from this file. This file contains only the structs for network/create

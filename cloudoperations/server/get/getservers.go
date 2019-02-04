@@ -32,34 +32,34 @@ type GetServerResponse struct {
 // appropriate user and his cloud profile details which was passed while calling it.
 func (serv *GetServersInput) GetServersDetails() (GetServerResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud.Name)); status != true {
 		return GetServerResponse{}, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
 	}
 
-	switch strings.ToLower(serv.Cloud) {
+	switch strings.ToLower(serv.Cloud.Name) {
 	case "aws":
 
 		creds, crederr := common.GetCredentials(
 			&common.GetCredentialsInput{
-				Profile: serv.Profile,
-				Cloud:   serv.Cloud,
+				Profile: serv.Cloud.Profile,
+				Cloud:   serv.Cloud.Name,
 			},
 		)
 		if crederr != nil {
 			return GetServerResponse{}, crederr
 		}
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: serv.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: serv.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorizing to request further
-		authinpt := auth.EstablishConnectionInput{Region: serv.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: serv.Cloud.Region, Resource: "ec2", Session: sess}
 		// I will call CreateServer of interface and get the things done
 
 		if serv.InstanceIds != nil {
 			serverin := server.DescribeInstanceInput{}
 			serverin.InstanceIds = serv.InstanceIds
-			serverin.GetRaw = serv.GetRaw
+			serverin.GetRaw = serv.Cloud.GetRaw
 			server_response, serverr := serverin.GetServersDetails(authinpt)
 			if serverr != nil {
 				return GetServerResponse{}, serverr
@@ -68,7 +68,7 @@ func (serv *GetServersInput) GetServersDetails() (GetServerResponse, error) {
 		} else if serv.SubnetIds != nil {
 			serverin := server.DescribeInstanceInput{}
 			serverin.SubnetIds = serv.SubnetIds
-			serverin.GetRaw = serv.GetRaw
+			serverin.GetRaw = serv.Cloud.GetRaw
 			server_response, serverr := serverin.GetServersFromSubnet(authinpt)
 			if serverr != nil {
 				return GetServerResponse{}, serverr
@@ -77,14 +77,14 @@ func (serv *GetServersInput) GetServersDetails() (GetServerResponse, error) {
 		} else if serv.VpcIds != nil {
 			serverin := server.DescribeInstanceInput{}
 			serverin.VpcIds = serv.VpcIds
-			serverin.GetRaw = serv.GetRaw
+			serverin.GetRaw = serv.Cloud.GetRaw
 			server_response, serverr := serverin.GetServersFromNetwork(authinpt)
 			if serverr != nil {
 				return GetServerResponse{}, serverr
 			}
 			return GetServerResponse{AwsResponse: server_response}, nil
 		} else {
-			serverin := server.DescribeInstanceInput{GetRaw: serv.GetRaw}
+			serverin := server.DescribeInstanceInput{GetRaw: serv.Cloud.GetRaw}
 			server_response, serverr := serverin.GetAllServers(authinpt)
 			if serverr != nil {
 				return GetServerResponse{}, serverr
@@ -113,30 +113,30 @@ func (serv *GetServersInput) GetServersDetails() (GetServerResponse, error) {
 // appropriate user and his cloud profile details which was passed while calling it.
 func (serv *GetServersInput) GetAllServers() ([]GetServerResponse, error) {
 
-	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud)); status != true {
+	if status := support.DoesCloudSupports(strings.ToLower(serv.Cloud.Name)); status != true {
 		return nil, fmt.Errorf(common.DefaultCloudResponse + "GetNetworks")
 	}
 
 	//fetchinig credentials from loged-in user to establish the connection with appropriate cloud.
 	creds, err := common.GetCredentials(
 		&common.GetCredentialsInput{
-			Profile: serv.Profile,
-			Cloud:   serv.Cloud,
+			Profile: serv.Cloud.Profile,
+			Cloud:   serv.Cloud.Name,
 		},
 	)
 	if err != nil {
 		return nil, err
 	}
 
-	switch strings.ToLower(serv.Cloud) {
+	switch strings.ToLower(serv.Cloud.Name) {
 	case "aws":
 
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: serv.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: serv.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 
 		//authorize
-		authinpt := auth.EstablishConnectionInput{Region: serv.Region, Resource: "ec2", Session: sess}
+		authinpt := auth.EstablishConnectionInput{Region: serv.Cloud.Region, Resource: "ec2", Session: sess}
 
 		// Fetching list of regions to get details  of server across the account
 		regionin := awscommon.CommonInput{}
@@ -171,10 +171,10 @@ func (serv *GetServersInput) GetAllServers() ([]GetServerResponse, error) {
 // and send over a channel.
 func (serv *GetServersInput) getservers(regions []string, reg chan []server.ServerResponse, creds db.CloudProfiles) {
 
-	switch strings.ToLower(serv.Cloud) {
+	switch strings.ToLower(serv.Cloud.Name) {
 	case "aws":
 		// I will establish session so that we can carry out the process in cloud
-		session_input := awssess.CreateSessionInput{Region: serv.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
+		session_input := awssess.CreateSessionInput{Region: serv.Cloud.Region, KeyId: creds.KeyId, AcessKey: creds.SecretAccess}
 		sess := session_input.CreateAwsSession()
 		var wg sync.WaitGroup
 		wg.Add(len(regions))
@@ -184,7 +184,7 @@ func (serv *GetServersInput) getservers(regions []string, reg chan []server.Serv
 
 				//authorize
 				authinpt := auth.EstablishConnectionInput{Region: region, Resource: "ec2", Session: sess}
-				serverin := server.DescribeInstanceInput{GetRaw: serv.GetRaw}
+				serverin := server.DescribeInstanceInput{GetRaw: serv.Cloud.GetRaw}
 				server_response, _ := serverin.GetAllServers(authinpt)
 				reg <- server_response
 			}(region)

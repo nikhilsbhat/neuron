@@ -1,11 +1,12 @@
 package imageCreate
 
+import (
+	cmn "neuron/cloudoperations"
+)
+
 type CreateImageInput struct {
-	InstanceIds []string `json:"InstanceIds"`
-	GetRaw      bool     `json:"GetRaw"`
-	Cloud       string   `json:"Cloud"`
-	Region      string   `json:"Region"`
-	Profile     string   `json:"Profile"`
+	InstanceIds []string `json:"instanceids"`
+	Cloud cmn.Cloud
 }
 
 //Nothing much from this file. This file contains only the structs for image/create
