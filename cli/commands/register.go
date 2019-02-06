@@ -28,6 +28,7 @@ func Register(name string, fn *cobra.Command) {
 func getCmds() *cobra.Command {
 	neucmd := new(neucmds)
 	neucmd.commands = append(neucmd.commands, getInitCmds())
+        neucmd.commands = append(neucmd.commands, getConfigCmds())
 	neucmd.commands = append(neucmd.commands, getNetCmds())
 	neucmd.commands = append(neucmd.commands, getServCmds())
 	neucmd.commands = append(neucmd.commands, getMiscCmds())

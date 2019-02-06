@@ -23,7 +23,7 @@ var (
 )
 
 // All one has to do is to call this function to config neuron.
-func (c *Config) ConfigureNeuron() error {
+func (c *Config) Init() error {
 
 	//Initializing log first before anyother thing
 	logerr := neulog.Init()
@@ -31,8 +31,8 @@ func (c *Config) ConfigureNeuron() error {
 		return logerr
 	}
 
-	//configuring neuron to prepare it for operations
-	config, conferr := conf.ConfigNeuron(c.ConfigPath)
+	//configuring neuron to run it's service
+	config, conferr := conf.Init(c.ConfigPath)
 	if conferr != nil {
 		return conferr
 	}
@@ -42,6 +42,21 @@ func (c *Config) ConfigureNeuron() error {
 		EnableNeuronApi(config)
 	}
 	ConfResponse = config
+	return nil
+}
+
+func (c *Config) ConfigureNeuron() error {
+	//Initializing log first before anyother thing
+	logerr := neulog.Init()
+	if logerr != nil {
+		return logerr
+	}
+
+	//configuring neuron to prepare it for operations
+	conferr := conf.ConfigNeuron(c.ConfigPath)
+	if conferr != nil {
+		return conferr
+	}
 	return nil
 }
 

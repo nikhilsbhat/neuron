@@ -39,6 +39,7 @@ func getMiscCmds() *cobra.Command {
 		Short: "command for miscellaneous operation",
 		Long:  `This will help you to perform miscellaneous operation which we call on the cloud you wish.`,
 		Run:   cc.echoCommon,
+                Hidden: true,
 	}
 	registermiscFlags("server", cmdMisc)
 

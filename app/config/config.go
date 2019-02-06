@@ -93,13 +93,32 @@ func (c *AppConfig) createDirectories() error {
 	return nil
 }
 
+func ConfigNeuron(path ...string) error {
+
+	conf, cferr := loadConfig(path)
+	if cferr != nil {
+		return cferr
+	}
+
+	//creatinig directories
+	// just append to this array if in case any new directories has to be created for neuron in future
+	conf.Directories = []string{"data"}
+	direrr := conf.createDirectories()
+	if direrr != nil {
+		return direrr
+	}
+	log.Info(printSpace)
+	log.Info(pritnDash)
+	return nil
+}
+
 // This will configure the application by reading the configuration file at '/var/lib/neuron'.
 // Be sure what you pass as path to this, because only the first element is considered while setting path.
-func ConfigNeuron(path ...string) (ConfigResponse, error) {
+func Init(path ...string) (ConfigResponse, error) {
 
-	conf, conferr := findConfig(setCOnfigPath(path))
-	if conferr != nil {
-		return ConfigResponse{}, conferr
+	conf, cferr := loadConfig(path)
+	if cferr != nil {
+		return ConfigResponse{}, cferr
 	}
 
 	if reflect.DeepEqual(conf, AppConfig{}) {
@@ -118,12 +137,9 @@ func ConfigNeuron(path ...string) (ConfigResponse, error) {
 		return ConfigResponse{}, fmt.Errorf("You cannot enable ui alone without api. Quitting installation")
 	}
 
-	//creatinig directories
-	// just append to this array if in case any new directories has to be created for neuron in future
-	conf.Directories = []string{"data"}
-	direrr := conf.createDirectories()
-	if direrr != nil {
-		return ConfigResponse{}, direrr
+	cnfgerr := ConfigNeuron(path[0])
+	if cnfgerr != nil {
+		return ConfigResponse{}, nil
 	}
 
 	// configuring db
@@ -146,6 +162,16 @@ func convertKeysToSlice(m map[string]interface{}) []string {
 		ret = append(ret, key)
 	}
 	return ret
+}
+
+func loadConfig(path []string) (AppConfig, error) {
+
+	conf, conferr := findConfig(setCOnfigPath(path))
+	if conferr != nil {
+		return AppConfig{}, conferr
+	}
+	return conf, nil
+
 }
 
 // Database will be set here if it was mentioned in config file.
