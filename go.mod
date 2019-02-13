@@ -1,4 +1,4 @@
-module neuron
+module github.com/nikhilsbhat/neuron
 
 require (
 	contrib.go.opencensus.io/exporter/ocagent v0.4.1 // indirect
