@@ -77,7 +77,7 @@ func init() {
 		Use:          "regions [flags]",
 		Short:        "command to list regions",
 		Long:         `This will help you to list available regions from the cloud you wish.`,
-		Run:         cc.getRegions,
+		Run:          cc.getRegions,
 		SilenceUsage: true,
 	})
 }

@@ -2,11 +2,11 @@ package commands
 
 import (
 	"github.com/spf13/cobra"
-        cmn "neuron/cloudoperations"
+	cmn "neuron/cloudoperations"
 )
 
 type cloudGeneral struct {
-        Cloud   cmn.Cloud
+	Cloud   cmn.Cloud
 	Config  string
 	Version string
 	all     bool

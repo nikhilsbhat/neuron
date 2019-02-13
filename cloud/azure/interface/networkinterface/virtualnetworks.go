@@ -108,7 +108,6 @@ func (net VnetIn) ListVirtualNetwork() (vnet []network.VirtualNetwork, err error
 	return future.Values(), err
 }
 
-
 // // CreateVirtualNetwork lists all virtual networks
 func ListAllVirtualNetwork() (vnet []network.VirtualNetwork, err error) {
 	vnetClient := getVnetClient()

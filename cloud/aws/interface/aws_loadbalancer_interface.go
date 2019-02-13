@@ -326,7 +326,7 @@ func (sess *EstablishedSession) DescribeAllTargetgroups(lb *DescribeLoadbalancer
 func (sess *EstablishedSession) DescribeListners(lb *DescribeLoadbalancersInput) (*elbv2.DescribeListenersOutput, error) {
 
 	if sess.Elb2 != nil {
-		if lb.ListnerArns  != nil {
+		if lb.ListnerArns != nil {
 			input := &elbv2.DescribeListenersInput{
 				ListenerArns: aws.StringSlice(lb.ListnerArns),
 			}

@@ -6,7 +6,7 @@ import (
 
 type DeleteImageInput struct {
 	ImageIds []string `json:"imageids"`
-	Cloud cmn.Cloud
+	Cloud    cmn.Cloud
 }
 
 //Nothing much from this file. This file contains only the structs for image/delete

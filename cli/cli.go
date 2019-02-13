@@ -2,8 +2,8 @@ package neuroncli
 
 import (
 	"fmt"
+	"github.com/spf13/cobra"
 	command "neuron/cli/commands"
-        "github.com/spf13/cobra"
 	"os"
 )
 

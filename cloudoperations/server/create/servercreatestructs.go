@@ -13,7 +13,7 @@ type ServerCreateInput struct {
 	Flavor       string `json:"flavor"`
 	UserData     string `json:"userdata"`
 	AssignPubIp  bool   `json:"assignpubip"`
-	Cloud cmn.Cloud
+	Cloud        cmn.Cloud
 }
 
 //Nothing much from this file. This file contains only the structs for server/create

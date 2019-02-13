@@ -2,8 +2,8 @@ package neuronaws
 
 import (
 	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/credentials"
 	"github.com/aws/aws-sdk-go/aws/session"
-	"github.com/aws/aws-sdk-go/aws/credentials"	
 )
 
 type CreateSessionInput struct {
@@ -12,7 +12,7 @@ type CreateSessionInput struct {
 	AcessKey string
 }
 
-func (con *CreateSessionInput) CreateAwsSession() (*session.Session) {
+func (con *CreateSessionInput) CreateAwsSession() *session.Session {
 
 	sess := session.Must(session.NewSession(&aws.Config{
 		Credentials: credentials.NewStaticCredentialsFromCreds(
