@@ -2,7 +2,7 @@ package commands
 
 import (
 	"github.com/spf13/cobra"
-	cmn "neuron/cloudoperations"
+	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
 type cloudGeneral struct {

@@ -1,7 +1,7 @@
 package awsimage
 
 import (
-	aws "neuron/cloud/aws/interface"
+	aws "github.com/nikhilsbhat/neuron/cloud/aws/interface"
 )
 
 type GetImageInput struct {

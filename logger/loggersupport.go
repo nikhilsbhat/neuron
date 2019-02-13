@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
-	err "neuron/error"
+	err "github.com/nikhilsbhat/neuron/error"
 	"os"
 )
 

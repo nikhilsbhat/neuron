@@ -2,7 +2,7 @@ package loadbalancer
 
 import (
 	"fmt"
-	aws "neuron/cloud/aws/interface"
+	aws "github.com/nikhilsbhat/neuron/cloud/aws/interface"
 	"strings"
 	"time"
 )

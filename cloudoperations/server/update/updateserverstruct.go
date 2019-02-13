@@ -1,7 +1,7 @@
 package updateServers
 
 import (
-	cmn "neuron/cloudoperations"
+	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
 type UpdateServersInput struct {

@@ -2,12 +2,12 @@ package imagesGet
 
 import (
 	"fmt"
-	auth "neuron/cloud/aws/interface"
-	image "neuron/cloud/aws/operations/image"
-	awssess "neuron/cloud/aws/sessions"
-	common "neuron/cloudoperations/common"
-	support "neuron/cloudoperations/support"
-	log "neuron/logger"
+	auth "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	image "github.com/nikhilsbhat/neuron/cloud/aws/operations/image"
+	awssess "github.com/nikhilsbhat/neuron/cloud/aws/sessions"
+	common "github.com/nikhilsbhat/neuron/cloudoperations/common"
+	support "github.com/nikhilsbhat/neuron/cloudoperations/support"
+	log "github.com/nikhilsbhat/neuron/logger"
 	"strings"
 )
 

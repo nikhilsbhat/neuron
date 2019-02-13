@@ -1,7 +1,7 @@
 package awsinstance
 
 import (
-	"neuron/cloud/aws/interface"
+	"github.com/nikhilsbhat/neuron/cloud/aws/interface"
 	//"neuron/logger"
 	"strings"
 	//"time"

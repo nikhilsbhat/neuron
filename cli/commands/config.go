@@ -5,7 +5,7 @@ package commands
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	neuron "neuron/app"
+	neuron "github.com/nikhilsbhat/neuron/app"
 )
 
 var (

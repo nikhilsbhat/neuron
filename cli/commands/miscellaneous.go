@@ -6,8 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
-	misc "neuron/cloudoperations/miscellaneous"
-	err "neuron/error"
+	misc "github.com/nikhilsbhat/neuron/cloudoperations/miscellaneous"
+	err "github.com/nikhilsbhat/neuron/error"
 	"strings"
 )
 

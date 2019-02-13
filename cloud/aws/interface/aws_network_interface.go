@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	err "neuron/error"
+	err "github.com/nikhilsbhat/neuron/error"
 	"reflect"
 	"time"
 )

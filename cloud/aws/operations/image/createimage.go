@@ -2,10 +2,10 @@ package awsimage
 
 import (
 	"github.com/aws/aws-sdk-go/service/ec2"
-	aws "neuron/cloud/aws/interface"
-	common "neuron/cloud/aws/operations/common"
-	server "neuron/cloud/aws/operations/server"
-	err "neuron/error"
+	aws "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	common "github.com/nikhilsbhat/neuron/cloud/aws/operations/common"
+	server "github.com/nikhilsbhat/neuron/cloud/aws/operations/server"
+	err "github.com/nikhilsbhat/neuron/error"
 	"strconv"
 	"time"
 )

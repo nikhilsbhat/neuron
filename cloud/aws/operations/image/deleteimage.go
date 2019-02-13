@@ -1,8 +1,8 @@
 package awsimage
 
 import (
-	aws "neuron/cloud/aws/interface"
-	err "neuron/error"
+	aws "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	err "github.com/nikhilsbhat/neuron/error"
 )
 
 type DeleteImageInput struct {

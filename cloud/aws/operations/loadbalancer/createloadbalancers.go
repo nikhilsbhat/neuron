@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/aws/aws-sdk-go/service/elbv2"
-	aws "neuron/cloud/aws/interface"
-	network "neuron/cloud/aws/operations/network"
+	aws "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	network "github.com/nikhilsbhat/neuron/cloud/aws/operations/network"
 	"strings"
 )
 

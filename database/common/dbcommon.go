@@ -4,10 +4,10 @@ import (
 	//"github.com/globalsign/mgo/bson"
 	"fmt"
 	"github.com/globalsign/mgo"
-	"neuron/database"
-	"neuron/database/fs"
-	"neuron/database/mongodb"
-	err "neuron/error"
+	"github.com/nikhilsbhat/neuron/database"
+	"github.com/nikhilsbhat/neuron/database/fs"
+	"github.com/nikhilsbhat/neuron/database/mongodb"
+	err "github.com/nikhilsbhat/neuron/error"
 )
 
 func ConfigDb(d database.Storage) (interface{}, error) {

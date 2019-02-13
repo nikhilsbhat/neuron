@@ -2,11 +2,11 @@ package deleteServer
 
 import (
 	"fmt"
-	auth "neuron/cloud/aws/interface"
-	server "neuron/cloud/aws/operations/server"
-	awssess "neuron/cloud/aws/sessions"
-	common "neuron/cloudoperations/common"
-	support "neuron/cloudoperations/support"
+	auth "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	server "github.com/nikhilsbhat/neuron/cloud/aws/operations/server"
+	awssess "github.com/nikhilsbhat/neuron/cloud/aws/sessions"
+	common "github.com/nikhilsbhat/neuron/cloudoperations/common"
+	support "github.com/nikhilsbhat/neuron/cloudoperations/support"
 	//log "neuron/logger"
 	"strings"
 )

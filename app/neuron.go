@@ -6,10 +6,10 @@ import (
 	"github.com/gorilla/mux"
 	"log"
 	"net/http"
-	conf "neuron/app/config"
-	rou "neuron/app/routers"
-	err "neuron/error"
-	neulog "neuron/logger"
+	conf "github.com/nikhilsbhat/neuron/app/config"
+	rou "github.com/nikhilsbhat/neuron/app/routers"
+	err "github.com/nikhilsbhat/neuron/error"
+	neulog "github.com/nikhilsbhat/neuron/logger"
 	"sync"
 )
 

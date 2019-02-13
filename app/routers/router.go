@@ -4,8 +4,8 @@ import (
 	"github.com/gorilla/mux"
 	"io"
 	"net/http"
-	handle "neuron/app/handlers"
-	mid "neuron/app/middleware"
+	handle "github.com/nikhilsbhat/neuron/app/handlers"
+	mid "github.com/nikhilsbhat/neuron/app/middleware"
 )
 
 type MuxIn struct {

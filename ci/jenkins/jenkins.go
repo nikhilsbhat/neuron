@@ -3,7 +3,7 @@ package jenkins
 import (
 	"fmt"
 	"github.com/bndr/gojenkins"
-	log "neuron/logger"
+	log "github.com/nikhilsbhat/neuron/logger"
 	"os"
 )
 

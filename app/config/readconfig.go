@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	neuerr "neuron/error"
-	log "neuron/logger"
+	neuerr "github.com/nikhilsbhat/neuron/error"
+	log "github.com/nikhilsbhat/neuron/logger"
 	"os"
 )
 

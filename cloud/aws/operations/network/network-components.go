@@ -3,8 +3,8 @@ package awsnetwork
 import (
 	"fmt"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	aws "neuron/cloud/aws/interface"
-	common "neuron/cloud/aws/operations/common"
+	aws "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	common "github.com/nikhilsbhat/neuron/cloud/aws/operations/common"
 	"strconv"
 	"strings"
 )

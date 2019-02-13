@@ -2,7 +2,7 @@ package main
 
 import (
 	//"neuron/app"
-	cli "neuron/cli"
+	cli "github.com/nikhilsbhat/neuron/cli"
 	/*err "neuron/error"
 	log "neuron/logger"*/)
 

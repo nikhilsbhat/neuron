@@ -1,8 +1,8 @@
 package commonOperations
 
 import (
-	db "neuron/database"
-	dbcommon "neuron/database/common"
+	db "github.com/nikhilsbhat/neuron/database"
+	dbcommon "github.com/nikhilsbhat/neuron/database/common"
 )
 
 const (

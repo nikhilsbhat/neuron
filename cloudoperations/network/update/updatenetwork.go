@@ -2,11 +2,11 @@ package networkUpdate
 
 import (
 	"fmt"
-	auth "neuron/cloud/aws/interface"
-	awsnetwork "neuron/cloud/aws/operations/network"
-	awssess "neuron/cloud/aws/sessions"
-	common "neuron/cloudoperations/common"
-	support "neuron/cloudoperations/support"
+	auth "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	awsnetwork "github.com/nikhilsbhat/neuron/cloud/aws/operations/network"
+	awssess "github.com/nikhilsbhat/neuron/cloud/aws/sessions"
+	common "github.com/nikhilsbhat/neuron/cloudoperations/common"
+	support "github.com/nikhilsbhat/neuron/cloudoperations/support"
 	//log "neuron/logger"
 	"strings"
 )

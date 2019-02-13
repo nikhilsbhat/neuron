@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
-	nwcreate "neuron/cloudoperations/network/create"
-	nwdelete "neuron/cloudoperations/network/delete"
-	nwget "neuron/cloudoperations/network/get"
-	nwupdate "neuron/cloudoperations/network/update"
-	err "neuron/error"
+	nwcreate "github.com/nikhilsbhat/neuron/cloudoperations/network/create"
+	nwdelete "github.com/nikhilsbhat/neuron/cloudoperations/network/delete"
+	nwget "github.com/nikhilsbhat/neuron/cloudoperations/network/get"
+	nwupdate "github.com/nikhilsbhat/neuron/cloudoperations/network/update"
+	err "github.com/nikhilsbhat/neuron/error"
 	"strings"
 )
 

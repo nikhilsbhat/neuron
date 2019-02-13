@@ -3,7 +3,7 @@ package commands
 import (
 	"fmt"
 	"github.com/spf13/cobra"
-	err "neuron/error"
+	err "github.com/nikhilsbhat/neuron/error"
 )
 
 var (

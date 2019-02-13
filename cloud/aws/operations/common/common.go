@@ -2,7 +2,7 @@ package awscommon
 
 import (
 	"github.com/aws/aws-sdk-go/service/ec2"
-	"neuron/cloud/aws/interface"
+	"github.com/nikhilsbhat/neuron/cloud/aws/interface"
 	"sort"
 	"strconv"
 )

@@ -1,7 +1,7 @@
 package imageDelete
 
 import (
-	cmn "neuron/cloudoperations"
+	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
 type DeleteImageInput struct {

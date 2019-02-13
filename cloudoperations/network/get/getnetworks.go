@@ -2,12 +2,12 @@ package networkGet
 
 import (
 	"fmt"
-	auth "neuron/cloud/aws/interface"
-	awscommon "neuron/cloud/aws/operations/common"
-	network "neuron/cloud/aws/operations/network"
-	awssess "neuron/cloud/aws/sessions"
-	common "neuron/cloudoperations/common"
-	support "neuron/cloudoperations/support"
+	auth "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	awscommon "github.com/nikhilsbhat/neuron/cloud/aws/operations/common"
+	network "github.com/nikhilsbhat/neuron/cloud/aws/operations/network"
+	awssess "github.com/nikhilsbhat/neuron/cloud/aws/sessions"
+	common "github.com/nikhilsbhat/neuron/cloudoperations/common"
+	support "github.com/nikhilsbhat/neuron/cloudoperations/support"
 	//log "neuron/logger"
 	"strings"
 )

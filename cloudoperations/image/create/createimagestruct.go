@@ -1,7 +1,7 @@
 package imageCreate
 
 import (
-	cmn "neuron/cloudoperations"
+	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
 type CreateImageInput struct {

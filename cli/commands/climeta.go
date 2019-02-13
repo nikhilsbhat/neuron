@@ -2,9 +2,9 @@ package commands
 
 import (
 	"fmt"
-	neuron "neuron/app"
-	config "neuron/app/config"
-	"neuron/cli/ui"
+	neuron "github.com/nikhilsbhat/neuron/app"
+	config "github.com/nikhilsbhat/neuron/app/config"
+	"github.com/nikhilsbhat/neuron/cli/ui"
 	"os"
 )
 

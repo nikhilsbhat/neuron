@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/globalsign/mgo"
 	"github.com/globalsign/mgo/bson"
-	"neuron/database"
+	"github.com/nikhilsbhat/neuron/database"
 	"strings"
 )
 

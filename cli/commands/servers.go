@@ -6,11 +6,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/spf13/cobra"
-	svcreate "neuron/cloudoperations/server/create"
-	svdelete "neuron/cloudoperations/server/delete"
-	svget "neuron/cloudoperations/server/get"
-	svupdate "neuron/cloudoperations/server/update"
-	err "neuron/error"
+	svcreate "github.com/nikhilsbhat/neuron/cloudoperations/server/create"
+	svdelete "github.com/nikhilsbhat/neuron/cloudoperations/server/delete"
+	svget "github.com/nikhilsbhat/neuron/cloudoperations/server/get"
+	svupdate "github.com/nikhilsbhat/neuron/cloudoperations/server/update"
+	err "github.com/nikhilsbhat/neuron/error"
 	"strings"
 )
 

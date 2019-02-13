@@ -3,7 +3,7 @@
 package networkCreate
 
 import (
-	cmn "neuron/cloudoperations"
+	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
 // The struct which impliments method CreateNetwork.

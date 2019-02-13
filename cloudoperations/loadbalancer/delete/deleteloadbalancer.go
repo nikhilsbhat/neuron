@@ -2,12 +2,12 @@ package deleteLoadbalancer
 
 import (
 	"fmt"
-	auth "neuron/cloud/aws/interface"
-	loadbalance "neuron/cloud/aws/operations/loadbalancer"
-	awssess "neuron/cloud/aws/sessions"
-	common "neuron/cloudoperations/common"
-	support "neuron/cloudoperations/support"
-	log "neuron/logger"
+	auth "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	loadbalance "github.com/nikhilsbhat/neuron/cloud/aws/operations/loadbalancer"
+	awssess "github.com/nikhilsbhat/neuron/cloud/aws/sessions"
+	common "github.com/nikhilsbhat/neuron/cloudoperations/common"
+	support "github.com/nikhilsbhat/neuron/cloudoperations/support"
+	log "github.com/nikhilsbhat/neuron/logger"
 	"strings"
 )
 

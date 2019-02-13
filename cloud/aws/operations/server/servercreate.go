@@ -4,9 +4,9 @@ import (
 	b64 "encoding/base64"
 	"fmt"
 	"github.com/aws/aws-sdk-go/service/ec2"
-	aws "neuron/cloud/aws/interface"
-	common "neuron/cloud/aws/operations/common"
-	network "neuron/cloud/aws/operations/network"
+	aws "github.com/nikhilsbhat/neuron/cloud/aws/interface"
+	common "github.com/nikhilsbhat/neuron/cloud/aws/operations/common"
+	network "github.com/nikhilsbhat/neuron/cloud/aws/operations/network"
 	"strconv"
 )
 

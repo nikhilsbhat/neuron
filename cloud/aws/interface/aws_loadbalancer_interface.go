@@ -5,7 +5,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/elb"
 	"github.com/aws/aws-sdk-go/service/elbv2"
-	err "neuron/error"
+	err "github.com/nikhilsbhat/neuron/error"
 	"strconv"
 )
 
