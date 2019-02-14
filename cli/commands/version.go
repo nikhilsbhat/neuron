@@ -4,9 +4,9 @@ package commands
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	err "github.com/nikhilsbhat/neuron/error"
 	neuron "github.com/nikhilsbhat/neuron/version"
+	"github.com/spf13/cobra"
 )
 
 // The only way to create version command is to call this function and

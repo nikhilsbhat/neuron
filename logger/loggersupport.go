@@ -3,8 +3,8 @@ package NeuronLogger
 import (
 	"bytes"
 	"encoding/json"
-	"io/ioutil"
 	err "github.com/nikhilsbhat/neuron/error"
+	"io/ioutil"
 	"os"
 )
 

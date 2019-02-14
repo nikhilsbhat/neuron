@@ -5,12 +5,12 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/spf13/cobra"
 	nwcreate "github.com/nikhilsbhat/neuron/cloudoperations/network/create"
 	nwdelete "github.com/nikhilsbhat/neuron/cloudoperations/network/delete"
 	nwget "github.com/nikhilsbhat/neuron/cloudoperations/network/get"
 	nwupdate "github.com/nikhilsbhat/neuron/cloudoperations/network/update"
 	err "github.com/nikhilsbhat/neuron/error"
+	"github.com/spf13/cobra"
 	"strings"
 )
 
