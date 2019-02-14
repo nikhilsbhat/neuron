@@ -1,8 +1,8 @@
 package commands
 
 import (
-	"github.com/spf13/cobra"
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
+	"github.com/spf13/cobra"
 )
 
 type cloudGeneral struct {

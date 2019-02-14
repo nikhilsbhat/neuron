@@ -4,12 +4,12 @@ package neuron
 
 import (
 	"github.com/gorilla/mux"
-	"log"
-	"net/http"
 	conf "github.com/nikhilsbhat/neuron/app/config"
 	rou "github.com/nikhilsbhat/neuron/app/routers"
 	err "github.com/nikhilsbhat/neuron/error"
 	neulog "github.com/nikhilsbhat/neuron/logger"
+	"log"
+	"net/http"
 	"sync"
 )
 

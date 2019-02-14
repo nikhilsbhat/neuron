@@ -4,9 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	neuerr "github.com/nikhilsbhat/neuron/error"
 	log "github.com/nikhilsbhat/neuron/logger"
+	"io/ioutil"
 	"os"
 )
 

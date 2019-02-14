@@ -3,11 +3,11 @@ package config
 import (
 	"fmt"
 	"github.com/globalsign/mgo"
-	"io"
 	"github.com/nikhilsbhat/neuron/database"
 	"github.com/nikhilsbhat/neuron/database/common"
 	err "github.com/nikhilsbhat/neuron/error"
 	log "github.com/nikhilsbhat/neuron/logger"
+	"io"
 	"os"
 	"path/filepath"
 	"reflect"

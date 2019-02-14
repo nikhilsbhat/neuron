@@ -3,10 +3,10 @@ package NeuronLogger
 import (
 	//"errors"
 	"fmt"
-	"io"
-	"log"
 	ui "github.com/nikhilsbhat/neuron/cli/ui"
 	err "github.com/nikhilsbhat/neuron/error"
+	"io"
+	"log"
 	"os"
 	"runtime"
 	"time"

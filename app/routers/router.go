@@ -2,10 +2,10 @@ package router
 
 import (
 	"github.com/gorilla/mux"
-	"io"
-	"net/http"
 	handle "github.com/nikhilsbhat/neuron/app/handlers"
 	mid "github.com/nikhilsbhat/neuron/app/middleware"
+	"io"
+	"net/http"
 )
 
 type MuxIn struct {
