@@ -41,7 +41,7 @@ func (vpc *NetworkCreateInput) CreateVpc(con neuronaws.EstablishConnectionInput)
 		return VpcResponse{}, vpc_err
 	}
 
-	// I will program wait untill vpc become available
+	// I will program wait until vpc become available
 	wait_err := ec2.WaitTillVpcAvailable(
 		&neuronaws.DescribeNetworkInput{
 			Filters: neuronaws.Filters{
@@ -60,7 +60,7 @@ func (vpc *NetworkCreateInput) CreateVpc(con neuronaws.EstablishConnectionInput)
 		return VpcResponse{}, tag_err
 	}
 
-	// I will make the decision whether we need public network or private, based on the input I recieve
+	// I will make the decision whether we need public network or private, based on the input I receive
 	netcomp := new(NetworkComponentInput)
 	netcomp.Name = vpc.Name
 	netcomp.VpcIds = []string{*vpc_result.Vpc.VpcId}

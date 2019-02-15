@@ -38,7 +38,7 @@ func (subin *NetworkCreateInput) CreateSubnet(con neuronaws.EstablishConnectionI
 		return SubnetReponse{}, sub_err
 	}
 
-	// I will make program wait untill subnet become available
+	// I will make program wait until subnet become available
 	wait_err := ec2.WaitTillSubnetAvailable(
 		&neuronaws.DescribeNetworkInput{
 			Filters: neuronaws.Filters{
@@ -136,7 +136,7 @@ func (net *GetNetworksInput) GetSubnets(con neuronaws.EstablishConnectionInput) 
 
 }
 
-//Passing multiple values in vpcids array makes no difference as we use only first element of it, this is customized fucntion for raw data refer interface
+//Passing multiple values in vpcids array makes no difference as we use only first element of it, this is customized function for raw data refer interface
 func (net *GetNetworksInput) GetSubnetsFromVpc(con neuronaws.EstablishConnectionInput) (NetworkResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
@@ -198,7 +198,7 @@ func (s *DeleteNetworkInput) DeleteSubnets(con neuronaws.EstablishConnectionInpu
 			return subwaiterr
 		}
 		if subwait == false {
-			return fmt.Errorf("An error occured while deleting a subnet")
+			return fmt.Errorf("An error occurred while deleting a subnet")
 		}
 	}
 	return nil

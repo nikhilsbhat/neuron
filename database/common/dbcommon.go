@@ -25,7 +25,7 @@ func ConfigDb(d database.Storage) (interface{}, error) {
 		database.Db = d.Fs
 		return nil, nil
 	}
-	return nil, fmt.Errorf("Oops..!! an error occured. We did not receive valid input to configure DB")
+	return nil, fmt.Errorf("Oops..!! an error occurred. We did not receive valid input to configure DB")
 }
 
 func StoreCIdata(d database.DataDetail, data database.CiData) (interface{}, error) {

@@ -53,7 +53,7 @@ func (net *NetworkCreateInput) CreateNetwork() (CreateNetworkResponse, error) {
 		//authorizing to request further
 		authinpt := auth.EstablishConnectionInput{Region: net.Cloud.Region, Resource: "ec2", Session: sess}
 
-		// Fetching all the networks accross cloud aws
+		// Fetching all the networks across cloud aws
 		networkin := new(network.NetworkCreateInput)
 		networkin.Name = net.Name
 		networkin.VpcCidr = net.VpcCidr

@@ -18,7 +18,7 @@ func init() {
 func CliMain() {
 	err := Execute(os.Args[1:])
 	if err != nil {
-		fmt.Println("An error occured")
+		fmt.Println("An error occurred")
 		os.Exit(1)
 	}
 }

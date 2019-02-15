@@ -58,7 +58,7 @@ func (lb *GetLoadbalancerInput) GetAllLoadbalancer(con aws.EstablishConnectionIn
         case error:
                 return nil, calssic
         default:
-                return nil, fmt.Errorf("An unknown error occured while returning classiclb data")
+                return nil, fmt.Errorf("An unknown error occurred while returning classiclb data")
         }
 
         switch app := applicationlb.(type) {
@@ -67,7 +67,7 @@ func (lb *GetLoadbalancerInput) GetAllLoadbalancer(con aws.EstablishConnectionIn
         case error:
                 return nil, app
         default:
-                return nil, fmt.Errorf("An unknown error occured while returning classiclb data")
+                return nil, fmt.Errorf("An unknown error occurred while returning classiclb data")
         }
 
         resp := make([]LoadBalanceResponse, 0)
@@ -132,8 +132,8 @@ func (load *GetLoadbalancerInput) GetAllApplicationLb(con aws.EstablishConnectio
                         return nil, tarerr
                 }
 
-                // searching listners for the corresponding loadbalancer
-                search_listners, lisserr := elb.DescribeListners(
+                // searching listeners for the corresponding loadbalancer
+                search_listeners, lisserr := elb.DescribeListners(
                         &aws.DescribeLoadbalancersInput{
                                 LbArns: []string{*lb.LoadBalancerArn},
                         },
@@ -146,7 +146,7 @@ func (load *GetLoadbalancerInput) GetAllApplicationLb(con aws.EstablishConnectio
                 if load.GetRaw == true {
                         response.GetApplicationLbRaw.GetApplicationLbRaw = lb
                         response.GetApplicationLbRaw.GetTargetGroupRaw = search_target
-                        response.GetApplicationLbRaw.GetListnersRaw = search_listners
+                        response.GetApplicationLbRaw.GetListnersRaw = search_listeners
                         lb_list = append(lb_list, *response)
                 } else {
 
@@ -156,7 +156,7 @@ func (load *GetLoadbalancerInput) GetAllApplicationLb(con aws.EstablishConnectio
                         }
 
                         lis_arn := make([]string, 0)
-                        for _, lis := range search_listners.Listeners {
+                        for _, lis := range search_listeners.Listeners {
                                 lis_arn = append(lis_arn, *lis.ListenerArn)
                         }
 
@@ -256,8 +256,8 @@ func (load *GetLoadbalancerInput) GetApplicationloadbalancers(con aws.EstablishC
                         return nil, tarerr
                 }
 
-                // searching listners for the corresponding loadbalancer
-                search_listners, lisserr := elb.DescribeListners(lbin)
+                // searching listeners for the corresponding loadbalancer
+                search_listeners, lisserr := elb.DescribeListners(lbin)
                 if lisserr != nil {
                         return nil, lisserr
                 }
@@ -266,7 +266,7 @@ func (load *GetLoadbalancerInput) GetApplicationloadbalancers(con aws.EstablishC
                 if load.GetRaw == true {
                         response.GetApplicationLbRaw.GetApplicationLbRaw = lb
                         response.GetApplicationLbRaw.GetTargetGroupRaw = search_target
-                        response.GetApplicationLbRaw.GetListnersRaw = search_listners
+                        response.GetApplicationLbRaw.GetListnersRaw = search_listeners
                         lb_response = append(lb_response, *response)
                 } else {
                         tar_arn := make([]string, 0)
@@ -275,7 +275,7 @@ func (load *GetLoadbalancerInput) GetApplicationloadbalancers(con aws.EstablishC
                         }
 
                         lis_arn := make([]string, 0)
-                        for _, lis := range search_listners.Listeners {
+                        for _, lis := range search_listeners.Listeners {
                                 lis_arn = append(lis_arn, *lis.ListenerArn)
                         }
 

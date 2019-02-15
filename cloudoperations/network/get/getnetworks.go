@@ -54,7 +54,7 @@ func (net *GetNetworksInput) GetNetworks() (GetNetworksResponse, error) {
 		//authorizing to request further
 		authinpt := auth.EstablishConnectionInput{Region: net.Cloud.Region, Resource: "ec2", Session: sess}
 
-		// Fetching all the networks accross cloud aws
+		// Fetching all the networks across cloud aws
 		networkin := network.GetNetworksInput{}
 		networkin.VpcIds = net.VpcIds
 		networkin.GetRaw = net.Cloud.GetRaw
@@ -106,7 +106,7 @@ func (net GetNetworksInput) GetAllNetworks() ([]GetNetworksResponse, error) {
 		if regerr != nil {
 			return nil, regerr
 		}
-		// Fetching all the networks accross all the regions of cloud aws
+		// Fetching all the networks across all the regions of cloud aws
 		/*reg := make(chan []DengineAwsInterface.NetworkResponse, len(get_region_response.Regions))
 
 		getnetworkdetails_input := GetAllNetworksInput{net.Cloud, net.Region}

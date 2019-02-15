@@ -63,17 +63,17 @@ type DescribeLoadbalancersInput struct {
 func (sess *EstablishedSession) CreateClassicLb(lb LoadBalanceCreateInput) (*elb.CreateLoadBalancerOutput, error) {
 
         if sess.Elb != nil {
-                listners := make([]*elb.Listener, 0)
+                listeners := make([]*elb.Listener, 0)
                 switch lb.Lbproto {
                 case "HTTP":
-                        listners = append(listners, &elb.Listener{
+                        listeners = append(listeners, &elb.Listener{
                                 InstancePort:     aws.Int64(lb.InstPort),
                                 InstanceProtocol: aws.String(lb.Instproto),
                                 LoadBalancerPort: aws.Int64(lb.LbPort),
                                 Protocol:         aws.String(lb.Lbproto),
                         })
                 case "HTTPS":
-                        listners = append(listners, &elb.Listener{
+                        listeners = append(listeners, &elb.Listener{
                                 InstancePort:     aws.Int64(lb.InstPort),
                                 InstanceProtocol: aws.String(lb.Instproto),
                                 LoadBalancerPort: aws.Int64(lb.LbPort),
@@ -84,7 +84,7 @@ func (sess *EstablishedSession) CreateClassicLb(lb LoadBalanceCreateInput) (*elb
                         return nil, fmt.Errorf("You provided unknown loadbalancer protocol, enter a valid protocol")
                 }
                 input := &elb.CreateLoadBalancerInput{
-                        Listeners:        listners,
+                        Listeners:        listeners,
                         LoadBalancerName: aws.String(lb.Name),
                         Scheme:           aws.String(lb.Scheme),
                         SecurityGroups:   aws.StringSlice(lb.SecurityGroups),

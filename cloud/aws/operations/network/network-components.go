@@ -377,7 +377,7 @@ func (s *NetworkComponentInput) DeleteRouteTable(con aws.EstablishConnectionInpu
 			return routwaiterr
 		}
 		if routewait == false {
-			return fmt.Errorf("An error occured while deleting a routetable")
+			return fmt.Errorf("An error occurred while deleting a routetable")
 		}
 	}
 	return nil
@@ -431,7 +431,7 @@ func (i *NetworkComponentInput) DeleteIgws(con aws.EstablishConnectionInput) err
 			return igwwaiterr
 		}
 		if igwwait == false {
-			return fmt.Errorf("An error occured while deleting a igws")
+			return fmt.Errorf("An error occurred while deleting a igws")
 		}
 	}
 	return nil

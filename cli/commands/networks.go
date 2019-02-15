@@ -55,7 +55,7 @@ func getNetCmds() *cobra.Command {
 	return cmdNetwork
 }
 
-// Registering all the flags to the subcommands and command netwrok itself.
+// Registering all the flags to the subcommands and command network itself.
 func registernwFlags(cmdname string, cmd *cobra.Command) {
 
 	switch strings.ToLower(cmdname) {

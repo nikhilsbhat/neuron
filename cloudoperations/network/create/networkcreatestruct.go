@@ -6,7 +6,7 @@ import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
-// The struct which impliments method CreateNetwork.
+// The struct which implements method CreateNetwork.
 type NetworkCreateInput struct {
 	// The name for the Network that has to be created.
 	Name string `json:"name"`

@@ -200,7 +200,7 @@ func (d *DeleteNetworkInput) deleteNetworkDeletables(con aws.EstablishConnection
 			return DeleteNetworkResponse{}, dessrouterr
 		}
 		if dessroutetable != true {
-			return DeleteNetworkResponse{}, fmt.Errorf("An error occured while dettaching routetable from subnet")
+			return DeleteNetworkResponse{}, fmt.Errorf("An error occurred while dettaching routetable from subnet")
 		}
 
 		//deletion of routetable is handled by below loop.

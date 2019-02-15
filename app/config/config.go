@@ -380,7 +380,7 @@ func (conf *AppConfig) prepareMinimalCli() error {
 			return nil
 		}
 	}
-	return fmt.Errorf("An Unknown error occured while prepearing cli")
+	return fmt.Errorf("An Unknown error occurred while prepearing cli")
 }
 
 func switchtoFS(home string) error {

@@ -44,7 +44,7 @@ func createconsul(rw http.ResponseWriter, req *http.Request) {
 func createserver(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData svcreate.ServerCreateInput
@@ -69,7 +69,7 @@ func createserver(rw http.ResponseWriter, req *http.Request) {
 /*func createbuild(rw http.ResponseWriter, req *http.Request) {
         body, err := ioutil.ReadAll(req.Body)
         if err != nil {
-                json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+                json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
                 fmt.Fprintf(rw, "%v\n", string(json_val))
         } else {
                 var t createbuildmachine
@@ -90,7 +90,7 @@ func createserver(rw http.ResponseWriter, req *http.Request) {
 func startimagemachine(rw http.ResponseWriter, req *http.Request) {
         body, err := ioutil.ReadAll(req.Body)
         if err != nil {
-                json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+                json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
                 fmt.Fprintf(rw, "%v\n", string(json_val))
         } else {
                 var t startimageinput
@@ -115,7 +115,7 @@ func startimagemachine(rw http.ResponseWriter, req *http.Request) {
 func deleteservers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData svdelete.DeleteServersInput
@@ -139,7 +139,7 @@ func deleteservers(rw http.ResponseWriter, req *http.Request) {
 func createnetwork(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData nwcreate.NetworkCreateInput
@@ -163,7 +163,7 @@ func createnetwork(rw http.ResponseWriter, req *http.Request) {
 func getregions(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData misc.GetRegionInput
@@ -187,7 +187,7 @@ func getregions(rw http.ResponseWriter, req *http.Request) {
 func getsubnets(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData nwget.GetNetworksInput
@@ -211,7 +211,7 @@ func getsubnets(rw http.ResponseWriter, req *http.Request) {
 func getservers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData svget.GetServersInput
@@ -235,7 +235,7 @@ func getservers(rw http.ResponseWriter, req *http.Request) {
 func getallservers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData svget.GetServersInput
@@ -260,7 +260,7 @@ func getallservers(rw http.ResponseWriter, req *http.Request) {
 func updateservers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData svupdate.UpdateServersInput
@@ -285,7 +285,7 @@ func updateservers(rw http.ResponseWriter, req *http.Request) {
 func deletenetworks(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData nwdelete.DeleteNetworkInput
@@ -309,7 +309,7 @@ func deletenetworks(rw http.ResponseWriter, req *http.Request) {
 func createloadbalancer(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData lbcreate.LbCreateInput
@@ -333,7 +333,7 @@ func createloadbalancer(rw http.ResponseWriter, req *http.Request) {
 func deleteloadbalancer(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData lbdelete.LbDeleteInput
@@ -357,7 +357,7 @@ func deleteloadbalancer(rw http.ResponseWriter, req *http.Request) {
 func getloadbalancers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData lbget.GetLoadbalancerInput
@@ -381,7 +381,7 @@ func getloadbalancers(rw http.ResponseWriter, req *http.Request) {
 func getallloadbalancers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData lbget.GetLoadbalancerInput
@@ -405,7 +405,7 @@ func getallloadbalancers(rw http.ResponseWriter, req *http.Request) {
 func createimage(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData imcreate.CreateImageInput
@@ -429,7 +429,7 @@ func createimage(rw http.ResponseWriter, req *http.Request) {
 func deleteimage(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData imdelete.DeleteImageInput
@@ -453,7 +453,7 @@ func deleteimage(rw http.ResponseWriter, req *http.Request) {
 func getimages(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData imget.GetImagesInput
@@ -477,7 +477,7 @@ func getimages(rw http.ResponseWriter, req *http.Request) {
 func getallimages(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData imget.GetImagesInput
@@ -501,7 +501,7 @@ func getallimages(rw http.ResponseWriter, req *http.Request) {
 func getallnetworks(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData nwget.GetNetworksInput
@@ -525,7 +525,7 @@ func getallnetworks(rw http.ResponseWriter, req *http.Request) {
 func getnetworks(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData nwget.GetNetworksInput
@@ -549,7 +549,7 @@ func getnetworks(rw http.ResponseWriter, req *http.Request) {
 func getcount(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData count.GetCountInput
@@ -569,7 +569,7 @@ func getcount(rw http.ResponseWriter, req *http.Request) {
 func updatenetwork(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not recieved input in a valid format"})
+		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
 		fmt.Fprintf(rw, "%v\n", string(json_val))
 	} else {
 		var myData nwupdate.NetworkUpdateInput

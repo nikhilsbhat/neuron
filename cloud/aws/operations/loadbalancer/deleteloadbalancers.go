@@ -70,7 +70,7 @@ func (d *DeleteLoadbalancerInput) DeleteLoadbalancer(con aws.EstablishConnection
 					return nil, tararnerr
 				}
 
-				//fetching arn of listners
+				//fetching arn of listeners
 				lisarn, lisarnerr := elb.DescribeListners(getlb)
 				if lisarnerr != nil {
 					return nil, lisarnerr
@@ -79,7 +79,7 @@ func (d *DeleteLoadbalancerInput) DeleteLoadbalancer(con aws.EstablishConnection
 				delb := new(aws.DeleteLoadbalancerInput)
 				if lisarn.Listeners != nil {
 					delb.ListenerArn = *lisarn.Listeners[0].ListenerArn
-					//deletion of listners
+					//deletion of listeners
 					deliserr := elb.DeleteAppListeners(delb)
 					if deliserr != nil {
 						return nil, deliserr

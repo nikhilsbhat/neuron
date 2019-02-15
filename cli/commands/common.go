@@ -1,4 +1,4 @@
-// Package that helps with common functionalities accross the package commands
+// Package that helps with common functionalities across the package commands
 package commands
 
 import (

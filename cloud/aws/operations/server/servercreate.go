@@ -128,7 +128,7 @@ func (csrv *CreateServerInput) CreateServer(con aws.EstablishConnectionInput) ([
 		instance_ids = append(instance_ids, *instance.InstanceId)
 	}
 
-	// I will make program wait untill instance become running
+	// I will make program wait until instance become running
 	wait_err := ec2.WaitTillInstanceAvailable(
 		&aws.DescribeComputeInput{
 			InstanceIds: instance_ids,
@@ -147,7 +147,7 @@ func (csrv *CreateServerInput) CreateServer(con aws.EstablishConnectionInput) ([
 		}
 	}
 
-	//fetching the deatils of server
+	//fetching the details of server
 	result, serverr := ec2.DescribeInstance(
 		&aws.DescribeComputeInput{
 			InstanceIds: instance_ids,
@@ -174,7 +174,7 @@ func (csrv *CreateServerInput) CreateServer(con aws.EstablishConnectionInput) ([
 		return create_server_response, nil
 	}
 
-	// fetching the instance details which is created in previos process
+	// fetching the instance details which is created in previous process
 	for _, reservation := range result.Reservations {
 		for _, instance := range reservation.Instances {
 			if csrv.AssignPubIp == true {

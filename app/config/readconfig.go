@@ -100,7 +100,7 @@ func syntaxError(data []byte, err error) error {
 
 	line := bytes.Count(data[:start], newline) + 1
 
-	err = fmt.Errorf("error occured at line %d, %s\n%s",
+	err = fmt.Errorf("error occurred at line %d, %s\n%s",
 		line, syntaxErr, data[start:end])
 	return err
 }
@@ -122,7 +122,7 @@ func unknownTypeError(data []byte, err error) error {
 
 	line := bytes.Count(data[:start], newline) + 1
 
-	err = fmt.Errorf("error occured at line %d, %s\n%s\nThe data type you entered for the value is wrong",
+	err = fmt.Errorf("error occurred at line %d, %s\n%s\nThe data type you entered for the value is wrong",
 		line, unknownTypeErr, data[start:end])
 	return err
 }

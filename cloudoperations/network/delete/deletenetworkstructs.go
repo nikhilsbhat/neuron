@@ -6,7 +6,7 @@ import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
-// The struct which impliments method DeleteNetwork.
+// The struct which implements method DeleteNetwork.
 type DeleteNetworkInput struct {
 
 	// Ids or names of VPC's which has to be deleted.

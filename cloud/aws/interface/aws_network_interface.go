@@ -699,7 +699,7 @@ func (sess *EstablishedSession) WaitUntilSubnetDeleted(d *DescribeNetworkInput) 
 					return false, deserr
 				}
 			}
-			return false, fmt.Errorf("Error occured while waiting for the subnet deletion")
+			return false, fmt.Errorf("Error occurred while waiting for the subnet deletion")
 		}
 		return false, fmt.Errorf(fmt.Sprintf("%v WaitUntilSubnetDeleted", err.EmptyStructError()))
 	}
@@ -740,7 +740,7 @@ func (sess *EstablishedSession) WaitUntilRoutTableDeleted(d *DescribeNetworkInpu
 					return false, deserr
 				}
 			}
-			return false, fmt.Errorf("Error occured while waiting for the routetable deletion")
+			return false, fmt.Errorf("Error occurred while waiting for the routetable deletion")
 		}
 		return false, fmt.Errorf(fmt.Sprintf("%v WaitUntilRoutTableDeleted", err.EmptyStructError()))
 	}
@@ -781,7 +781,7 @@ func (sess *EstablishedSession) WaitUntilIgwDeleted(d *DescribeNetworkInput) (bo
 					return false, deserr
 				}
 			}
-			return false, fmt.Errorf("Error occured while waiting for the InternetGateways deletion")
+			return false, fmt.Errorf("Error occurred while waiting for the InternetGateways deletion")
 		}
 		return false, fmt.Errorf(fmt.Sprintf("%v WaitUntilIgwDeleted", err.EmptyStructError()))
 	}

@@ -55,7 +55,7 @@ func getServCmds() *cobra.Command {
 	return cmdServer
 }
 
-// Registering all the flags to the subcommands and command netwrok itself.
+// Registering all the flags to the subcommands and command network itself.
 func registersvFlags(cmdname string, cmd *cobra.Command) {
 
 	switch strings.ToLower(cmdname) {

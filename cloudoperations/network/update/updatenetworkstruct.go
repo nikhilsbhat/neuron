@@ -6,7 +6,7 @@ import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
-// The struct which impliments method GetNetworks, GetSubnets.
+// The struct which implements method GetNetworks, GetSubnets.
 type NetworkUpdateInput struct {
 
 	// The type of resources and the action to be performed in it

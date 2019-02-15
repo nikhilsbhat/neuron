@@ -6,7 +6,7 @@ import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
-// The struct which impliments method GetNetworks, GetSubnets.
+// The struct which implements method GetNetworks, GetSubnets.
 type GetNetworksInput struct {
 	// Ids or names of VPC's of which the information has to be fetched.
 	VpcIds []string `json:"vpcids"`
