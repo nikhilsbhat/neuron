@@ -430,7 +430,7 @@ func (sess *EstablishedSession) DeleteSecurityGroup(s *DescribeNetworkInput) err
 			}
 		}
 
-		return fmt.Errorf(fmt.Sprintf(" DeleteSecurityGroup", err.EmptyStructError()))
+		return fmt.Errorf(fmt.Sprintf("%v DeleteSecurityGroup", err.EmptyStructError()))
 	}
 	return err.InvalidSession()
 

@@ -91,8 +91,6 @@ func (serv *GetServersInput) GetServersDetails() (GetServerResponse, error) {
 			}
 			return GetServerResponse{AwsResponse: server_response}, nil
 		}
-		return GetServerResponse{}, fmt.Errorf("You have not passed valid input to get details of server, the input struct looks like empty")
-
 	case "azure":
 		return GetServerResponse{DefaultResponse: common.DefaultAzResponse}, nil
 	case "gcp":

@@ -28,7 +28,7 @@ type loggerOptions struct {
 	logpath io.Writer
 	msg     string
 	level   string
-	caller  string `json:"caller,omitempty"`
+	caller  string
 }
 
 func Init() error {
@@ -197,5 +197,4 @@ func getStringOfMessage(g interface{}) string {
 	default:
 		return "unknown messagetype"
 	}
-	return ""
 }

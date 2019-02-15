@@ -8,26 +8,26 @@ import (
 )
 
 type CreateServerInput struct {
-	ImageId        string   `json:"ImageId,omitempty"`
-	InstanceType   string   `json:"InstanceType,omitempty"`
-	KeyName        string   `json:"KeyName,omitempty"`
-	MaxCount       int64    `json:"MaxCount,omitempty"`
-	MinCount       int64    `json:"MinCount,omitempty"`
-	SubnetId       string   `json:"SubnetId,omitempty"`
-	SecurityGroups []string `json:"SecurityGroup,omitempty"`
-	UserData       string   `json:"UserData,omitempty"`
-	AssignPubIp    bool     `json:"AssignPubIp,omitempty"`
+	ImageId        string   `json:"imageid,omitempty"`
+	InstanceType   string   `json:"instancetype,omitempty"`
+	KeyName        string   `json:"keyname,omitempty"`
+	MaxCount       int64    `json:"maxcount,omitempty"`
+	MinCount       int64    `json:"mincount,omitempty"`
+	SubnetId       string   `json:"subnetid,omitempty"`
+	SecurityGroups []string `json:"securitygroup,omitempty"`
+	UserData       string   `json:"userdata,omitempty"`
+	AssignPubIp    bool     `json:"assignpubip,omitempty"`
 }
 
 type DescribeComputeInput struct {
-	InstanceIds []string `json:"InstanceIds,omitempty"`
-	ImageIds    []string `json:"ImageIds,omitempty"`
-	Filters     Filters  `json:"Filters,omitempty"`
+	InstanceIds []string `json:"instanceids,omitempty"`
+	ImageIds    []string `json:"imageids,omitempty"`
+	Filters     Filters  `json:"filters,omitempty"`
 }
 
 type UpdateComputeInput struct {
-	InstanceIds []string `json:"InstanceIds,omitempty"`
-	Force       string   `json:"InstanceIds,omitempty"`
+	InstanceIds []string `json:"instanceids,omitempty"`
+	Force       string   `json:"force,omitempty"`
 }
 
 type DeleteComputeInput struct {

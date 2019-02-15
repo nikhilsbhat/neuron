@@ -158,12 +158,12 @@ func (csrv *CreateServerInput) CreateServer(con aws.EstablishConnectionInput) ([
 	}
 
 	type server_response struct {
-		name        string `json:"name,omitempty"`
-		instance_id string `json:"instance_id,omitempty"`
-		ipaddress   string `json:"ipaddress,omitempty"`
-		privatedns  string `json:"privatedns,omitempty"`
-		publicIp    string `json:"publicIp,omitempty"`
-		createdon   string `json:"createdon,omitempty"`
+		name        string
+		instance_id string
+		ipaddress   string
+		privatedns  string
+		publicIp    string
+		createdon   string
 	}
 
 	response := make([]server_response, 0)

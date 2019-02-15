@@ -184,7 +184,7 @@ func (conf *AppConfig) configDB() {
 	for _, dataBase := range conf.Database {
 		if val := reflect.DeepEqual(*dataBase, db{}); val != true {
 			log.Info("Found Config for database")
-			log.Info(fmt.Sprintf(" Provided configs are: %s ", conf.Database))
+			log.Info(fmt.Sprintf(" Provided configs are: %v ", conf.Database))
 			if strings.ToLower(*dataBase.Name) == "mongodb" {
 				log.Info("Found a compatible databse. Establishing connection....")
 				db_session, dberr := mgo.Dial(*dataBase.Addr)

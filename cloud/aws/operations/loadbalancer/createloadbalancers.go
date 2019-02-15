@@ -18,84 +18,84 @@ import (
 // It has various parameter which helps in taking decision for creating loabalancer and other aspects of it.
 type LoadBalanceCreateInput struct {
 	//optional parameter; If you provide the name to the loadbalancer well and good, else we will name it with a default one.
-	Name string `json:"Name"`
+	Name string `json:"name"`
 
 	//optional parameter; The Id of vpc in which the loadbalancer has to be created. Use this only if you don't want to pass subnets directly.
 	//once this option is used we automatically fetch the random subnets from this network.
-	VpcId string `json:"VpcId"`
+	VpcId string `json:"vpcid"`
 
 	//optional parameter; The Ids of subnet in which the loadbalancer has to be created.
-	SubnetIds []string `json:"SubnetIds"`
+	SubnetIds []string `json:"subnetids"`
 
 	//optional parameter; The names of availability zones to which loadbalancers has to be tagged. Either this or subnets has to be passed, passing both does't work
-	AvailabilityZones []string `json:"AvailabilityZones"`
+	AvailabilityZones []string `json:"availabilityzones"`
 
 	//optional parameter; The Ids of secutiry group to be attached to loadbalancer.
 	//If not mentioned, default security group of VPC will be attached.
-	SecurityGroupIds []string `json:"SubnetIds"`
+	SecurityGroupIds []string `json:"securitygroupids"`
 
 	//optional parameter; This field is to select the catageory of loadbalancer ex: internal, internet-facing. If not mentioned internet-facing will be created by default.
-	Scheme string `json:"Scheme"`
+	Scheme string `json:"scheme"`
 	//mandatory parameter; The type of loadbalancer required ex: classic, application etc.
-	Type string `json:"Type"`
+	Type string `json:"type"`
 
 	//required only if the LB protocol is HTTPS else can be initiazed with dummy value
-	SslCert   string `json:"SslCert"`
-	SslPolicy string `json:"SslPolicy"`
+	SslCert   string `json:"sslCert"`
+	SslPolicy string `json:"sslPolicy"`
 
 	//mandatory parameter; The port of the loabalancer. ex: 8080, 80 etc.
-	LbPort   int64 `json:"LbPort"`
-	InstPort int64 `json:"InstPort"`
+	LbPort   int64 `json:"lbport"`
+	InstPort int64 `json:"instport"`
 
 	//mandatory parameter; The protocol of loadbalancer. ex: HTTPS, HTTP.
-	Lbproto   string `json:"Lbproto"`
-	Instproto string `json:"Instproto"`
+	Lbproto   string `json:"lbproto"`
+	Instproto string `json:"instproto"`
 
 	//optional parameter; The http code. ex: 200, 404 etc.
-	HttpCode   string `json:"HttpCode"`
-	HealthPath string `json:"HealthPath"`
+	HttpCode   string `json:"httpcode"`
+	HealthPath string `json:"healthpath"`
 
 	//optional parameter; Select Ip address type ex: ipv4, ipv6. If nothing is passed ipv4 is considered by default.
-	IpAddressType string `json:"IpAddressType"`
+	IpAddressType string `json:"ipaddresstype"`
 
 	//optional parameter; Only when you need unfiltered result from cloud, enable this field by setting it to true. By default it is set to false.
-	GetRaw bool `json:"GetRaw"`
+	GetRaw bool `json:"getraw"`
 }
 
 // This struct is the output of CreateLoadBalancer, this holds both filetered and unfiletred response from cloud.
 // But one has to enable flag 'GetRaw' in LoadBalanceCreateInput to get unfiletred output.
 type LoadBalanceResponse struct {
-	Name                   string                           `json:"Name,omitempty""`
-	Type                   string                           `json:"Type,omitempty""`
-	LbDns                  string                           `json:"LbDns,omitempty""`
-	LbArn                  string                           `json:"LbArn,omitempty"`
-	LbArns                 []string                         `json:"LbArns,omitempty"`
-	TargetArn              interface{}                      `json:"TargetArn,omitempty"`
-	ListnerArn             interface{}                      `json:"ListnerArn,omitempty"`
-	Createdon              string                           `json:"Createdon,omitempty"`
-	VpcId                  string                           `json:"VpcId,omitempty"`
-	Scheme                 string                           `json:"Scheme,omitempty"`
-	DefaultResponse        interface{}                      `json:"DefaultResponse,omitempty"`
-	LbDeleteStatus         string                           `json:"LbDeleteStatus,omitempty"`
-	ClassicLb              []LoadBalanceResponse            `json:"ClassicLb,omitempty"`
-	ApplicationLb          []LoadBalanceResponse            `json:"ApplicationLb,omitempty"`
-	CreateClassicLbRaw     *elb.CreateLoadBalancerOutput    `json:"CreateClassicLbRaw,omitempty"`
-	GetClassicLbsRaw       *elb.DescribeLoadBalancersOutput `json:"GetClassicLbsRaw,omitempty"`
-	GetClassicLbRaw        *elb.LoadBalancerDescription     `json:"GetClassicLbRaw,omitempty"`
-	CreateApplicationLbRaw ApplicationLbRaw                 `json:"CreateApplicationLbRaw,omitempty"`
-	GetApplicationLbRaw    ApplicationLbRaw                 `json:"GetApplicationLbRaw,omitempty"`
+	Name                   string                           `json:"name,omitempty"`
+	Type                   string                           `json:"type,omitempty"`
+	LbDns                  string                           `json:"lbdns,omitempty"`
+	LbArn                  string                           `json:"lbarn,omitempty"`
+	LbArns                 []string                         `json:"lbarns,omitempty"`
+	TargetArn              interface{}                      `json:"targetarn,omitempty"`
+	ListnerArn             interface{}                      `json:"listnerarn,omitempty"`
+	Createdon              string                           `json:"createdon,omitempty"`
+	VpcId                  string                           `json:"vpcid,omitempty"`
+	Scheme                 string                           `json:"scheme,omitempty"`
+	DefaultResponse        interface{}                      `json:"defaultresponse,omitempty"`
+	LbDeleteStatus         string                           `json:"lbdeletestatus,omitempty"`
+	ClassicLb              []LoadBalanceResponse            `json:"classiclb,omitempty"`
+	ApplicationLb          []LoadBalanceResponse            `json:"applicationlb,omitempty"`
+	CreateClassicLbRaw     *elb.CreateLoadBalancerOutput    `json:"createclassiclbraw,omitempty"`
+	GetClassicLbsRaw       *elb.DescribeLoadBalancersOutput `json:"getclassiclbsraw,omitempty"`
+	GetClassicLbRaw        *elb.LoadBalancerDescription     `json:"getclassiclbraw,omitempty"`
+	CreateApplicationLbRaw ApplicationLbRaw                 `json:"createapplicationlbraw,omitempty"`
+	GetApplicationLbRaw    ApplicationLbRaw                 `json:"getapplicationlbraw,omitempty"`
 }
 
 // This struct is a not used alone, but is used along with LoadBalanceResponse.
 // This means, no function will which is accessible to user will send this in response but is passed via LoadBalanceResponse.
 type ApplicationLbRaw struct {
-	CreateApplicationLbRaw *elbv2.CreateLoadBalancerOutput    `json:"CreateApplicationLbRaw,omitempty"`
-	GetApplicationLbsRaw   *elbv2.DescribeLoadBalancersOutput `json:"GetApplicationLbsRaw,omitempty"`
-	GetApplicationLbRaw    *elbv2.LoadBalancer                `json:"GetApplicationLbRaw,omitempty"`
-	CreateTargetGroupRaw   *elbv2.CreateTargetGroupOutput     `json:"CreateTargetGroupRaw,omitempty"`
-	GetTargetGroupRaw      *elbv2.DescribeTargetGroupsOutput  `json:"GetTargetGroupRaw,omitempty"`
-	CreateListnersRaw      *elbv2.CreateListenerOutput        `json:"CreateListnersRaw,omitempty"`
-	GetListnersRaw         *elbv2.DescribeListenersOutput     `json:"GetListnersRaw,omitempty"`
+	CreateApplicationLbRaw *elbv2.CreateLoadBalancerOutput    `json:"createapplicationlbraw,omitempty"`
+	GetApplicationLbsRaw   *elbv2.DescribeLoadBalancersOutput `json:"getapplicationlbsraw,omitempty"`
+	GetApplicationLbRaw    *elbv2.LoadBalancer                `json:"getapplicationlbraw,omitempty"`
+	CreateTargetGroupRaw   *elbv2.CreateTargetGroupOutput     `json:"createtargetgroupraw,omitempty"`
+	GetTargetGroupRaw      *elbv2.DescribeTargetGroupsOutput  `json:"gettargetgroupraw,omitempty"`
+	CreateListnersRaw      *elbv2.CreateListenerOutput        `json:"createlistnersraw,omitempty"`
+	GetListnersRaw         *elbv2.DescribeListenersOutput     `json:"getlistnersraw,omitempty"`
 }
 
 // This is actual spoc for creating loadbalancer in aws and it can create both classica and applciation loabalancers.

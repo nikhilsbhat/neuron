@@ -10,73 +10,73 @@ import (
 )
 
 type NetworkCreateInput struct {
-	VpcCidr  string   `json:"VpcCidr"`
-	SubCidrs []string `json:"SubCidr"`
-	SubCidr  string   `json:"SubCidr"`
-	Name     string   `json:"Name"`
-	Type     string   `json:"Type"`
-	Ports    []string `json:"Ports"`
-	Zone     string   `json:"Zone"`
-	VpcId    string   `json:"VpcId"`
-	IgwId    string   `json:"IgwId"`
-	GetRaw   bool     `json:"GetRaw"`
+	VpcCidr  string   `json:"vpccidr"`
+	SubCidrs []string `json:"subcidrs"`
+	SubCidr  string   `json:"subcidr"`
+	Name     string   `json:"name"`
+	Type     string   `json:"type"`
+	Ports    []string `json:"ports"`
+	Zone     string   `json:"zone"`
+	VpcId    string   `json:"vpcid"`
+	IgwId    string   `json:"igwid"`
+	GetRaw   bool     `json:"getraw"`
 }
 
 type NetworkResponse struct {
-	Name                  string                              `json:"Name,omitempty"`
-	VpcId                 string                              `json:"VpcId,omitempty"`
-	Subnets               []SubnetReponse                     `json:"Subnets,omitempty"`
-	Vpcs                  []VpcResponse                       `json:"Vpcs,omitempty"`
-	Type                  string                              `json:"Type,omitempty"`
-	State                 string                              `json:"State,omitempty"`
-	IgwId                 string                              `json:"Igw,omitempty"`
-	IsDefault             bool                                `json:"IsDefault,omitempty"`
-	SecGroupIds           []string                            `json:"SecGroupId,omitempty"`
-	Region                string                              `json:"Region,omitempty"`
-	GetVpcsRaw            *ec2.DescribeVpcsOutput             `json:"GetVpcsRaw,omitempty"`
-	GetVpcRaw             *ec2.Vpc                            `json:"GetVpcRaw,omitempty"`
-	GetSubnetRaw          *ec2.DescribeSubnetsOutput          `json:"GetSubnetRaw,omitempty"`
-	CreateVpcRaw          VpcResponse                         `json:"CreateVpcRaw,omitempty"`
-	CreateSubnetRaw       []SubnetReponse                     `json:"CreateSubnetRaw,omitempty"`
-	CreateIgwRaw          *ec2.CreateInternetGatewayOutput    `json:"CreateIgwRaw,omitempty"`
-	CreateSecRaw          *ec2.CreateSecurityGroupOutput      `json:"CreateSecRaw,omitempty"`
-	DescribeRouteTableRaw *ec2.DescribeRouteTablesOutput      `json:"DescribeRouteTableRaw,omitempty"`
-	DescribeSecurityRaw   *ec2.DescribeSecurityGroupsOutput   `json:"DescribeSecurityRaw,omitempty"`
-	DescribeIgwRaw        *ec2.DescribeInternetGatewaysOutput `json:"DescribeIgwRaw,omitempty"`
+	Name                  string                              `json:"name,omitempty"`
+	VpcId                 string                              `json:"vpcid,omitempty"`
+	Subnets               []SubnetReponse                     `json:"subnets,omitempty"`
+	Vpcs                  []VpcResponse                       `json:"vpcs,omitempty"`
+	Type                  string                              `json:"type,omitempty"`
+	State                 string                              `json:"state,omitempty"`
+	IgwId                 string                              `json:"igw,omitempty"`
+	IsDefault             bool                                `json:"isdefault,omitempty"`
+	SecGroupIds           []string                            `json:"secgroupid,omitempty"`
+	Region                string                              `json:"region,omitempty"`
+	GetVpcsRaw            *ec2.DescribeVpcsOutput             `json:"getvpcsraw,omitempty"`
+	GetVpcRaw             *ec2.Vpc                            `json:"getvpcraw,omitempty"`
+	GetSubnetRaw          *ec2.DescribeSubnetsOutput          `json:"getsubnetraw,omitempty"`
+	CreateVpcRaw          VpcResponse                         `json:"createvpcraw,omitempty"`
+	CreateSubnetRaw       []SubnetReponse                     `json:"createsubnetraw,omitempty"`
+	CreateIgwRaw          *ec2.CreateInternetGatewayOutput    `json:"createigwraw,omitempty"`
+	CreateSecRaw          *ec2.CreateSecurityGroupOutput      `json:"createsecraw,omitempty"`
+	DescribeRouteTableRaw *ec2.DescribeRouteTablesOutput      `json:"describeroutetableraw,omitempty"`
+	DescribeSecurityRaw   *ec2.DescribeSecurityGroupsOutput   `json:"describesecurityraw,omitempty"`
+	DescribeIgwRaw        *ec2.DescribeInternetGatewaysOutput `json:"describeigwraw,omitempty"`
 }
 
 type DeleteNetworkInput struct {
-	VpcIds        []string `json:"Region"`
-	SubnetIds     []string `json:"Region"`
-	SecIds        []string `json:"SecIds"`
-	IgwIds        []string `json:"IgwId"`
-	RouteTableIds []string `json:"RouteTableIds"`
-	GetRaw        bool     `json:"GetRaw"`
+	VpcIds        []string `json:"region"`
+	SubnetIds     []string `json:"vpcids"`
+	SecIds        []string `json:"secids"`
+	IgwIds        []string `json:"igwid"`
+	RouteTableIds []string `json:"routetableids"`
+	GetRaw        bool     `json:"getraw"`
 }
 
 type GetNetworksInput struct {
-	VpcIds    []string `json:"VpcIds`
-	SubnetIds []string `json:"SubnetIds"`
-	Filters   Filters  `json:"Filters"`
-	Region    string   `json:"Region"`
-	GetRaw    bool     `json:"GetRaw"`
+	VpcIds    []string `json:"vpcids`
+	SubnetIds []string `json:"subnetids"`
+	Filters   Filters  `json:"filters"`
+	Region    string   `json:"region"`
+	GetRaw    bool     `json:"getraw"`
 }
 
 type DeleteNetworkResponse struct {
-	Subnets         string `json:"Subnets,omitempty"`
-	SecurityGroups  string `json:"Securities,omitempty"`
-	Routetables     string `json:"Routetables,omitempty"`
-	Gateways        string `json:"Gateways,omitempty"`
-	Vpcs            string `json:"Vpcs,omitempty"`
-	DefaultResponse string `json:"DefaultResponse,omitempty"`
-	Status          string `json:"Status,omitempty"`
+	Subnets         string `json:"subnets,omitempty"`
+	SecurityGroups  string `json:"securities,omitempty"`
+	Routetables     string `json:"routetables,omitempty"`
+	Gateways        string `json:"gateways,omitempty"`
+	Vpcs            string `json:"vpcs,omitempty"`
+	DefaultResponse string `json:"defaultresponse,omitempty"`
+	Status          string `json:"status,omitempty"`
 }
 
 type UpdateNetworkInput struct {
-	Resource string             `json:"Resource"`
-	Network  NetworkCreateInput `json:"Network"`
-	Action   string             `json:"Action"`
-	GetRaw   bool               `json:"GetRaw"`
+	Resource string             `json:"resource"`
+	Network  NetworkCreateInput `json:"network"`
+	Action   string             `json:"action"`
+	GetRaw   bool               `json:"getRaw"`
 }
 
 type Filters struct {
@@ -179,9 +179,9 @@ func (d *DeleteNetworkInput) DeleteNetwork(con aws.EstablishConnectionInput) (De
 func (d *DeleteNetworkInput) deleteNetworkDeletables(con aws.EstablishConnectionInput) (DeleteNetworkResponse, error) {
 
 	/*ec2, seserr := con.EstablishConnection()
-	if seserr != nil {
-		return DeleteNetworkResponse{}, seserr
-	}*/
+	  if seserr != nil {
+	          return DeleteNetworkResponse{}, seserr
+	  }*/
 
 	if len(d.SecIds) != 0 {
 		//Deletion of security groups
