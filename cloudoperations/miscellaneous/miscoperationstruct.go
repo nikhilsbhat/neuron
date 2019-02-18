@@ -1,4 +1,4 @@
-package miscOperations
+package miscoperations
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

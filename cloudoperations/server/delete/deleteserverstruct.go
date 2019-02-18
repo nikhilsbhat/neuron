@@ -1,4 +1,4 @@
-package deleteServer
+package deleteserver
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

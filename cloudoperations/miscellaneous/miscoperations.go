@@ -1,4 +1,4 @@
-package miscOperations
+package miscoperations
 
 import (
 	"fmt"

@@ -1,4 +1,4 @@
-package networkUpdate
+package networkupdate
 
 import (
 	"fmt"

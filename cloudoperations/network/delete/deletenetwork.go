@@ -1,4 +1,4 @@
-package networkDelete
+package networkdelete
 
 import (
 	"fmt"

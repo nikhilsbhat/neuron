@@ -1,4 +1,4 @@
-package deleteLoadbalancer
+package deleteloadbalancer
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

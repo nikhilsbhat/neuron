@@ -1,4 +1,4 @@
-package commonOperations
+package commonoperations
 
 import (
 	db "github.com/nikhilsbhat/neuron/database"

@@ -1,4 +1,4 @@
-package createLoadbalancer
+package createloadbalancer
 
 import (
 	"fmt"

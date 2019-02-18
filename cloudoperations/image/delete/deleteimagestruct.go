@@ -1,4 +1,4 @@
-package imageDelete
+package imagedelete
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

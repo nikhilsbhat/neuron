@@ -9,6 +9,7 @@ import (
 	"strings"
 )
 
+// NetworkCreateInput is a struct that will implement almost all the creation of network and its components under cloud/operations.
 type NetworkCreateInput struct {
 	VpcCidr  string   `json:"vpccidr"`
 	SubCidrs []string `json:"subcidrs"`
@@ -22,6 +23,7 @@ type NetworkCreateInput struct {
 	GetRaw   bool     `json:"getraw"`
 }
 
+// NetworkResponse is a struct that will be the response type of almost all the network related activities under cloud/operations.
 type NetworkResponse struct {
 	Name                  string                              `json:"name,omitempty"`
 	VpcId                 string                              `json:"vpcid,omitempty"`
@@ -45,6 +47,7 @@ type NetworkResponse struct {
 	DescribeIgwRaw        *ec2.DescribeInternetGatewaysOutput `json:"describeigwraw,omitempty"`
 }
 
+// DeleteNetworkInput is a struct that will implement almost all the deletion of network and its components under cloud/operations.
 type DeleteNetworkInput struct {
 	VpcIds        []string `json:"region"`
 	SubnetIds     []string `json:"vpcids"`
@@ -54,14 +57,16 @@ type DeleteNetworkInput struct {
 	GetRaw        bool     `json:"getraw"`
 }
 
+// GetNetworksInput is a struct that will implement almost all the methods of fetching network and its components under cloud/operations.
 type GetNetworksInput struct {
-	VpcIds    []string `json:"vpcids`
+	VpcIds    []string `json:"vpcids"`
 	SubnetIds []string `json:"subnetids"`
 	Filters   Filters  `json:"filters"`
 	Region    string   `json:"region"`
 	GetRaw    bool     `json:"getraw"`
 }
 
+// DeleteNetworkResponse is a struct that will be the response type of almost all the network and its components while terminating them.
 type DeleteNetworkResponse struct {
 	Subnets         string `json:"subnets,omitempty"`
 	SecurityGroups  string `json:"securities,omitempty"`
@@ -72,6 +77,7 @@ type DeleteNetworkResponse struct {
 	Status          string `json:"status,omitempty"`
 }
 
+// UpdateNetworkInput is a struct that will implement the methods that will update the network and its components under cloud/operations.
 type UpdateNetworkInput struct {
 	Resource string             `json:"resource"`
 	Network  NetworkCreateInput `json:"network"`
@@ -79,12 +85,14 @@ type UpdateNetworkInput struct {
 	GetRaw   bool               `json:"getRaw"`
 }
 
+// Filters will help one to have a hold on the call that they make, will help to filter the quiries.
+// Ex: use this while fetching list of subnet from appropriate vpc, by using vpc as a 'Value' of filter.
 type Filters struct {
 	Name  string
 	Value interface{}
 }
 
-// being create_vpc my job is to create vpc and give back the response who called me
+// CreateNetwork is a customized method for network creation, if one needs to create the individual components of network then call the appropriate methods.
 func (net *NetworkCreateInput) CreateNetwork(con aws.EstablishConnectionInput) (NetworkResponse, error) {
 
 	if (net.VpcCidr == "") || (net.Name == "") {
@@ -110,9 +118,9 @@ func (net *NetworkCreateInput) CreateNetwork(con aws.EstablishConnectionInput) (
 	}
 
 	zonein := common.CommonInput{}
-	zones, zon_err := zonein.GetAvailabilityZones(con)
-	if zon_err != nil {
-		return NetworkResponse{}, zon_err
+	zones, zonerr := zonein.GetAvailabilityZones(con)
+	if zonerr != nil {
+		return NetworkResponse{}, zonerr
 	}
 
 	// This takes care creation of required number of subnets.
@@ -137,9 +145,9 @@ func (net *NetworkCreateInput) CreateNetwork(con aws.EstablishConnectionInput) (
 			netin.IgwId = vpc.IgwId
 		}
 
-		subnet, sub_err := netin.CreateSubnet(con)
-		if sub_err != nil {
-			return NetworkResponse{}, sub_err
+		subnet, suberr := netin.CreateSubnet(con)
+		if suberr != nil {
+			return NetworkResponse{}, suberr
 		}
 		subnets = append(subnets, subnet)
 
@@ -152,6 +160,7 @@ func (net *NetworkCreateInput) CreateNetwork(con aws.EstablishConnectionInput) (
 
 }
 
+// DeleteNetwork is a customized method for deletion of network, if one needs to delete the individual components of network then call the appropriate methods.
 func (d *DeleteNetworkInput) DeleteNetwork(con aws.EstablishConnectionInput) (DeleteNetworkResponse, error) {
 
 	vpcin := GetNetworksInput{VpcIds: d.VpcIds}
@@ -212,15 +221,15 @@ func (d *DeleteNetworkInput) deleteNetworkDeletables(con aws.EstablishConnection
 
 	if len(d.IgwIds) != 0 {
 		//dettachment of igw is been done by below snippet.
-		dettach_gateway := NetworkComponentInput{IgwIds: d.IgwIds, VpcIds: d.VpcIds}
-		detacherr := dettach_gateway.DetachIgws(con)
+		dettachgateway := NetworkComponentInput{IgwIds: d.IgwIds, VpcIds: d.VpcIds}
+		detacherr := dettachgateway.DetachIgws(con)
 		if detacherr != nil {
 			return DeleteNetworkResponse{}, detacherr
 		}
 
 		//deletion of igw is been done by below snippet.
-		delete_gateway := NetworkComponentInput{IgwIds: d.IgwIds}
-		deleteigwerr := delete_gateway.DeleteIgws(con)
+		deletegateway := NetworkComponentInput{IgwIds: d.IgwIds}
+		deleteigwerr := deletegateway.DeleteIgws(con)
 		if deleteigwerr != nil {
 			return DeleteNetworkResponse{}, deleteigwerr
 		}
@@ -235,8 +244,8 @@ func (d *DeleteNetworkInput) deleteNetworkDeletables(con aws.EstablishConnection
 	}
 
 	//deletion of vpc is handled by below snippet
-	delete_vpc := DeleteNetworkInput{VpcIds: d.VpcIds}
-	deletevpcerr := delete_vpc.DeleteVpc(con)
+	deletevpc := DeleteNetworkInput{VpcIds: d.VpcIds}
+	deletevpcerr := deletevpc.DeleteVpc(con)
 	if deletevpcerr != nil {
 		return DeleteNetworkResponse{}, deletevpcerr
 	}
@@ -283,10 +292,10 @@ func (d *DeleteNetworkInput) getNetworkDeletables(con aws.EstablishConnectionInp
 	if secerr != nil {
 		return DeleteNetworkInput{}, secerr
 	}
-	sec_ids := make([]string, 0)
+	secids := make([]string, 0)
 	for _, sec := range secres.SecurityGroups {
 		if *sec.GroupName != "default" {
-			sec_ids = append(sec_ids, *sec.GroupId)
+			secids = append(secids, *sec.GroupId)
 		}
 	}
 
@@ -302,14 +311,14 @@ func (d *DeleteNetworkInput) getNetworkDeletables(con aws.EstablishConnectionInp
 	if routerr != nil {
 		return DeleteNetworkInput{}, routerr
 	}
-	route_ids := make([]string, 0)
+	routeids := make([]string, 0)
 	for _, route := range routres.RouteTables {
 		if route.Associations != nil {
 			if *route.Associations[0].Main != true {
-				route_ids = append(route_ids, *route.RouteTableId)
+				routeids = append(routeids, *route.RouteTableId)
 			}
 		} else {
-			route_ids = append(route_ids, *route.RouteTableId)
+			routeids = append(routeids, *route.RouteTableId)
 		}
 	}
 
@@ -325,42 +334,43 @@ func (d *DeleteNetworkInput) getNetworkDeletables(con aws.EstablishConnectionInp
 	if err != nil {
 		return DeleteNetworkInput{}, err
 	}
-	igw_ids := make([]string, 0)
+	igwids := make([]string, 0)
 	for _, igw := range response.InternetGateways {
-		igw_ids = append(igw_ids, *igw.InternetGatewayId)
+		igwids = append(igwids, *igw.InternetGatewayId)
 	}
 
 	//collating the data of entire network which was collected.
 	deleteResponse := new(DeleteNetworkInput)
 	deleteResponse.SubnetIds = subnets
-	deleteResponse.SecIds = sec_ids
-	deleteResponse.RouteTableIds = route_ids
-	deleteResponse.IgwIds = igw_ids
+	deleteResponse.SecIds = secids
+	deleteResponse.RouteTableIds = routeids
+	deleteResponse.IgwIds = igwids
 	deleteResponse.VpcIds = d.VpcIds
 
 	return *deleteResponse, nil
 
 }
 
+// GetNetwork is a customized method for fetching the details of network, if one needs to fetch the information of the individual components of network then call the appropriate methods else call the GOD, interface which talks to cloud.
 func (net *GetNetworksInput) GetNetwork(con aws.EstablishConnectionInput) ([]NetworkResponse, error) {
 
-	network_response := make([]NetworkResponse, 0)
+	networkresponse := make([]NetworkResponse, 0)
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
 		return nil, seserr
 	}
 
-	find_vpc_result, vpc_err := ec2.DescribeVpc(
+	findvpcresult, vpcerr := ec2.DescribeVpc(
 		&aws.DescribeNetworkInput{
 			VpcIds: net.VpcIds,
 		},
 	)
 
-	if vpc_err != nil {
-		return nil, vpc_err
+	if vpcerr != nil {
+		return nil, vpcerr
 	}
 
-	for _, vpc := range find_vpc_result.Vpcs {
+	for _, vpc := range findvpcresult.Vpcs {
 
 		// getting list of subnets in network
 		subnetin := GetNetworksInput{VpcIds: []string{*vpc.VpcId}, GetRaw: net.GetRaw}
@@ -386,33 +396,34 @@ func (net *GetNetworksInput) GetNetwork(con aws.EstablishConnectionInput) ([]Net
 			subnets.GetVpcRaw = vpc
 			subnets.DescribeSecurityRaw = sec.GetSecurityRaw
 			subnets.DescribeIgwRaw = igw.GetIgwRaw
-			network_response = append(network_response, subnets)
+			networkresponse = append(networkresponse, subnets)
 		} else {
 			if vpc.Tags != nil {
-				network_response = append(network_response, NetworkResponse{Name: *vpc.Tags[0].Value, VpcId: *vpc.VpcId, Subnets: subnets.Subnets, State: *vpc.State, IgwId: igw.IgwIds[0], IsDefault: *vpc.IsDefault, SecGroupIds: sec.SecGroupIds})
+				networkresponse = append(networkresponse, NetworkResponse{Name: *vpc.Tags[0].Value, VpcId: *vpc.VpcId, Subnets: subnets.Subnets, State: *vpc.State, IgwId: igw.IgwIds[0], IsDefault: *vpc.IsDefault, SecGroupIds: sec.SecGroupIds})
 			} else {
-				network_response = append(network_response, NetworkResponse{VpcId: *vpc.VpcId, Subnets: subnets.Subnets, State: *vpc.State, IgwId: igw.IgwIds[0], IsDefault: *vpc.IsDefault, SecGroupIds: sec.SecGroupIds})
+				networkresponse = append(networkresponse, NetworkResponse{VpcId: *vpc.VpcId, Subnets: subnets.Subnets, State: *vpc.State, IgwId: igw.IgwIds[0], IsDefault: *vpc.IsDefault, SecGroupIds: sec.SecGroupIds})
 			}
 		}
 	}
-	return network_response, nil
+	return networkresponse, nil
 }
 
+// GetAllNetworks is a customized method for fetching the details of all the network in the specified region, if one needs to fetch the information of the individual network then call the appropriate method else call the GOD, interface which talks to cloud.
 func (net *GetNetworksInput) GetAllNetworks(con aws.EstablishConnectionInput) ([]NetworkResponse, error) {
 
-	network_response := make([]NetworkResponse, 0)
+	networkresponse := make([]NetworkResponse, 0)
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
 		return nil, seserr
 	}
 
-	find_vpc_result, vpc_err := ec2.DescribeAllVpc(
+	findvpcresult, vpcerr := ec2.DescribeAllVpc(
 		&aws.DescribeNetworkInput{},
 	)
-	if vpc_err != nil {
-		return nil, vpc_err
+	if vpcerr != nil {
+		return nil, vpcerr
 	}
-	for _, vpc := range find_vpc_result.Vpcs {
+	for _, vpc := range findvpcresult.Vpcs {
 
 		// getting list of subnets in network
 		subnetin := GetNetworksInput{VpcIds: []string{*vpc.VpcId}, GetRaw: net.GetRaw}
@@ -440,18 +451,19 @@ func (net *GetNetworksInput) GetAllNetworks(con aws.EstablishConnectionInput) ([
 			netres.GetSubnetRaw = subnets.GetSubnetRaw
 			netres.DescribeSecurityRaw = sec.GetSecurityRaw
 			netres.DescribeIgwRaw = igw.GetIgwRaw
-			network_response = append(network_response, *netres)
+			networkresponse = append(networkresponse, *netres)
 		} else {
 			if vpc.Tags != nil {
-				network_response = append(network_response, NetworkResponse{Name: *vpc.Tags[0].Value, VpcId: *vpc.VpcId, Subnets: subnets.Subnets, State: *vpc.State, IgwId: igw.IgwIds[0], SecGroupIds: sec.SecGroupIds, IsDefault: *vpc.IsDefault, Region: con.Region})
+				networkresponse = append(networkresponse, NetworkResponse{Name: *vpc.Tags[0].Value, VpcId: *vpc.VpcId, Subnets: subnets.Subnets, State: *vpc.State, IgwId: igw.IgwIds[0], SecGroupIds: sec.SecGroupIds, IsDefault: *vpc.IsDefault, Region: con.Region})
 			} else {
-				network_response = append(network_response, NetworkResponse{VpcId: *vpc.VpcId, Subnets: subnets.Subnets, State: *vpc.State, IgwId: igw.IgwIds[0], SecGroupIds: sec.SecGroupIds, IsDefault: *vpc.IsDefault, Region: con.Region})
+				networkresponse = append(networkresponse, NetworkResponse{VpcId: *vpc.VpcId, Subnets: subnets.Subnets, State: *vpc.State, IgwId: igw.IgwIds[0], SecGroupIds: sec.SecGroupIds, IsDefault: *vpc.IsDefault, Region: con.Region})
 			}
 		}
 	}
-	return network_response, nil
+	return networkresponse, nil
 }
 
+// UpdateNetwork is a customized method for updating the network and its components, if one needs to update the individual components network then this method does just that. For more operations call GOD, interface which talks to cloud.
 func (net *UpdateNetworkInput) UpdateNetwork(con aws.EstablishConnectionInput) (NetworkResponse, error) {
 
 	/*ec2, seserr := con.EstablishConnection()
@@ -468,16 +480,16 @@ func (net *UpdateNetworkInput) UpdateNetwork(con aws.EstablishConnectionInput) (
 			zones := make([]string, 0)
 			if net.Network.Zone == "" {
 				zonein := common.CommonInput{}
-				zone, zon_err := zonein.GetAvailabilityZones(con)
-				if zon_err != nil {
-					return NetworkResponse{}, zon_err
+				zone, zonerr := zonein.GetAvailabilityZones(con)
+				if zonerr != nil {
+					return NetworkResponse{}, zonerr
 				}
 				zones = zone
 			} else {
 				zones = []string{net.Network.Zone}
 			}
 			// I will be the spoc for subnets creation in the loop as per the request made
-			subnet_response := make([]SubnetReponse, 0)
+			subnetresponse := make([]SubnetReponse, 0)
 			zonenum := len(zones) - 1
 
 			//Fetching unique number to give our subnet a unique name
@@ -512,19 +524,19 @@ func (net *UpdateNetworkInput) UpdateNetwork(con aws.EstablishConnectionInput) (
 					VpcId:   net.Network.VpcId,
 					GetRaw:  net.GetRaw,
 				}
-				subnet, sub_err := subin.CreateSubnet(con)
-				if sub_err != nil {
-					return NetworkResponse{}, sub_err
+				subnet, suberr := subin.CreateSubnet(con)
+				if suberr != nil {
+					return NetworkResponse{}, suberr
 				}
-				subnet_response = append(subnet_response, subnet)
+				subnetresponse = append(subnetresponse, subnet)
 
 				zonenum--
 				uqnchr++
 			}
 			if net.GetRaw == true {
-				return NetworkResponse{CreateSubnetRaw: subnet_response}, nil
+				return NetworkResponse{CreateSubnetRaw: subnetresponse}, nil
 			}
-			return NetworkResponse{Subnets: subnet_response}, nil
+			return NetworkResponse{Subnets: subnetresponse}, nil
 		case "delete":
 			return NetworkResponse{}, fmt.Errorf(fmt.Sprintf("Either we are not supporting the action %s of the resource %s or you entered wrong name. The action you selected was: %s", net.Action, net.Resource, net.Action))
 		default:

@@ -1,6 +1,6 @@
 // The package which makes the tool cloud agnostic for deleting network and its components.
 // The decision will be made here to route the request to respective package based on input.
-package networkDelete
+package networkdelete
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

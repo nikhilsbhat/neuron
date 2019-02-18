@@ -1,4 +1,4 @@
-package getServers
+package getservers
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

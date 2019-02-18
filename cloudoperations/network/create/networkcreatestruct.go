@@ -1,6 +1,6 @@
 // The package which makes the tool cloud agnostic with respect to creation of network.
 // The decision will be made here to route the request to respective package based on input.
-package networkCreate
+package networkcreate
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

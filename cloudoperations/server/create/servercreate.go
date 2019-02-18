@@ -1,4 +1,4 @@
-package serverCreate
+package servercreate
 
 import (
 	"fmt"

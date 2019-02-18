@@ -8,6 +8,7 @@ import (
 	"strings"
 )
 
+// VpcResponse is a struct that will be the response type of almost all the VPC related activities under cloud/operations.
 type VpcResponse struct {
 	Name              string                           `json:"Name,omitempty"`
 	Type              string                           `json:"Type,omitempty"`
@@ -22,7 +23,7 @@ type VpcResponse struct {
 	CreateSecurityRaw *ec2.CreateSecurityGroupOutput   `json:"CreateSecRaw,omitempty,omitempty"`
 }
 
-//This is customized vpc creation, if one needs plain vpc creation he/she has call interface the GOD which talks to cloud.
+// CreateVpc is a customized method for vpc creation, if one needs plain vpc creation then he/she has to call the GOD, interface which talks to cloud.
 func (vpc *NetworkCreateInput) CreateVpc(con neuronaws.EstablishConnectionInput) (VpcResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
@@ -103,6 +104,7 @@ func (vpc *NetworkCreateInput) CreateVpc(con neuronaws.EstablishConnectionInput)
 	return *vpcresponse, nil
 }
 
+// DeleteVpc is a customized method for vpc deletion, if one needs plain vpc deletion then he/she has to call the GOD, interface which talks to cloud.
 func (vpc *DeleteNetworkInput) DeleteVpc(con neuronaws.EstablishConnectionInput) error {
 
 	ec2, seserr := con.EstablishConnection()
@@ -121,6 +123,7 @@ func (vpc *DeleteNetworkInput) DeleteVpc(con neuronaws.EstablishConnectionInput)
 	return nil
 }
 
+// GetVpcs is a customized method for fetching details of all vpc for a given region, if one needs plain get subnet then he/she has to call the GOD, interface which talks to cloud.
 func (v *GetNetworksInput) GetVpcs(con neuronaws.EstablishConnectionInput) (NetworkResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
@@ -147,6 +150,7 @@ func (v *GetNetworksInput) GetVpcs(con neuronaws.EstablishConnectionInput) (Netw
 	return NetworkResponse{Vpcs: vpcs}, nil
 }
 
+// FindVpcs is a customized method which sends back the response to the caller about the existence of vpc asked for.
 func (v *GetNetworksInput) FindVpcs(con neuronaws.EstablishConnectionInput) (bool, error) {
 
 	ec2, seserr := con.EstablishConnection()

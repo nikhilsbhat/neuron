@@ -1,4 +1,4 @@
-package imageCreate
+package imagecreate
 
 import (
 	"fmt"

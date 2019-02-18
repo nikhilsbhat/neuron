@@ -1,4 +1,4 @@
-package updateServers
+package updateservers
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

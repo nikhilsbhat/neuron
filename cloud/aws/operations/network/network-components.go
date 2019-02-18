@@ -9,21 +9,23 @@ import (
 	"strings"
 )
 
+// NetworkComponentInput is a struct that will implement the methods which deals with the creation/deletion of network components under cloud/operations.
 type NetworkComponentInput struct {
-	Name            string   `json:"Name"`
-	VpcIds          []string `json:"VpcId"`
-	SubId           string   `json:"SubId"`
-	IgwId           string   `json:"IgwId"`
-	IgwIds          []string `json:"IgwIds"`
-	SubType         string   `json:"SubType"`
-	Ports           []string `json:"Ports"`
-	Filters         Filters  `json:"Filters"`
-	SecGroupIds     []string `json:"SecGroupIds"`
-	RouteTableIds   []string `json:"RouteTableIds"`
-	DestinationCidr string   `json:"DestinationCidr"`
-	GetRaw          bool     `json:"GetRaw"`
+	Name            string   `json:"name"`
+	VpcIds          []string `json:"vpcid"`
+	SubId           string   `json:"subid"`
+	IgwId           string   `json:"igwid"`
+	IgwIds          []string `json:"igwids"`
+	SubType         string   `json:"subtype"`
+	Ports           []string `json:"ports"`
+	Filters         Filters  `json:"filters"`
+	SecGroupIds     []string `json:"secgroupids"`
+	RouteTableIds   []string `json:"routetableids"`
+	DestinationCidr string   `json:"destinationcidr"`
+	GetRaw          bool     `json:"getraw"`
 }
 
+// NetworkComponentResponse is a struct that will be the response type of almost all the network components related activities under cloud/operations.
 type NetworkComponentResponse struct {
 	IgwIds            []string                            `json:"IgwId,omitempty"`
 	SecGroupIds       []string                            `json:"SecGroupIds,omitempty"`
@@ -35,43 +37,44 @@ type NetworkComponentResponse struct {
 	GetSecurityRaw    *ec2.DescribeSecurityGroupsOutput   `json:"DescribeSecurityRaw,omitempty"`
 }
 
-//This is customized internet-gateway creation, if one needs plain internet-gateway creation he/she has call interface the GOD which talks to cloud.
-func (igw *NetworkComponentInput) CreateIgw(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
+// CreateIgw is customized internet-gateway creation, if one needs plain internet-gateway creation he/she has call interface the GOD which talks to cloud.
+func (net *NetworkComponentInput) CreateIgw(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
 		return NetworkComponentResponse{}, seserr
 	}
-	ig, ig_err := ec2.CreateIgw()
-	if ig_err != nil {
-		return NetworkComponentResponse{}, ig_err
+	ig, igerr := ec2.CreateIgw()
+	if igerr != nil {
+		return NetworkComponentResponse{}, igerr
 	}
 
-	if igw.VpcIds != nil {
-		at_err := ec2.AttachIgw(
+	if net.VpcIds != nil {
+		aterr := ec2.AttachIgw(
 			&aws.DescribeNetworkInput{
 				IgwIds: []string{*ig.InternetGateway.InternetGatewayId},
-				VpcIds: igw.VpcIds,
+				VpcIds: net.VpcIds,
 			},
 		)
-		if at_err != nil {
-			return NetworkComponentResponse{}, at_err
+		if aterr != nil {
+			return NetworkComponentResponse{}, aterr
 		}
 	}
 
-	igtags := common.Tag{*ig.InternetGateway.InternetGatewayId, "Name", igw.Name + "_igw"}
-	_, igtag_err := igtags.CreateTags(con)
-	if igtag_err != nil {
-		return NetworkComponentResponse{}, igtag_err
+	igtags := common.Tag{*ig.InternetGateway.InternetGatewayId, "Name", net.Name + "_igw"}
+	_, igtagerr := igtags.CreateTags(con)
+	if igtagerr != nil {
+		return NetworkComponentResponse{}, igtagerr
 	}
 
-	if igw.GetRaw == true {
+	if net.GetRaw == true {
 		return NetworkComponentResponse{CreateIgwRaw: ig}, nil
 	}
 	return NetworkComponentResponse{IgwIds: []string{*ig.InternetGateway.InternetGatewayId}}, nil
 }
 
-func (i *NetworkComponentInput) GetIgwFromVpc(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
+// GetIgwFromVpc will help one in fetching IGW from the VPC which they specify.
+func (net *NetworkComponentInput) GetIgwFromVpc(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
@@ -81,7 +84,7 @@ func (i *NetworkComponentInput) GetIgwFromVpc(con aws.EstablishConnectionInput) 
 		&aws.DescribeNetworkInput{
 			Filters: aws.Filters{
 				Name:  "attachment.vpc-id",
-				Value: i.VpcIds,
+				Value: net.VpcIds,
 			},
 		},
 	)
@@ -89,70 +92,71 @@ func (i *NetworkComponentInput) GetIgwFromVpc(con aws.EstablishConnectionInput) 
 		return NetworkComponentResponse{}, err
 	}
 
-	if i.GetRaw == true {
+	if net.GetRaw == true {
 		return NetworkComponentResponse{GetIgwRaw: response}, nil
 	}
 
-	igw_ids := make([]string, 0)
+	igwids := make([]string, 0)
 	for _, igw := range response.InternetGateways {
-		igw_ids = append(igw_ids, *igw.InternetGatewayId)
+		igwids = append(igwids, *igw.InternetGatewayId)
 	}
 
-	return NetworkComponentResponse{IgwIds: igw_ids}, nil
+	return NetworkComponentResponse{IgwIds: igwids}, nil
 }
 
-//This is customized security-group creation, if one needs plain security-group creation he/she has call interface the GOD which talks to cloud.
-func (sec *NetworkComponentInput) CreateSecurityGroup(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
+// CreateSecurityGroup is customized security-group creation, if one needs plain security-group creation he/she has call interface the GOD which talks to cloud.
+func (net *NetworkComponentInput) CreateSecurityGroup(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
 		return NetworkComponentResponse{}, seserr
 	}
-	security, sec_err := ec2.CreateSecurityGroup(
+	security, secerr := ec2.CreateSecurityGroup(
 		&aws.CreateNetworkInput{
-			VpcId: sec.VpcIds[0],
-			Name:  sec.Name + "_sec",
+			VpcId: net.VpcIds[0],
+			Name:  net.Name + "_sec",
 		},
 	)
-	if sec_err != nil {
-		return NetworkComponentResponse{}, sec_err
+	if secerr != nil {
+		return NetworkComponentResponse{}, secerr
 	}
 
-	sctags := common.Tag{*security.GroupId, "Name", sec.Name + "_sec"}
-	_, sctag_err := sctags.CreateTags(con)
-	if sctag_err != nil {
-		return NetworkComponentResponse{}, sctag_err
+	sctags := common.Tag{*security.GroupId, "Name", net.Name + "_sec"}
+	_, sctagerr := sctags.CreateTags(con)
+	if sctagerr != nil {
+		return NetworkComponentResponse{}, sctagerr
 	}
 
 	//creating egree and ingres rules for the security group which I created just now
-	for _, port := range sec.Ports {
-		int_port, _ := strconv.ParseInt(port, 10, 64)
-		ingres_err := ec2.CreateIngressRule(
+	for _, port := range net.Ports {
+		intport, _ := strconv.ParseInt(port, 10, 64)
+		ingreserr := ec2.CreateIngressRule(
 			&aws.IngressEgressInput{
-				Port:  int_port,
+				Port:  intport,
 				SecId: *security.GroupId,
 			},
 		)
-		if ingres_err != nil {
-			return NetworkComponentResponse{}, ingres_err
+		if ingreserr != nil {
+			return NetworkComponentResponse{}, ingreserr
 		}
 	}
-	egres_err := ec2.CreateEgressRule(
+	egreserr := ec2.CreateEgressRule(
 		&aws.IngressEgressInput{
 			SecId: *security.GroupId,
 		},
 	)
-	if egres_err != nil {
-		return NetworkComponentResponse{}, egres_err
+	if egreserr != nil {
+		return NetworkComponentResponse{}, egreserr
 	}
 
-	if sec.GetRaw == true {
+	if net.GetRaw == true {
 		return NetworkComponentResponse{CreateSecurityRaw: security}, nil
 	}
 	return NetworkComponentResponse{SecGroupIds: []string{*security.GroupId}}, nil
 }
 
-func (s *NetworkComponentInput) GetSecFromVpc(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
+// GetSecFromVpc will help one in fetching security-group from the VPC which they specify.
+func (net *NetworkComponentInput) GetSecFromVpc(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
@@ -162,24 +166,25 @@ func (s *NetworkComponentInput) GetSecFromVpc(con aws.EstablishConnectionInput) 
 		&aws.DescribeNetworkInput{
 			Filters: aws.Filters{
 				Name:  "vpc-id",
-				Value: s.VpcIds,
+				Value: net.VpcIds,
 			},
 		},
 	)
 	if err != nil {
 		return NetworkComponentResponse{}, err
 	}
-	sec_ids := make([]string, 0)
-	if s.GetRaw == true {
+	secids := make([]string, 0)
+	if net.GetRaw == true {
 		return NetworkComponentResponse{GetSecurityRaw: response}, nil
 	}
 	for _, sec := range response.SecurityGroups {
-		sec_ids = append(sec_ids, *sec.GroupId)
+		secids = append(secids, *sec.GroupId)
 	}
-	return NetworkComponentResponse{SecGroupIds: sec_ids}, nil
+	return NetworkComponentResponse{SecGroupIds: secids}, nil
 }
 
-func (s *NetworkComponentInput) DeleteSecutiryGroup(con aws.EstablishConnectionInput) error {
+// DeleteSecutiryGroup will help one in deleting security-group which they specify, for deletion of other resources refer other methods.
+func (net *NetworkComponentInput) DeleteSecutiryGroup(con aws.EstablishConnectionInput) error {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
@@ -187,7 +192,7 @@ func (s *NetworkComponentInput) DeleteSecutiryGroup(con aws.EstablishConnectionI
 	}
 	err := ec2.DeleteSecurityGroup(
 		&aws.DescribeNetworkInput{
-			SecIds: s.SecGroupIds,
+			SecIds: net.SecGroupIds,
 		},
 	)
 	if err != nil {
@@ -196,44 +201,44 @@ func (s *NetworkComponentInput) DeleteSecutiryGroup(con aws.EstablishConnectionI
 	return nil
 }
 
-//This is customized route-table creation, if one needs plain route-table creation he/she has call interface the GOD which talks to cloud.
-func (r *NetworkComponentInput) CreateRouteTable(con aws.EstablishConnectionInput) error {
+// CreateRouteTable is customized route-table creation, if one needs plain route-table creation he/she has call interface the GOD which talks to cloud.
+func (net *NetworkComponentInput) CreateRouteTable(con aws.EstablishConnectionInput) error {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
 		return seserr
 	}
-	route_table, routetable_err := ec2.CreateRouteTable(
+	routetable, routetableerr := ec2.CreateRouteTable(
 		&aws.CreateNetworkInput{
-			VpcId: r.VpcIds[0],
+			VpcId: net.VpcIds[0],
 		},
 	)
 
-	if routetable_err != nil {
-		return routetable_err
+	if routetableerr != nil {
+		return routetableerr
 	}
 
-	if r.IgwId != "" {
-		if strings.ToLower(r.SubType) == "public" {
-			route_err := ec2.WriteRoute(
+	if net.IgwId != "" {
+		if strings.ToLower(net.SubType) == "public" {
+			routeerr := ec2.WriteRoute(
 				&aws.CreateNetworkInput{
 					DestinationCidr: "0.0.0.0/0",
-					IgwId:           r.IgwId,
-					RouteTableId:    *route_table.RouteTable.RouteTableId,
+					IgwId:           net.IgwId,
+					RouteTableId:    *routetable.RouteTable.RouteTableId,
 				},
 			)
-			if route_err != nil {
-				return route_err
+			if routeerr != nil {
+				return routeerr
 			}
 
-			route_attach_err := ec2.AttachRouteTable(
+			routeattacherr := ec2.AttachRouteTable(
 				&aws.CreateNetworkInput{
-					RouteTableId: *route_table.RouteTable.RouteTableId,
-					SubId:        r.SubId,
+					RouteTableId: *routetable.RouteTable.RouteTableId,
+					SubId:        net.SubId,
 				},
 			)
-			if route_attach_err != nil {
-				return route_attach_err
+			if routeattacherr != nil {
+				return routeattacherr
 			}
 
 			return nil
@@ -242,34 +247,34 @@ func (r *NetworkComponentInput) CreateRouteTable(con aws.EstablishConnectionInpu
 			return nil
 		}
 	} else {
-		if strings.ToLower(r.SubType) == "public" {
-			igws, igw_err := ec2.DescribeAllIgw(
+		if strings.ToLower(net.SubType) == "public" {
+			igws, igwerr := ec2.DescribeAllIgw(
 				&aws.DescribeNetworkInput{},
 			)
-			if igw_err != nil {
-				return igw_err
+			if igwerr != nil {
+				return igwerr
 			}
 			for _, igw := range igws.InternetGateways {
-				if *igw.Attachments[0].VpcId == r.VpcIds[0] {
-					route_err := ec2.WriteRoute(
+				if *igw.Attachments[0].VpcId == net.VpcIds[0] {
+					routeerr := ec2.WriteRoute(
 						&aws.CreateNetworkInput{
 							DestinationCidr: "0.0.0.0/0",
 							IgwId:           *igw.InternetGatewayId,
-							RouteTableId:    *route_table.RouteTable.RouteTableId,
+							RouteTableId:    *routetable.RouteTable.RouteTableId,
 						},
 					)
-					if route_err != nil {
-						return route_err
+					if routeerr != nil {
+						return routeerr
 					}
 
-					route_attach_err := ec2.AttachRouteTable(
+					routeattacherr := ec2.AttachRouteTable(
 						&aws.CreateNetworkInput{
-							RouteTableId: *route_table.RouteTable.RouteTableId,
-							SubId:        r.SubId,
+							RouteTableId: *routetable.RouteTable.RouteTableId,
+							SubId:        net.SubId,
 						},
 					)
-					if route_attach_err != nil {
-						return route_attach_err
+					if routeattacherr != nil {
+						return routeattacherr
 					}
 
 					return nil
@@ -284,7 +289,8 @@ func (r *NetworkComponentInput) CreateRouteTable(con aws.EstablishConnectionInpu
 	}
 }
 
-func (d *NetworkComponentInput) DisassociateRouteTable(con aws.EstablishConnectionInput) (bool, error) {
+// DisassociateRouteTable will help one in disassociating the route-table which you specify, from the subnet to which it is attached, for disassociating other resources refer other methods.
+func (net *NetworkComponentInput) DisassociateRouteTable(con aws.EstablishConnectionInput) (bool, error) {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
@@ -293,7 +299,7 @@ func (d *NetworkComponentInput) DisassociateRouteTable(con aws.EstablishConnecti
 
 	response, reserr := ec2.DescribeRouteTable(
 		&aws.DescribeNetworkInput{
-			RouteTableIds: d.RouteTableIds,
+			RouteTableIds: net.RouteTableIds,
 		},
 	)
 	if reserr != nil {
@@ -320,7 +326,8 @@ func (d *NetworkComponentInput) DisassociateRouteTable(con aws.EstablishConnecti
 	return true, nil
 }
 
-func (s *NetworkComponentInput) GetRouteTableFromVpc(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
+// GetRouteTableFromVpc will help one in fetching route-tables from the VPC which they specify.
+func (net *NetworkComponentInput) GetRouteTableFromVpc(con aws.EstablishConnectionInput) (NetworkComponentResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
@@ -330,7 +337,7 @@ func (s *NetworkComponentInput) GetRouteTableFromVpc(con aws.EstablishConnection
 		&aws.DescribeNetworkInput{
 			Filters: aws.Filters{
 				Name:  "vpc-id",
-				Value: s.VpcIds,
+				Value: net.VpcIds,
 			},
 		},
 	)
@@ -338,26 +345,27 @@ func (s *NetworkComponentInput) GetRouteTableFromVpc(con aws.EstablishConnection
 		return NetworkComponentResponse{}, err
 	}
 
-	route_ids := make([]string, 0)
+	routeids := make([]string, 0)
 
-	if s.GetRaw == true {
+	if net.GetRaw == true {
 		return NetworkComponentResponse{GetRouteTableRaw: response}, nil
 	}
 
 	for _, route := range response.RouteTables {
-		route_ids = append(route_ids, *route.RouteTableId)
+		routeids = append(routeids, *route.RouteTableId)
 	}
-	return NetworkComponentResponse{RouteTableIds: route_ids}, nil
+	return NetworkComponentResponse{RouteTableIds: routeids}, nil
 }
 
-func (s *NetworkComponentInput) DeleteRouteTable(con aws.EstablishConnectionInput) error {
+// DeleteRouteTable will help one in deleting route-table which they specify, for deletion of other resources refer other methods.
+func (net *NetworkComponentInput) DeleteRouteTable(con aws.EstablishConnectionInput) error {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
 		return seserr
 	}
 
-	for _, route := range s.RouteTableIds {
+	for _, route := range net.RouteTableIds {
 		err := ec2.DeleteRouteTable(
 			&aws.DescribeNetworkInput{
 				RouteTableIds: []string{route},
@@ -383,17 +391,18 @@ func (s *NetworkComponentInput) DeleteRouteTable(con aws.EstablishConnectionInpu
 	return nil
 }
 
-func (s *NetworkComponentInput) DetachIgws(con aws.EstablishConnectionInput) error {
+// DetachIgws will help one in dettaching the IGW's which you specify, from the network to which it is attached, for dettaching other resources refer other methods.
+func (net *NetworkComponentInput) DetachIgws(con aws.EstablishConnectionInput) error {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
 		return seserr
 	}
-	for _, igw := range s.IgwIds {
+	for _, igw := range net.IgwIds {
 		err := ec2.DetachIgw(
 			&aws.DescribeNetworkInput{
 				IgwIds: []string{igw},
-				VpcIds: s.VpcIds,
+				VpcIds: net.VpcIds,
 			},
 		)
 		if err != nil {
@@ -403,18 +412,19 @@ func (s *NetworkComponentInput) DetachIgws(con aws.EstablishConnectionInput) err
 	return nil
 }
 
-func (i *NetworkComponentInput) DeleteIgws(con aws.EstablishConnectionInput) error {
+// DeleteIgws will help one in deleting IGW's which they specify, for deletion of other resources refer other methods.
+func (net *NetworkComponentInput) DeleteIgws(con aws.EstablishConnectionInput) error {
 
 	ec2, seserr := con.EstablishConnection()
 	if seserr != nil {
 		return seserr
 	}
 
-	for _, igw := range i.IgwIds {
+	for _, igw := range net.IgwIds {
 		err := ec2.DeleteIgw(
 			&aws.DescribeNetworkInput{
 				IgwIds: []string{igw},
-				VpcIds: i.VpcIds,
+				VpcIds: net.VpcIds,
 			},
 		)
 		if err != nil {

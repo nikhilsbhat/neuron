@@ -1,4 +1,4 @@
-package imagesGet
+package imagesget
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

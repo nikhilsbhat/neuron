@@ -1,4 +1,4 @@
-package createLoadbalancer
+package createloadbalancer
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

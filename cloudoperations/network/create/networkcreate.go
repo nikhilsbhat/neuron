@@ -1,4 +1,4 @@
-package networkCreate
+package networkcreate
 
 import (
 	"fmt"

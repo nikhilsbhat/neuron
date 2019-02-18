@@ -8,6 +8,7 @@ import (
 	//"time"
 )
 
+// SubnetReponse is a struct that will be the response type of almost all the subnet related activities under cloud/operations.
 type SubnetReponse struct {
 	Name            string                     `json:"Name,omitempty"`
 	Id              string                     `json:"Id,omitempty"`
@@ -17,7 +18,7 @@ type SubnetReponse struct {
 	GetSubnetRaw    *ec2.DescribeSubnetsOutput `json:"GetSubnetRaw,omitempty"`
 }
 
-//This is customized subnet creation, if one needs plain subnet creation he/she has call interface the GOD which talks to cloud.
+// CreateSubnet is a customized method for subnet creation, if one needs plain subnet creation then he/she has to call the GOD, interface which talks to cloud.
 func (subin *NetworkCreateInput) CreateSubnet(con neuronaws.EstablishConnectionInput) (SubnetReponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
@@ -25,7 +26,7 @@ func (subin *NetworkCreateInput) CreateSubnet(con neuronaws.EstablishConnectionI
 		return SubnetReponse{}, seserr
 	}
 	// I am gathering inputs since create subnets needs it
-	sub, sub_err := ec2.CreateSubnet(
+	sub, suberr := ec2.CreateSubnet(
 		&neuronaws.CreateNetworkInput{
 			Cidr:  subin.SubCidr,
 			VpcId: subin.VpcId,
@@ -34,12 +35,12 @@ func (subin *NetworkCreateInput) CreateSubnet(con neuronaws.EstablishConnectionI
 	)
 
 	// handling the error if it throws while subnet is under creation process
-	if sub_err != nil {
-		return SubnetReponse{}, sub_err
+	if suberr != nil {
+		return SubnetReponse{}, suberr
 	}
 
 	// I will make program wait until subnet become available
-	wait_err := ec2.WaitTillSubnetAvailable(
+	waiterr := ec2.WaitTillSubnetAvailable(
 		&neuronaws.DescribeNetworkInput{
 			Filters: neuronaws.Filters{
 				Name:  "subnet-id",
@@ -48,15 +49,15 @@ func (subin *NetworkCreateInput) CreateSubnet(con neuronaws.EstablishConnectionI
 		},
 	)
 
-	if wait_err != nil {
-		return SubnetReponse{}, wait_err
+	if waiterr != nil {
+		return SubnetReponse{}, waiterr
 	}
 
 	// I will be the spock for tags creation.
 	tags := common.Tag{*sub.Subnet.SubnetId, "Name", subin.Name}
-	subtag, tag_err := tags.CreateTags(con)
-	if tag_err != nil {
-		return SubnetReponse{}, tag_err
+	subtag, tagerr := tags.CreateTags(con)
+	if tagerr != nil {
+		return SubnetReponse{}, tagerr
 	}
 
 	routes := new(NetworkComponentInput)
@@ -66,10 +67,10 @@ func (subin *NetworkCreateInput) CreateSubnet(con neuronaws.EstablishConnectionI
 	routes.IgwId = subin.IgwId
 	routes.SubType = subin.Type
 
-	route_err := routes.CreateRouteTable(con)
+	routeerr := routes.CreateRouteTable(con)
 
-	if route_err != nil {
-		return SubnetReponse{}, route_err
+	if routeerr != nil {
+		return SubnetReponse{}, routeerr
 	}
 
 	if subin.GetRaw == true {
@@ -79,6 +80,7 @@ func (subin *NetworkCreateInput) CreateSubnet(con neuronaws.EstablishConnectionI
 	return SubnetReponse{Name: subtag, Id: *sub.Subnet.SubnetId}, nil
 }
 
+// GetAllSubnets is a customized method for fetching details of all subnets for a given region, if one needs plain get subnet then he/she has to call the GOD, interface which talks to cloud.
 func (net *GetNetworksInput) GetAllSubnets(con neuronaws.EstablishConnectionInput) (NetworkResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
@@ -105,6 +107,7 @@ func (net *GetNetworksInput) GetAllSubnets(con neuronaws.EstablishConnectionInpu
 
 }
 
+// GetSubnets is a customized method for fetching details of a particular subnet for a given region, if one needs plain get subnet then he/she has to call the GOD, interface which talks to cloud.
 func (net *GetNetworksInput) GetSubnets(con neuronaws.EstablishConnectionInput) (NetworkResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
@@ -136,7 +139,8 @@ func (net *GetNetworksInput) GetSubnets(con neuronaws.EstablishConnectionInput) 
 
 }
 
-//Passing multiple values in vpcids array makes no difference as we use only first element of it, this is customized function for raw data refer interface
+// GetSubnetsFromVpc is method which gets the list of available subnets from a asked network.
+// Passing multiple values in vpcids array makes no difference here as we use only first element of it, this is customized function for raw data refer interface
 func (net *GetNetworksInput) GetSubnetsFromVpc(con neuronaws.EstablishConnectionInput) (NetworkResponse, error) {
 
 	ec2, seserr := con.EstablishConnection()
@@ -171,6 +175,7 @@ func (net *GetNetworksInput) GetSubnetsFromVpc(con neuronaws.EstablishConnection
 
 }
 
+// DeleteSubnets is a customized method for deleting subnets, if one needs plain subnet deletion then he/she has to call the GOD, interface which talks to cloud.
 func (s *DeleteNetworkInput) DeleteSubnets(con neuronaws.EstablishConnectionInput) error {
 
 	ec2, seserr := con.EstablishConnection()
@@ -204,6 +209,7 @@ func (s *DeleteNetworkInput) DeleteSubnets(con neuronaws.EstablishConnectionInpu
 	return nil
 }
 
+// FindSubnet is a customized method which sends back the response to the caller about the existence of subnet asked for.
 func (net *GetNetworksInput) FindSubnet(con neuronaws.EstablishConnectionInput) (bool, error) {
 
 	ec2, seserr := con.EstablishConnection()
@@ -224,7 +230,8 @@ func (net *GetNetworksInput) FindSubnet(con neuronaws.EstablishConnectionInput) 
 	return false, nil
 }
 
-//passing multi valued array make no difference as this is customized
+// GetVpcFromSubnet is a customized method which helps in fetching VPC from subnet asked for.
+// Passing multi valued array make no difference as this is customized
 func (net *GetNetworksInput) GetVpcFromSubnet(con neuronaws.EstablishConnectionInput) (SubnetReponse, error) {
 
 	ec2, seserr := con.EstablishConnection()

@@ -1,4 +1,4 @@
-package serverCreate
+package servercreate
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"

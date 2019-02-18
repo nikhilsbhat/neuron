@@ -1,4 +1,4 @@
-package networkGet
+package networkget
 
 import (
 	"fmt"

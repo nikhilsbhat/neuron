@@ -1,4 +1,4 @@
-package updateServers
+package updateservers
 
 import (
 	"fmt"

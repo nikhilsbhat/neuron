@@ -1,4 +1,4 @@
-package imagesGet
+package imagesget
 
 import (
 	"fmt"

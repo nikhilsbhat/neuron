@@ -1,6 +1,6 @@
 // The package which makes the tool cloud agnostic for updating network components.
 // The decision will be made here to route the request to respective package based on input.
-package networkUpdate
+package networkupdate
 
 import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
