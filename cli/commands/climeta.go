@@ -19,7 +19,7 @@ var (
 
 func init() {
 
-	meta, clierr := neuron.NeuronCliMeta()
+	meta, clierr := neuron.CliMeta()
 	if clierr != nil {
 		fmt.Println(clierr)
 		os.Exit(3)

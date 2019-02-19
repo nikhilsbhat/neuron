@@ -1,5 +1,3 @@
-// This package takes care of registering flags,subcommands and returns the
-// command to the function who creates or holds the root command.
 package commands
 
 import (
@@ -88,12 +86,12 @@ func (cm *cliMeta) createServer(cmd *cobra.Command, args []string) {
 	createsv.Cloud.Region = cm.getRegion(cmd)
 	createsv.Cloud.Profile = cm.getProfile(cmd)
 	createsv.Cloud.GetRaw = cm.getGetRaw(cmd)
-	server_response, ser_resp_err := createsv.CreateServer()
-	if ser_resp_err != nil {
-		cm.NeuronSaysItsError(ser_resp_err.Error())
+	servresponse, servresperr := createsv.CreateServer()
+	if servresperr != nil {
+		cm.NeuronSaysItsError(servresperr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(server_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(servresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 
@@ -105,12 +103,12 @@ func (cm *cliMeta) deleteServer(cmd *cobra.Command, args []string) {
 	deletesv.Cloud.Region = cm.getRegion(cmd)
 	deletesv.Cloud.Profile = cm.getProfile(cmd)
 	deletesv.Cloud.GetRaw = cm.getGetRaw(cmd)
-	delete_sv_response, sv_err := deletesv.DeleteServer()
-	if sv_err != nil {
-		cm.NeuronSaysItsError(sv_err.Error())
+	deletesvresponse, sverr := deletesv.DeleteServer()
+	if sverr != nil {
+		cm.NeuronSaysItsError(sverr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(delete_sv_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(deletesvresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 
@@ -125,21 +123,21 @@ func (cm *cliMeta) getServer(cmd *cobra.Command, args []string) {
 	getsv.Cloud.GetRaw = cm.getGetRaw(cmd)
 
 	if cm.isAll(cmd) {
-		get_server_response, sv_get_err := getsv.GetAllServers()
-		if sv_get_err != nil {
-			cm.NeuronSaysItsError(sv_get_err.Error())
+		getservresponse, svgeterr := getsv.GetAllServers()
+		if svgeterr != nil {
+			cm.NeuronSaysItsError(svgeterr.Error())
 		} else {
-			json_val, _ := json.MarshalIndent(get_server_response, "", " ")
-			cm.NeuronSaysItsInfo(string(json_val))
+			jsonval, _ := json.MarshalIndent(getservresponse, "", " ")
+			cm.NeuronSaysItsInfo(string(jsonval))
 		}
 	}
 
-	get_server_response, sv_get_err := getsv.GetServersDetails()
-	if sv_get_err != nil {
-		cm.NeuronSaysItsError(sv_get_err.Error())
+	getservresponse, svgeterr := getsv.GetServersDetails()
+	if svgeterr != nil {
+		cm.NeuronSaysItsError(svgeterr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(get_server_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(getservresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 
@@ -151,12 +149,12 @@ func (cm *cliMeta) updateServer(cmd *cobra.Command, args []string) {
 	updatesv.Cloud.Region = cm.getRegion(cmd)
 	updatesv.Cloud.Profile = cm.getProfile(cmd)
 	updatesv.Cloud.GetRaw = cm.getGetRaw(cmd)
-	sv_update_response, sv_up_err := updatesv.UpdateServers()
-	if sv_up_err != nil {
-		cm.NeuronSaysItsError(sv_up_err.Error())
+	svupdateresponse, svuperr := updatesv.UpdateServers()
+	if svuperr != nil {
+		cm.NeuronSaysItsError(svuperr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(sv_update_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(svupdateresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 

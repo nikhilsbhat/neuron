@@ -1,4 +1,4 @@
-// This package takes care of registering flags,subcommands and returns the
+// Package commands takes care of registering flags,subcommands and returns the
 // command to the function who creates or holds the root command.
 package commands
 
@@ -96,12 +96,12 @@ func (cm *cliMeta) createNetwork(cmd *cobra.Command, args []string) {
 	createnw.Cloud.Region = cm.getRegion(cmd)
 	createnw.Cloud.Profile = cm.getProfile(cmd)
 	createnw.Cloud.GetRaw = cm.getGetRaw(cmd)
-	server_response, ser_resp_err := createnw.CreateNetwork()
-	if ser_resp_err != nil {
-		cm.NeuronSaysItsError(ser_resp_err.Error())
+	servresponse, servresperr := createnw.CreateNetwork()
+	if servresperr != nil {
+		cm.NeuronSaysItsError(servresperr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(server_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(servresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 
@@ -113,12 +113,12 @@ func (cm *cliMeta) deleteNetwork(cmd *cobra.Command, args []string) {
 	deletenw.Cloud.Region = cm.getRegion(cmd)
 	deletenw.Cloud.Profile = cm.getProfile(cmd)
 	deletenw.Cloud.GetRaw = cm.getGetRaw(cmd)
-	delete_network_response, net_err := deletenw.DeleteNetwork()
-	if net_err != nil {
-		cm.NeuronSaysItsError(net_err.Error())
+	deletenetworkresponse, neterr := deletenw.DeleteNetwork()
+	if neterr != nil {
+		cm.NeuronSaysItsError(neterr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(delete_network_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(deletenetworkresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 
@@ -131,12 +131,12 @@ func (cm *cliMeta) getNetwork(cmd *cobra.Command, args []string) {
 	getnw.Cloud.Region = cm.getRegion(cmd)
 	getnw.Cloud.Profile = cm.getProfile(cmd)
 	getnw.Cloud.GetRaw = cm.getGetRaw(cmd)
-	get_network_response, net_get_err := getnw.GetNetworks()
-	if net_get_err != nil {
-		cm.NeuronSaysItsError(net_get_err.Error())
+	getnetworkresponse, netgeterr := getnw.GetNetworks()
+	if netgeterr != nil {
+		cm.NeuronSaysItsError(netgeterr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(get_network_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(getnetworkresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 
@@ -148,12 +148,12 @@ func (cm *cliMeta) updateNetwork(cmd *cobra.Command, args []string) {
 	updatenw.Cloud.Region = cm.getRegion(cmd)
 	updatenw.Cloud.Profile = cm.getProfile(cmd)
 	updatenw.Cloud.GetRaw = cm.getGetRaw(cmd)
-	net_update_response, net_up_err := updatenw.UpdateNetwork()
-	if net_up_err != nil {
-		cm.NeuronSaysItsError(net_up_err.Error())
+	netupdateresponse, netuperr := updatenw.UpdateNetwork()
+	if netuperr != nil {
+		cm.NeuronSaysItsError(netuperr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(net_update_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(netupdateresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 

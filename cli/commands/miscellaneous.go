@@ -1,5 +1,3 @@
-// This package takes care of registering flags,subcommands and returns the
-// command to the function who creates or holds the root command.
 package commands
 
 import (
@@ -69,12 +67,12 @@ func (cm *cliMeta) getRegions(cmd *cobra.Command, args []string) {
 	getrg.Cloud.Profile = cm.getProfile(cmd)
 	getrg.Cloud.GetRaw = cm.getGetRaw(cmd)
 
-	get_regions_response, reg_get_err := getrg.GetRegions()
-	if reg_get_err != nil {
-		cm.NeuronSaysItsError(reg_get_err.Error())
+	getregionsresponse, regiongeterr := getrg.GetRegions()
+	if regiongeterr != nil {
+		cm.NeuronSaysItsError(regiongeterr.Error())
 	} else {
-		json_val, _ := json.MarshalIndent(get_regions_response, "", " ")
-		cm.NeuronSaysItsInfo(string(json_val))
+		jsonval, _ := json.MarshalIndent(getregionsresponse, "", " ")
+		cm.NeuronSaysItsInfo(string(jsonval))
 	}
 }
 

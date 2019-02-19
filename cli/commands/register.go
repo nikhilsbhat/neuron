@@ -14,6 +14,7 @@ type neucmds struct {
 	commands []*cobra.Command
 }
 
+// Register will help in registering all the subcommands to the main commands.
 func Register(name string, fn *cobra.Command) {
 	if cmds == nil {
 		cmds = make(map[string]*cobra.Command)
@@ -48,6 +49,7 @@ func (c *neucmds) prepareCmds() *cobra.Command {
 	return rootCmd
 }
 
+// SetNeuronCmds helps in gathering all the subcommands so that it can be used while registering it with main command.
 func SetNeuronCmds() *cobra.Command {
 	cmd := getCmds()
 	return cmd

@@ -44,22 +44,22 @@ func createconsul(rw http.ResponseWriter, req *http.Request) {
 func createserver(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData svcreate.ServerCreateInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			create_server_response, serv_err := myData.CreateServer()
-			if serv_err != nil {
-				fmt.Fprintf(rw, "%v\n", serv_err)
+			createserverresponse, serverr := myData.CreateServer()
+			if serverr != nil {
+				fmt.Fprintf(rw, "%v\n", serverr)
 			} else {
-				json_val, _ := json.MarshalIndent(create_server_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(createserverresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -69,20 +69,20 @@ func createserver(rw http.ResponseWriter, req *http.Request) {
 /*func createbuild(rw http.ResponseWriter, req *http.Request) {
         body, err := ioutil.ReadAll(req.Body)
         if err != nil {
-                json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-                fmt.Fprintf(rw, "%v\n", string(json_val))
+                jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+                fmt.Fprintf(rw, "%v\n", string(jsonval))
         } else {
                 var t createbuildmachine
 
                 err = json.Unmarshal(body, &t)
                 if err != nil {
-                        json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-                        fmt.Fprintf(rw, "%v\n", string(json_val))
+                        jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+                        fmt.Fprintf(rw, "%v\n", string(jsonval))
                 } else {
                         server_create_input := build.BuildServerCreateInput{t.AppVersion, t.UniqueId, "build-machine", "subnet-d81893b1", "chef-coe-ind", "t2.micro", "aws", "ap-south-1", true}
-                        server_response := server_create_input.BuildServerCreate()
-                        json_val, _ := json.MarshalIndent(server_response, "", " ")
-                        fmt.Fprintf(rw, "%v\n", string(json_val))
+                        serverresponse := server_create_input.BuildServerCreate()
+                        jsonval, _ := json.MarshalIndent(serverresponse, "", " ")
+                        fmt.Fprintf(rw, "%v\n", string(jsonval))
                 }
         }
 }
@@ -90,23 +90,23 @@ func createserver(rw http.ResponseWriter, req *http.Request) {
 func startimagemachine(rw http.ResponseWriter, req *http.Request) {
         body, err := ioutil.ReadAll(req.Body)
         if err != nil {
-                json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-                fmt.Fprintf(rw, "%v\n", string(json_val))
+                jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+                fmt.Fprintf(rw, "%v\n", string(jsonval))
         } else {
                 var t startimageinput
 
                 err = json.Unmarshal(body, &t)
                 if err != nil {
-                        json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-                        fmt.Fprintf(rw, "%v\n", string(json_val))
+                        jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+                        fmt.Fprintf(rw, "%v\n", string(jsonval))
                 } else {
                         server_create_input := buildim.PackerServerCreateInput{t.AppVersion, t.AppName, t.RepoEmail, t.RepoUsername, t.RepoPasswd, t.ArtDomain, t.ArtUsername, t.ArtPasswd, t.InstanceName, t.SubnetId, t.KeyName, t.Flavor, t.Cloud.Cloud, t.Cloud.Region, t.AssignPubIp}
-                        server_response, serv_err := server_create_input.BuildServerCreate()
-                        if serv_err != nil {
-                                fmt.Fprintf(rw, "%v\n", serv_err)
+                        serverresponse, serverr := server_create_input.BuildServerCreate()
+                        if serverr != nil {
+                                fmt.Fprintf(rw, "%v\n", serverr)
                         } else {
-                                json_val, _ := json.MarshalIndent(server_response, "", " ")
-                                fmt.Fprintf(rw, "%v\n", string(json_val))
+                                jsonval, _ := json.MarshalIndent(serverresponse, "", " ")
+                                fmt.Fprintf(rw, "%v\n", string(jsonval))
                         }
                 }
         }
@@ -115,22 +115,22 @@ func startimagemachine(rw http.ResponseWriter, req *http.Request) {
 func deleteservers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData svdelete.DeleteServersInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			delete_server_response, del_err := myData.DeleteServer()
-			if del_err != nil {
-				fmt.Fprintf(rw, "%v\n", del_err)
+			deleteserverresponse, delerr := myData.DeleteServer()
+			if delerr != nil {
+				fmt.Fprintf(rw, "%v\n", delerr)
 			} else {
-				json_val, _ := json.MarshalIndent(delete_server_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(deleteserverresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -139,22 +139,22 @@ func deleteservers(rw http.ResponseWriter, req *http.Request) {
 func createnetwork(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData nwcreate.NetworkCreateInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			server_response, ser_resp_err := myData.CreateNetwork()
-			if ser_resp_err != nil {
-				fmt.Fprintf(rw, "%v\n", ser_resp_err)
+			serverresponse, servresperr := myData.CreateNetwork()
+			if servresperr != nil {
+				fmt.Fprintf(rw, "%v\n", servresperr)
 			} else {
-				json_val, _ := json.MarshalIndent(server_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(serverresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -163,22 +163,22 @@ func createnetwork(rw http.ResponseWriter, req *http.Request) {
 func getregions(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData misc.GetRegionInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			get_region_response, reg_err := myData.GetRegions()
-			if reg_err != nil {
-				fmt.Fprintf(rw, "%v\n", reg_err)
+			getregionresponse, regerr := myData.GetRegions()
+			if regerr != nil {
+				fmt.Fprintf(rw, "%v\n", regerr)
 			} else {
-				json_val, _ := json.Marshal(get_region_response)
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.Marshal(getregionresponse)
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -187,22 +187,22 @@ func getregions(rw http.ResponseWriter, req *http.Request) {
 func getsubnets(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData nwget.GetNetworksInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			get_subnets_response, sub_err := myData.GetSubnets()
-			if sub_err != nil {
-				fmt.Fprintf(rw, "%v\n", sub_err)
+			getsubnetsresponse, suberr := myData.GetSubnets()
+			if suberr != nil {
+				fmt.Fprintf(rw, "%v\n", suberr)
 			} else {
-				json_val, _ := json.MarshalIndent(get_subnets_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(getsubnetsresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -211,22 +211,22 @@ func getsubnets(rw http.ResponseWriter, req *http.Request) {
 func getservers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData svget.GetServersInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			get_server_response, get_err := myData.GetServersDetails()
-			if get_err != nil {
-				fmt.Fprintf(rw, "%v\n", get_err)
+			getservesponse, geterr := myData.GetServersDetails()
+			if geterr != nil {
+				fmt.Fprintf(rw, "%v\n", geterr)
 			} else {
-				json_val, _ := json.MarshalIndent(get_server_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(getservesponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -235,22 +235,22 @@ func getservers(rw http.ResponseWriter, req *http.Request) {
 func getallservers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData svget.GetServersInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			getserver_response, serv_err := myData.GetAllServers()
-			if serv_err != nil {
-				fmt.Fprintf(rw, "%v\n", serv_err)
+			getserverresponse, serverr := myData.GetAllServers()
+			if serverr != nil {
+				fmt.Fprintf(rw, "%v\n", serverr)
 			} else {
-				json_val, _ := json.MarshalIndent(getserver_response, "", "  ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(getserverresponse, "", "  ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -260,22 +260,22 @@ func getallservers(rw http.ResponseWriter, req *http.Request) {
 func updateservers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData svupdate.UpdateServersInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			update_server_response, update_err := myData.UpdateServers()
-			if update_err != nil {
-				fmt.Fprintf(rw, "%v\n", update_err)
+			updateservresponse, updaterr := myData.UpdateServers()
+			if updaterr != nil {
+				fmt.Fprintf(rw, "%v\n", updaterr)
 			} else {
-				json_val, _ := json.MarshalIndent(update_server_response, "", "  ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(updateservresponse, "", "  ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -285,22 +285,22 @@ func updateservers(rw http.ResponseWriter, req *http.Request) {
 func deletenetworks(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData nwdelete.DeleteNetworkInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			delete_network_response, net_err := myData.DeleteNetwork()
-			if net_err != nil {
-				fmt.Fprintf(rw, "%v\n", net_err)
+			deletenetworkresponse, neterr := myData.DeleteNetwork()
+			if neterr != nil {
+				fmt.Fprintf(rw, "%v\n", neterr)
 			} else {
-				json_val, _ := json.MarshalIndent(delete_network_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(deletenetworkresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -309,22 +309,22 @@ func deletenetworks(rw http.ResponseWriter, req *http.Request) {
 func createloadbalancer(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData lbcreate.LbCreateInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			create_lb_response, create_lb_err := myData.CreateLoadBalancer()
-			if create_lb_err != nil {
-				fmt.Fprintf(rw, "%v\n", create_lb_err)
+			createlbresponse, createlberr := myData.CreateLoadBalancer()
+			if createlberr != nil {
+				fmt.Fprintf(rw, "%v\n", createlberr)
 			} else {
-				json_val, _ := json.MarshalIndent(create_lb_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(createlbresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -333,22 +333,22 @@ func createloadbalancer(rw http.ResponseWriter, req *http.Request) {
 func deleteloadbalancer(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData lbdelete.LbDeleteInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			delete_lb_response, del_lb_response := myData.DeleteLoadBalancer()
-			if del_lb_response != nil {
-				fmt.Fprintf(rw, "%v\n", del_lb_response)
+			deletelbresponse, delbresponse := myData.DeleteLoadBalancer()
+			if delbresponse != nil {
+				fmt.Fprintf(rw, "%v\n", delbresponse)
 			} else {
-				json_val, _ := json.MarshalIndent(delete_lb_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(deletelbresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -357,22 +357,22 @@ func deleteloadbalancer(rw http.ResponseWriter, req *http.Request) {
 func getloadbalancers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData lbget.GetLoadbalancerInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			loadbalancers_get_response, get_lb_response := myData.GetLoadbalancers()
-			if get_lb_response != nil {
-				fmt.Fprintf(rw, "%v\n", get_lb_response)
+			loadbalancersgetresponse, getlbresponse := myData.GetLoadbalancers()
+			if getlbresponse != nil {
+				fmt.Fprintf(rw, "%v\n", getlbresponse)
 			} else {
-				json_val, _ := json.MarshalIndent(loadbalancers_get_response, "", "  ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(loadbalancersgetresponse, "", "  ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -381,22 +381,22 @@ func getloadbalancers(rw http.ResponseWriter, req *http.Request) {
 func getallloadbalancers(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData lbget.GetLoadbalancerInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			loadbalancers_get_response, get_lb_response := myData.GetAllLoadbalancer()
-			if get_lb_response != nil {
-				fmt.Fprintf(rw, "%v\n", get_lb_response)
+			loadbalancersgetresponse, getlbresponse := myData.GetAllLoadbalancer()
+			if getlbresponse != nil {
+				fmt.Fprintf(rw, "%v\n", getlbresponse)
 			} else {
-				json_val, _ := json.MarshalIndent(loadbalancers_get_response, "", "  ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(loadbalancersgetresponse, "", "  ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -405,22 +405,22 @@ func getallloadbalancers(rw http.ResponseWriter, req *http.Request) {
 func createimage(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData imcreate.CreateImageInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			image_create_response, img_err := myData.CreateImage()
-			if img_err != nil {
-				fmt.Fprintf(rw, "%v\n", img_err)
+			imagecreateresponse, imgerr := myData.CreateImage()
+			if imgerr != nil {
+				fmt.Fprintf(rw, "%v\n", imgerr)
 			} else {
-				json_val, _ := json.MarshalIndent(image_create_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(imagecreateresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -429,22 +429,22 @@ func createimage(rw http.ResponseWriter, req *http.Request) {
 func deleteimage(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData imdelete.DeleteImageInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			image_delete_response, del_img_err := myData.DeleteImage()
-			if del_img_err != nil {
-				fmt.Fprintf(rw, "%v\n", del_img_err)
+			imagedeleteresponse, delimgerr := myData.DeleteImage()
+			if delimgerr != nil {
+				fmt.Fprintf(rw, "%v\n", delimgerr)
 			} else {
-				json_val, _ := json.MarshalIndent(image_delete_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(imagedeleteresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -453,22 +453,22 @@ func deleteimage(rw http.ResponseWriter, req *http.Request) {
 func getimages(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData imget.GetImagesInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			image_get_response, get_img_err := myData.GetImage()
-			if get_img_err != nil {
-				fmt.Fprintf(rw, "%v\n", get_img_err)
+			imagegetresponse, getimgerr := myData.GetImage()
+			if getimgerr != nil {
+				fmt.Fprintf(rw, "%v\n", getimgerr)
 			} else {
-				json_val, _ := json.MarshalIndent(image_get_response, "", "  ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(imagegetresponse, "", "  ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -477,22 +477,22 @@ func getimages(rw http.ResponseWriter, req *http.Request) {
 func getallimages(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData imget.GetImagesInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			image_get_response, getall_img_err := myData.GetAllImage()
-			if getall_img_err != nil {
-				fmt.Fprintf(rw, "%v\n", getall_img_err)
+			imagegetresponse, getallimgerr := myData.GetAllImage()
+			if getallimgerr != nil {
+				fmt.Fprintf(rw, "%v\n", getallimgerr)
 			} else {
-				json_val, _ := json.MarshalIndent(image_get_response, "", "  ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(imagegetresponse, "", "  ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -501,22 +501,22 @@ func getallimages(rw http.ResponseWriter, req *http.Request) {
 func getallnetworks(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData nwget.GetNetworksInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			get_all_networks_response, net_err := myData.GetAllNetworks()
-			if net_err != nil {
-				fmt.Fprintf(rw, "%v\n", net_err)
+			getallnetworksresponse, neterr := myData.GetAllNetworks()
+			if neterr != nil {
+				fmt.Fprintf(rw, "%v\n", neterr)
 			} else {
-				json_val, _ := json.MarshalIndent(get_all_networks_response, "", "  ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(getallnetworksresponse, "", "  ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -525,22 +525,22 @@ func getallnetworks(rw http.ResponseWriter, req *http.Request) {
 func getnetworks(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData nwget.GetNetworksInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			get_networks_response, net_err := myData.GetNetworks()
-			if net_err != nil {
-				fmt.Fprintf(rw, "%v\n", net_err)
+			getnetworksresponse, neterr := myData.GetNetworks()
+			if neterr != nil {
+				fmt.Fprintf(rw, "%v\n", neterr)
 			} else {
-				json_val, _ := json.MarshalIndent(get_networks_response, "", "  ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(getnetworksresponse, "", "  ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
@@ -549,19 +549,19 @@ func getnetworks(rw http.ResponseWriter, req *http.Request) {
 func getcount(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData count.GetCountInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			get_count_response := myData.GetCount()
-			json_val, _ := json.MarshalIndent(get_count_response, "", "  ")
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			getcountresponse := myData.GetCount()
+			jsonval, _ := json.MarshalIndent(getcountresponse, "", "  ")
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		}
 	}
 }
@@ -569,32 +569,32 @@ func getcount(rw http.ResponseWriter, req *http.Request) {
 func updatenetwork(rw http.ResponseWriter, req *http.Request) {
 	body, err := ioutil.ReadAll(req.Body)
 	if err != nil {
-		json_val, _ := json.Marshal(Error{"Not received input in a valid format"})
-		fmt.Fprintf(rw, "%v\n", string(json_val))
+		jsonval, _ := json.Marshal(Error{"Not received input in a valid format"})
+		fmt.Fprintf(rw, "%v\n", string(jsonval))
 	} else {
 		var myData nwupdate.NetworkUpdateInput
 
 		err = json.Unmarshal(body, &myData)
 		if err != nil {
-			json_val, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
-			fmt.Fprintf(rw, "%v\n", string(json_val))
+			jsonval, _ := json.Marshal(Error{"Unable to unmarshal the entered input. Provide input in valid format"})
+			fmt.Fprintf(rw, "%v\n", string(jsonval))
 		} else {
-			net_update_response, net_up_err := myData.UpdateNetwork()
-			if net_up_err != nil {
-				fmt.Fprintf(rw, "%v\n", net_up_err)
+			netupdateresponse, netuperr := myData.UpdateNetwork()
+			if netuperr != nil {
+				fmt.Fprintf(rw, "%v\n", netuperr)
 			} else {
-				json_val, _ := json.MarshalIndent(net_update_response, "", " ")
-				fmt.Fprintf(rw, "%v\n", string(json_val))
+				jsonval, _ := json.MarshalIndent(netupdateresponse, "", " ")
+				fmt.Fprintf(rw, "%v\n", string(jsonval))
 			}
 		}
 	}
 }
 
 func createservermock(rw http.ResponseWriter, req *http.Request) {
-	create_server_response, serv_err := svcreate.CreateServerMock()
-	if serv_err != nil {
-		fmt.Fprintf(rw, "%v\n", serv_err)
+	createserverresponse, serverr := svcreate.CreateServerMock()
+	if serverr != nil {
+		fmt.Fprintf(rw, "%v\n", serverr)
 	} else {
-		fmt.Fprintf(rw, "%v\n", create_server_response.DefaultResponse)
+		fmt.Fprintf(rw, "%v\n", createserverresponse.DefaultResponse)
 	}
 }

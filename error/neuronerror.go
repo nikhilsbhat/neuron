@@ -1,4 +1,4 @@
-package NeuronError
+package neuronerror
 
 import (
 	"errors"

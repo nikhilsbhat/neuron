@@ -28,6 +28,7 @@ import (
 	        svdelete "neuron/cloudoperations/server/delete"
 	        svupdate "neuron/cloudoperations/server/update"*/)
 
+// UiTemplatePath holds the path to folder consisting of UI gotemplates and other files to host UI.
 var UiTemplatePath string
 
 func neuron(w http.ResponseWriter, r *http.Request) {
@@ -52,17 +53,17 @@ func buildapp(w http.ResponseWriter, r *http.Request) {
 
 func cloudview(w http.ResponseWriter, r *http.Request) {
 
-	get_server_details := svget.GetServersInput{}
-	get_server_details.Cloud.Name = "aws"
-	get_server_details.Cloud.Region = "ap-south-1"
-	get_server_details.Cloud.Profile = "niktest"
-	getserver_response, reg_err := get_server_details.GetAllServers()
-	if reg_err != nil {
-		fmt.Fprintf(w, "%v\n", reg_err)
+	getserverdetails := svget.GetServersInput{}
+	getserverdetails.Cloud.Name = "aws"
+	getserverdetails.Cloud.Region = "ap-south-1"
+	getserverdetails.Cloud.Profile = "niktest"
+	getserverresponse, regerr := getserverdetails.GetAllServers()
+	if regerr != nil {
+		fmt.Fprintf(w, "%v\n", regerr)
 	} else {
-		json_val, _ := json.Marshal(getserver_response)
+		jsonval, _ := json.Marshal(getserverresponse)
 
-		value := []byte(string(json_val))
+		value := []byte(string(jsonval))
 		var data []map[string]interface{}
 		err1 := json.Unmarshal(value, &data)
 		if err1 != nil {
@@ -115,111 +116,111 @@ func ciview(w http.ResponseWriter, r *http.Request) {
 
 func cisetting(w http.ResponseWriter, r *http.Request) {
 
-	/*	if database.Db == nil {
-			if _, dir_err := os.Stat("/var/lib/neuron/neuron.json"); os.IsNotExist(dir_err) {
-				fmt.Println("I did not find any configuration file to read CI data")
-				config_byt := []byte(`{"ci": [{"name": "Not Connected","domain": "Not Connected" }]}`)
-				var dumy_config map[string]interface{}
-				if err := json.Unmarshal(config_byt, &dumy_config); err != nil {
-					panic(err)
-				}
+	/*      if database.Db == nil {
+	                if _, dir_err := os.Stat("/var/lib/neuron/neuron.json"); os.IsNotExist(dir_err) {
+	                        fmt.Println("I did not find any configuration file to read CI data")
+	                        config_byt := []byte(`{"ci": [{"name": "Not Connected","domain": "Not Connected" }]}`)
+	                        var dumy_config map[string]interface{}
+	                        if err := json.Unmarshal(config_byt, &dumy_config); err != nil {
+	                                panic(err)
+	                        }
 
-				t := template.Must(template.ParseGlob(UiTemplatePath))
-				err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-					Title  string
-					Cont   string
-					Cred   string
-					Pas    uiTemp
-					CiCred interface{}
-				}{Title: "CISettings", Cont: "cisettings", Cred: "no", Pas: uiTemp{Pass: dumy_config["ci"].([]interface{})}, CiCred: "dummy"})
-				if err != nil {
-					log.Fatal("Cannot Get View ", err)
-				}
+	                        t := template.Must(template.ParseGlob(UiTemplatePath))
+	                        err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+	                                Title  string
+	                                Cont   string
+	                                Cred   string
+	                                Pas    uiTemp
+	                                CiCred interface{}
+	                        }{Title: "CISettings", Cont: "cisettings", Cred: "no", Pas: uiTemp{Pass: dumy_config["ci"].([]interface{})}, CiCred: "dummy"})
+	                        if err != nil {
+	                                log.Fatal("Cannot Get View ", err)
+	                        }
 
-			} else {
-				fmt.Println("Found configuration file and reading CI data from there")
-				if config == nil {
-					fmt.Fprintf(w, "Encountered error while reading config file")
-				} else {
-					if (database.Db) != nil {
-						fmt.Println("Found Database connecting to fetch further data")
-						t := template.Must(template.ParseGlob(UiTemplatePath))
-						err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-							Title  string
-							Cont   string
-							Cred   string
-							CiCred interface{}
-						}{Title: "CISettings", Cont: "cisettings", Cred: "no", CiCred: "dummy"})
-						if err != nil {
-							log.Fatal("Cannot Get View ", err)
-						}
-					} else {
-						ci_dat_file := fmt.Sprintf("%s/data/ci_cred.json", config["home"])
-						if _, dir_err := os.Stat(ci_dat_file); os.IsNotExist(dir_err) {
-							fmt.Println("couldn't find credentials of CI, guess you've not set that")
+	                } else {
+	                        fmt.Println("Found configuration file and reading CI data from there")
+	                        if config == nil {
+	                                fmt.Fprintf(w, "Encountered error while reading config file")
+	                        } else {
+	                                if (database.Db) != nil {
+	                                        fmt.Println("Found Database connecting to fetch further data")
+	                                        t := template.Must(template.ParseGlob(UiTemplatePath))
+	                                        err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+	                                                Title  string
+	                                                Cont   string
+	                                                Cred   string
+	                                                CiCred interface{}
+	                                        }{Title: "CISettings", Cont: "cisettings", Cred: "no", CiCred: "dummy"})
+	                                        if err != nil {
+	                                                log.Fatal("Cannot Get View ", err)
+	                                        }
+	                                } else {
+	                                        ci_dat_file := fmt.Sprintf("%s/data/ci_cred.json", config["home"])
+	                                        if _, dir_err := os.Stat(ci_dat_file); os.IsNotExist(dir_err) {
+	                                                fmt.Println("couldn't find credentials of CI, guess you've not set that")
 
-							// redering template with no CI credentials
-							t := template.Must(template.ParseGlob(UiTemplatePath))
-							err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-								Title  string
-								Cont   string
-								Cred   string
-								Pas    uiTemp
-								CiCred interface{}
-							}{Title: "CISettings", Cont: "cisettings", Cred: "no", CiCred: "dummy"})
-							if err != nil {
-								log.Fatal("Cannot Get View ", err)
-							}
+	                                                // redering template with no CI credentials
+	                                                t := template.Must(template.ParseGlob(UiTemplatePath))
+	                                                err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+	                                                        Title  string
+	                                                        Cont   string
+	                                                        Cred   string
+	                                                        Pas    uiTemp
+	                                                        CiCred interface{}
+	                                                }{Title: "CISettings", Cont: "cisettings", Cred: "no", CiCred: "dummy"})
+	                                                if err != nil {
+	                                                        log.Fatal("Cannot Get View ", err)
+	                                                }
 
-						} else {
-							fmt.Println(ci_dat_file)
-							fetch_data := readCiCred(ci_dat_file)
-							fmt.Println(fetch_data)
-							fmt.Println("Fetching credentials of the CI you've set")
-							// redering template with CI credentials
-							t := template.Must(template.ParseGlob(UiTemplatePath))
-							err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-								Title  string
-								Cont   string
-								Cred   string
-								Pas    uiTemp
-								CiCred interface{}
-							}{Title: "CISettings", Cont: "cisettings", Cred: "yes", CiCred: fetch_data["ci"].([]interface{})})
-							if err != nil {
-								log.Fatal("Cannot Get View ", err)
-							}
-						}
-					}
-				}
-			}
-		} else {
+	                                        } else {
+	                                                fmt.Println(ci_dat_file)
+	                                                fetch_data := readCiCred(ci_dat_file)
+	                                                fmt.Println(fetch_data)
+	                                                fmt.Println("Fetching credentials of the CI you've set")
+	                                                // redering template with CI credentials
+	                                                t := template.Must(template.ParseGlob(UiTemplatePath))
+	                                                err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+	                                                        Title  string
+	                                                        Cont   string
+	                                                        Cred   string
+	                                                        Pas    uiTemp
+	                                                        CiCred interface{}
+	                                                }{Title: "CISettings", Cont: "cisettings", Cred: "yes", CiCred: fetch_data["ci"].([]interface{})})
+	                                                if err != nil {
+	                                                        log.Fatal("Cannot Get View ", err)
+	                                                }
+	                                        }
+	                                }
+	                        }
+	                }
+	        } else {
 
-			records, err := dbcommon.FetchCiData(database.DataDetail{"nikhil", "ci"})
-			if err != nil {
-				fmt.Fprintf(w, fmt.Sprintf("%s", err))
-			} else {
-				t := template.Must(template.ParseGlob(UiTemplatePath))
-				err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
-					Title  string
-					Cont   string
-					Cred   string
-					Pas    uiTemp
-					CiCred interface{}
-				}{Title: "CISettings", Cont: "cisettings", Cred: "yes", CiCred: records})
-				if err != nil {
-					log.Fatal("Cannot Get View ", err)
-				}
-			}
-		} */
+	                records, err := dbcommon.FetchCiData(database.DataDetail{"nikhil", "ci"})
+	                if err != nil {
+	                        fmt.Fprintf(w, fmt.Sprintf("%s", err))
+	                } else {
+	                        t := template.Must(template.ParseGlob(UiTemplatePath))
+	                        err := t.ExecuteTemplate(w, "page_layout.tmpl", struct {
+	                                Title  string
+	                                Cont   string
+	                                Cred   string
+	                                Pas    uiTemp
+	                                CiCred interface{}
+	                        }{Title: "CISettings", Cont: "cisettings", Cred: "yes", CiCred: records})
+	                        if err != nil {
+	                                log.Fatal("Cannot Get View ", err)
+	                        }
+	                }
+	        } */
 }
 
 func setci(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
-	data_value := database.CiData{CiName: r.FormValue("ciname"), CiURL: r.FormValue("ciurl"), CiUsername: r.FormValue("ciusername"), CiPassword: r.FormValue("cipassword"), Timestamp: time.Now()}
+	datavalue := database.CiData{CiName: r.FormValue("ciname"), CiURL: r.FormValue("ciurl"), CiUsername: r.FormValue("ciusername"), CiPassword: r.FormValue("cipassword"), Timestamp: time.Now()}
 
-	fmt.Fprintf(w, "%v\n", data_value)
-	records, err := dbcommon.StoreCIdata(database.DataDetail{"nikhil", "ci"}, data_value)
+	fmt.Fprintf(w, "%v\n", datavalue)
+	records, err := dbcommon.StoreCIdata(database.DataDetail{"nikhil", "ci"}, datavalue)
 	if err != nil {
 		fmt.Fprintf(w, fmt.Sprintf("%s", err))
 	} else {
@@ -227,6 +228,7 @@ func setci(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// Nouifound will display appropriate page if UI is not configured.
 func Nouifound(w http.ResponseWriter, r *http.Request) {
 
 	t := template.Must(template.New("").Parse(noUIHTML))
@@ -242,8 +244,8 @@ func jenkinsview(w http.ResponseWriter, r *http.Request) {
 	build := jenkins.GetJobs()
 	for _, job := range build {
 		fmt.Fprintf(w, "Job Separater")
-		json_val, _ := json.MarshalIndent(job.Raw, "", " ")
-		fmt.Fprintf(w, "%v\n", string(json_val))
+		jsonval, _ := json.MarshalIndent(job.Raw, "", " ")
+		fmt.Fprintf(w, "%v\n", string(jsonval))
 	}
 
 }
@@ -251,60 +253,60 @@ func jenkinsview(w http.ResponseWriter, r *http.Request) {
 func cloudview2(w http.ResponseWriter, r *http.Request) {
 
 	// Fetching the details of all servers present in the CLOUD AWS
-	get_server_details := svget.GetServersInput{}
-	get_server_details.Cloud.Name = "aws"
-	get_server_details.Cloud.Region = "ap-south-1"
-	get_server_details.Cloud.Profile = "niktest"
-	getserver_response, serv_err := get_server_details.GetAllServers()
-	var all_server []map[string]interface{}
-	if serv_err != nil {
-		fmt.Fprintf(w, "%v\n", serv_err)
+	getserverdetails := svget.GetServersInput{}
+	getserverdetails.Cloud.Name = "aws"
+	getserverdetails.Cloud.Region = "ap-south-1"
+	getserverdetails.Cloud.Profile = "niktest"
+	getserverresponse, serverr := getserverdetails.GetAllServers()
+	var allserver []map[string]interface{}
+	if serverr != nil {
+		fmt.Fprintf(w, "%v\n", serverr)
 	} else {
-		server_json, _ := json.Marshal(getserver_response)
+		serverjson, _ := json.Marshal(getserverresponse)
 
-		server_value := []byte(string(server_json))
-		var all_server_data []map[string]interface{}
-		get_serv_err := json.Unmarshal(server_value, &all_server_data)
-		if get_serv_err != nil {
-			fmt.Println(get_serv_err)
+		servervalue := []byte(string(serverjson))
+		var allserverdata []map[string]interface{}
+		getserverr := json.Unmarshal(servervalue, &allserverdata)
+		if getserverr != nil {
+			fmt.Println(getserverr)
 		}
 
-		for _, mp1 := range all_server_data {
+		for _, mp1 := range allserverdata {
 			for _, mp2 := range mp1 {
 				for _, mp3 := range mp2.([]interface{}) {
-					all_server = append(all_server, mp3.(map[string]interface{}))
+					allserver = append(allserver, mp3.(map[string]interface{}))
 				}
 			}
 		}
 	}
 
 	// Fetching the details of all networks present in CLOUD AWS
-	get_networks_details := nwget.GetNetworksInput{}
-	get_networks_details.Cloud.Name = "aws"
-	get_networks_details.Cloud.Region = "ap-south-1"
-	get_networks_details.Cloud.Profile = "niktest"
-	getnetworks_response, net_err := get_networks_details.GetAllNetworks()
+	getnetworksdetails := nwget.GetNetworksInput{}
+	getnetworksdetails.Cloud.Name = "aws"
+	getnetworksdetails.Cloud.Region = "ap-south-1"
+	getnetworksdetails.Cloud.Profile = "niktest"
+	getnetworksresponse, neterr := getnetworksdetails.GetAllNetworks()
 
-	type All_Networks struct {
+	type Allnetworks struct {
 		Region string
 		AllNet []map[string]interface{}
 		Subets []map[string]interface{}
 	}
-	var all_network []All_Networks
+	var allnetwork []Allnetworks
 
-	if net_err != nil {
-		fmt.Fprintf(w, "%v\n", net_err)
+	if neterr != nil {
+		fmt.Fprintf(w, "%v\n", neterr)
 	} else {
-		network_json, _ := json.Marshal(getnetworks_response)
+		networkjson, _ := json.Marshal(getnetworksresponse)
 
-		networks_value := []byte(string(network_json))
-		var all_networks_data []map[string]interface{}
-		get_netw_err := json.Unmarshal(networks_value, &all_networks_data)
-		if get_netw_err != nil {
-			fmt.Println(get_netw_err)
+		networksvalue := []byte(string(networkjson))
+		var allnetworksdata []map[string]interface{}
+		getnetwerr := json.Unmarshal(networksvalue, &allnetworksdata)
+		if getnetwerr != nil {
+			fmt.Println(getnetwerr)
 		}
 
-		for _, first := range all_networks_data {
+		for _, first := range allnetworksdata {
 			for _, second := range first {
 				var val []map[string]interface{}
 				var sub []map[string]interface{}
@@ -315,7 +317,7 @@ func cloudview2(w http.ResponseWriter, r *http.Request) {
 						sub = append(sub, subr.(map[string]interface{}))
 					}
 				}
-				all_network = append(all_network, All_Networks{(first["AwsResponse"].([]interface{})[0]).(map[string]interface{})["Region"].(string), val, sub})
+				allnetwork = append(allnetwork, Allnetworks{(first["AwsResponse"].([]interface{})[0]).(map[string]interface{})["Region"].(string), val, sub})
 			}
 		}
 	}
@@ -326,8 +328,8 @@ func cloudview2(w http.ResponseWriter, r *http.Request) {
 		Title      string
 		Cont       string
 		AllServer  []map[string]interface{}
-		AllNetwork []All_Networks
-	}{Title: "CloudView", Cont: "cloudview2", AllServer: all_server, AllNetwork: all_network})
+		AllNetwork []Allnetworks
+	}{Title: "CloudView", Cont: "cloudview2", AllServer: allserver, AllNetwork: allnetwork})
 	if err != nil {
 		log.Fatal("Cannot Get View ", err)
 	}

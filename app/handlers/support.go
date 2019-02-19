@@ -30,10 +30,11 @@ body {
 </body>
 </html>`
 
+// FillMyStruct helps converting map[string]interface to strut type you need.
 func FillMyStruct(s FillStructs) error {
 	val1 := s.Data
-	mystruct_json, _ := json.Marshal(s.Data)
-	json.Unmarshal([]byte(string(mystruct_json)), &val1)
+	mystructjson, _ := json.Marshal(s.Data)
+	json.Unmarshal([]byte(string(mystructjson)), &val1)
 	setfield := FillStructs{Type: s.Type, Data: s.Data}
 	for k, v := range val1.(map[string]interface{}) {
 		err := setfield.SetField(s.Type, k, v)
@@ -44,6 +45,7 @@ func FillMyStruct(s FillStructs) error {
 	return nil
 }
 
+// SetField is a method where actual converstion of map[string]interface to strut happens.
 func (s *FillStructs) SetField(obj interface{}, name string, value interface{}) error {
 	structValue := reflect.ValueOf(s.Type).Elem()
 	structFieldValue := structValue.FieldByName(name)
@@ -59,17 +61,17 @@ func (s *FillStructs) SetField(obj interface{}, name string, value interface{}) 
 	structFieldType := structFieldValue.Type()
 	val := reflect.ValueOf(value)
 	if structFieldType != val.Type() {
-		switch new_val := value.(type) {
+		switch newval := value.(type) {
 		case []string:
-			structFieldValue.Set(reflect.ValueOf(new_val))
+			structFieldValue.Set(reflect.ValueOf(newval))
 		case []interface{}:
-			s := make([]string, len(new_val))
-			for i, v := range new_val {
+			s := make([]string, len(newval))
+			for i, v := range newval {
 				s[i] = fmt.Sprint(v)
 			}
 			structFieldValue.Set(reflect.ValueOf(s))
 		case float64:
-			structFieldValue.Set(reflect.ValueOf(int(new_val)))
+			structFieldValue.Set(reflect.ValueOf(int(newval)))
 		default:
 			invalidTypeError := errors.New("Provided value type didn't match obj field type")
 			return invalidTypeError
@@ -83,9 +85,9 @@ func (s *FillStructs) SetField(obj interface{}, name string, value interface{}) 
 	return nil
 }
 
-func readCiCred(cred_file string) map[string]interface{} {
+func readCiCred(credfile string) map[string]interface{} {
 
-	plan, _ := ioutil.ReadFile(cred_file)
+	plan, _ := ioutil.ReadFile(credfile)
 	var data map[string]interface{}
 	err := json.Unmarshal(plan, &data)
 	if err != nil {

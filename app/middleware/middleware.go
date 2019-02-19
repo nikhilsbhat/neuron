@@ -11,6 +11,7 @@ import (
 	"time"
 )
 
+// Login will hold the writer and will be used while writing logs.
 type Login struct {
 	Logpath io.Writer
 }
@@ -20,19 +21,24 @@ type gzipResponseWriter struct {
 	io.Writer
 }
 
+// GzipMiddleware holds the http handler which has to be compressed.
 type GzipMiddleware struct {
 	Next http.Handler
 }
 
+// TimeoutMiddleware holds the http handler for which timeout has to be set.
 type TimeoutMiddleware struct {
 	Next http.Handler
 }
 
-var DefaultTimeoutHandler = http.HandlerFunc(
-	func(res http.ResponseWriter, req *http.Request) {
-		res.WriteHeader(http.StatusGatewayTimeout)
-		res.Write([]byte("Service timeout"))
-	})
+var (
+	// DefaultTimeoutHandler holds the message that will be thrown when processing time cross the timeout.
+	DefaultTimeoutHandler = http.HandlerFunc(
+		func(res http.ResponseWriter, req *http.Request) {
+			res.WriteHeader(http.StatusGatewayTimeout)
+			res.Write([]byte("Service timeout"))
+		})
+)
 
 type timeoutWriter struct {
 	rw http.ResponseWriter
@@ -41,6 +47,7 @@ type timeoutWriter struct {
 	buf    *bytes.Buffer
 }
 
+// JsonHandler will set the header with content-type json.
 func JsonHandler(h http.Handler) http.Handler {
 
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -95,6 +102,7 @@ func (tm TimeoutMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// TimeoutHandler will be responsible for timing out the request if it takes annoying time to serve.
 func TimeoutHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -112,7 +120,7 @@ func TimeoutHandler(next http.Handler) http.Handler {
 		select {
 		case <-cCtx.Done():
 			/*w.WriteHeader(tw.status)
-			w.Write(tw.buf.Bytes())*/
+			  w.Write(tw.buf.Bytes())*/
 			return
 		case <-tCtx.Done():
 			if err := tCtx.Err(); err == context.DeadlineExceeded {
@@ -124,6 +132,7 @@ func TimeoutHandler(next http.Handler) http.Handler {
 	})
 }
 
+// GzipHandler will help in compressing the response served as per the call made to neuron.
 func GzipHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
@@ -143,6 +152,7 @@ func GzipHandler(next http.Handler) http.Handler {
 	})
 }
 
+// Logger will log all the request served by the neuron through API.
 func (loger *Login) Logger(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 

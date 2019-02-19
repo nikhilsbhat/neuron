@@ -1,5 +1,3 @@
-// This package takes care of registering flags,subcommands and returns the
-// command to the function who creates or holds the root command.
 package commands
 
 import (

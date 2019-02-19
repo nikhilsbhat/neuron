@@ -1,4 +1,4 @@
-package NeuronLogger
+package neuronlogger
 
 import (
 	//"errors"
@@ -12,12 +12,13 @@ import (
 	"time"
 )
 
-//AppName is set to "neuron" by default, one can change it by passing the required name to neuronlogInitializer()
+// AppName is set to "neuron" by default, one can change it by passing the required name to neuronlogInitializer()
 var (
 	AppName = "neuron"
 	Logpath io.Writer
 )
 
+// NeuronLogInput holds the data such as path to log file where the logs will be written along with the name of the app for which logs will be written.
 type NeuronLogInput struct {
 	Logpath string
 	AppName string `json:"AppName,omitempty"`
@@ -31,6 +32,7 @@ type loggerOptions struct {
 	caller  string
 }
 
+// Init will help in initializing log setup for neuron.
 func Init() error {
 
 	conf, conferr := getlog()
@@ -51,7 +53,7 @@ func Init() error {
 // To use the custom logging functionality from this package once has to invoke below function
 func (loger *NeuronLogInput) neuronlogInitializer() error {
 
-	if _, dir_err := os.Stat(loger.Logpath); os.IsNotExist(dir_err) {
+	if _, direrr := os.Stat(loger.Logpath); os.IsNotExist(direrr) {
 
 		logdirerr := os.Mkdir(loger.Logpath, 0644)
 		if logdirerr != nil {
@@ -118,6 +120,7 @@ func (loger *NeuronLogInput) neuronlogInitializer() error {
 	}
 }
 
+// Info will treat the data written into log file as information.
 func Info(data interface{}) {
 	login := loggerOptions{
 		level:   " [INFO] ",
@@ -131,6 +134,7 @@ func Info(data interface{}) {
 	login.appLog()
 }
 
+// Error will treat the data written into log file as error.
 func Error(data interface{}) {
 	login := loggerOptions{
 		level:   " [ERROR] ",
@@ -144,6 +148,7 @@ func Error(data interface{}) {
 	login.appLog()
 }
 
+// Warn will treat the data written into log file as warning.
 func Warn(data interface{}) {
 	login := loggerOptions{
 		level:   " [WARN] ",
@@ -157,6 +162,7 @@ func Warn(data interface{}) {
 	login.appLog()
 }
 
+// Debug will treat the data written into log file as debug.
 func Debug(data interface{}) {
 	login := loggerOptions{
 		level:   " [DEBUG] ",

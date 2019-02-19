@@ -1,4 +1,4 @@
-package NeuronLogger
+package neuronlogger
 
 import (
 	"bytes"
@@ -16,7 +16,7 @@ const (
 
 func getlog() (string, error) {
 
-	if _, dir_err := os.Stat("/var/lib/neuron/neuron.json"); os.IsNotExist(dir_err) {
+	if _, direrr := os.Stat("/var/lib/neuron/neuron.json"); os.IsNotExist(direrr) {
 
 		Info(pritnDash)
 		Info(loginitializing)
@@ -24,7 +24,7 @@ func getlog() (string, error) {
 		return "/var/log/neuron", nil
 	} else {
 
-		config_data, conferr := getloglocation()
+		configdata, conferr := getloglocation()
 		if conferr != nil {
 			switch conferr.(type) {
 			case err.NoLogFound:
@@ -33,16 +33,16 @@ func getlog() (string, error) {
 				return "", conferr
 			}
 		}
-		return config_data, nil
+		return configdata, nil
 	}
 }
 
 func getloglocation() (string, error) {
-	conf_file, conferr := ioutil.ReadFile("/var/lib/neuron/neuron.json")
+	configfile, conferr := ioutil.ReadFile("/var/lib/neuron/neuron.json")
 	if conferr != nil {
 		return "", err.ReadFileError()
 	}
-	decoder := json.NewDecoder(bytes.NewReader([]byte(conf_file)))
+	decoder := json.NewDecoder(bytes.NewReader([]byte(configfile)))
 
 	var confdata map[string]interface{}
 	if decoderr := decoder.Decode(&confdata); decoderr != nil {
