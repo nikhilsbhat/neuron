@@ -4,6 +4,7 @@ import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
+// GetRegionInput holds the information required to fetch the details of region, and implements the methods for it
 type GetRegionInput struct {
 	Cloud cmn.Cloud
 }

@@ -1,59 +1,59 @@
 package router
 
 import (
-        "github.com/gorilla/mux"
-        handle "github.com/nikhilsbhat/neuron/app/handlers"
-        mid "github.com/nikhilsbhat/neuron/app/middleware"
-        "io"
-        "net/http"
+	"github.com/gorilla/mux"
+	handle "github.com/nikhilsbhat/neuron/app/handlers"
+	mid "github.com/nikhilsbhat/neuron/app/middleware"
+	"io"
+	"net/http"
 )
 
 // MuxIn implements the method NewRouter to create a newrouter and holds data for the same.
 type MuxIn struct {
-        UiDir          string
-        UiTemplatePath string
-        Apilog         io.Writer
+	UiDir          string
+	UiTemplatePath string
+	Apilog         io.Writer
 }
 
 // NewRouter gives back the router which it created to the function/method who called it.
 func (log *MuxIn) NewRouter() *mux.Router {
 
-        if log.UiTemplatePath != "" {
-                handle.UiTemplatePath = log.UiTemplatePath
-        }
-        rout := mux.NewRouter().StrictSlash(true)
-        //rout.Use(mid.authenticate)
-        rout.Use(mid.TimeoutHandler)
+	if log.UiTemplatePath != "" {
+		handle.UiTemplatePath = log.UiTemplatePath
+	}
+	rout := mux.NewRouter().StrictSlash(true)
+	//rout.Use(mid.authenticate)
+	rout.Use(mid.TimeoutHandler)
 
-        //initializing logger with log path
-        test := new(mid.Login)
-        test.Logpath = log.Apilog
-        rout.Use(test.Logger)
+	//initializing logger with log path
+	test := new(mid.Login)
+	test.Logpath = log.Apilog
+	rout.Use(test.Logger)
 
-        for _, route := range handle.Routes {
-                rout.
-                        Methods(route.Method).
-                        Path(route.Pattern).
-                        Name(route.Name).
-                        Handler(route.HandlerFunc)
-                //rout.Use(mid.JsonHandler)
-        }
+	for _, route := range handle.Routes {
+		rout.
+			Methods(route.Method).
+			Path(route.Pattern).
+			Name(route.Name).
+			Handler(route.HandlerFunc)
+		//rout.Use(mid.JsonHandler)
+	}
 
-        if log.UiDir != "" {
-                for _, route := range handle.UiRoutes {
-                        rout.
-                                Path(route.Pattern).
-                                Name(route.Name).
-                                Handler(route.HandlerFunc)
-                        //rout.Use(mid.GzipHandler)
-                }
-                //rout.NotFoundHandler = http.HandlerFunc(notfound)
-                rout.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(log.UiDir))))
-                http.Handle("/", rout)
-        } else {
-                rout.HandleFunc("/", handle.Nouifound)
-                http.Handle("/", rout)
-        }
+	if log.UiDir != "" {
+		for _, route := range handle.UiRoutes {
+			rout.
+				Path(route.Pattern).
+				Name(route.Name).
+				Handler(route.HandlerFunc)
+			//rout.Use(mid.GzipHandler)
+		}
+		//rout.NotFoundHandler = http.HandlerFunc(notfound)
+		rout.PathPrefix("/").Handler(http.StripPrefix("/", http.FileServer(http.Dir(log.UiDir))))
+		http.Handle("/", rout)
+	} else {
+		rout.HandleFunc("/", handle.Nouifound)
+		http.Handle("/", rout)
+	}
 
-        return rout
+	return rout
 }

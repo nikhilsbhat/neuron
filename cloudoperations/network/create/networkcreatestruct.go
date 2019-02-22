@@ -1,4 +1,4 @@
-// The package which makes the tool cloud agnostic with respect to creation of network.
+// Package networkcreate makes the tool cloud agnostic with respect to creation of network.
 // The decision will be made here to route the request to respective package based on input.
 package networkcreate
 
@@ -6,7 +6,7 @@ import (
 	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
 )
 
-// The struct which implements method CreateNetwork.
+// NetworkCreateInput implements method CreateNetwork and holds parameter for creating network.
 type NetworkCreateInput struct {
 	// The name for the Network that has to be created.
 	Name string `json:"name"`

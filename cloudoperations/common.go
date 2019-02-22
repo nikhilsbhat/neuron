@@ -1,6 +1,6 @@
 package commoncloud
 
-// This is the common structure which is called in all cloudoperations.
+// Cloud is the common structure which is called in all cloudoperations.
 type Cloud struct {
 	// Pass the cloud in which the resource has to be created. usage: "aws","azure" etc.
 	Name string `json:"name"`
