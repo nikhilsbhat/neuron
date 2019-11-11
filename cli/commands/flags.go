@@ -1,7 +1,7 @@
 package commands
 
 import (
-	cmn "github.com/nikhilsbhat/neuron/cloudoperations"
+	cmn "github.com/nikhilsbhat/neuron-cloudy/cloudoperations"
 	"github.com/spf13/cobra"
 )
 

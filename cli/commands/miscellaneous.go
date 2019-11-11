@@ -3,7 +3,7 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
-	misc "github.com/nikhilsbhat/neuron/cloudoperations/miscellaneous"
+	misc "github.com/nikhilsbhat/neuron-cloudy/cloudoperations/miscellaneous"
 	err "github.com/nikhilsbhat/neuron/error"
 	"github.com/spf13/cobra"
 	"strings"

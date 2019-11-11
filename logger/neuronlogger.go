@@ -3,13 +3,14 @@ package neuronlogger
 import (
 	//"errors"
 	"fmt"
-	ui "github.com/nikhilsbhat/neuron/cli/ui"
-	err "github.com/nikhilsbhat/neuron/error"
 	"io"
 	"log"
 	"os"
 	"runtime"
 	"time"
+
+	ui "github.com/nikhilsbhat/neuron/cli/ui"
+	err "github.com/nikhilsbhat/neuron/error"
 )
 
 // AppName is set to "neuron" by default, one can change it by passing the required name to neuronlogInitializer()
@@ -57,6 +58,7 @@ func (loger *NeuronLogInput) neuronlogInitializer() error {
 
 		logdirerr := os.Mkdir(loger.Logpath, 0644)
 		if logdirerr != nil {
+			fmt.Println(logdirerr)
 			return err.LogDirError()
 		}
 	}

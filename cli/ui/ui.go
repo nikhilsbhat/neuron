@@ -25,7 +25,7 @@ type NeuronUi struct {
 }
 
 var (
-	// Red Blue Green Cyan Yellow, Magenta are the variables which holds the respective colors.
+	// red Blue green Cyan yellow, magenta are the variables which holds the respective colors.
 	red     = Color{color.FgRed}
 	blue    = Color{color.FgBlue}
 	green   = Color{color.FgGreen}
@@ -51,11 +51,6 @@ func (n NeuronUi) NeuronSaysItsError(msg string) {
 // NeuronSaysItsWarn will be defining the color while printing warnings.
 func (n NeuronUi) NeuronSaysItsWarn(msg string) {
 	n.neuronPrints(yellow.makeitcolorful(msg))
-}
-
-// NeuronSaysItsDebug will be defining the color while printing warnings.
-func (n NeuronUi) NeuronSaysItsDebug(msg string) {
-	n.neuronPrints(magenta.makeitcolorful(msg))
 }
 
 // Info will be just defining the color for informations.

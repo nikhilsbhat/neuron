@@ -1,8 +1,9 @@
 package handlers
 
 import (
-	"github.com/globalsign/mgo/bson"
 	"time"
+
+	"github.com/globalsign/mgo/bson"
 )
 
 type servercreateinput struct {
@@ -49,6 +50,7 @@ type getserverdetails struct {
 	Cloud    cloudConfig
 }
 
+// Package FillStructs helps in filling structs for neuron UI
 type FillStructs struct {
 	Data interface{} `json:"Data,omitempty"`
 	Type interface{} `json:"Type,omitempty"`
@@ -60,10 +62,12 @@ type uiTemp struct {
 	Pass  []interface{} `json:"pass,omitempty"`
 }
 
+// Package Error holds the error message for neuron UI
 type Error struct {
 	Error string
 }
 
+// Package CIData maps the struct to neuron UI
 type CIData struct {
 	Id bson.ObjectId `bson:"_id,omitempty" json:"id"`
 	//Id         int       `bson:"_id,omitempty" json:"id"`

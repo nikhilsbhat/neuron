@@ -2,10 +2,11 @@ package commands
 
 import (
 	"fmt"
+	"os"
+
 	neuron "github.com/nikhilsbhat/neuron/app"
 	config "github.com/nikhilsbhat/neuron/app/config"
 	"github.com/nikhilsbhat/neuron/cli/ui"
-	"os"
 )
 
 type cliMeta struct {

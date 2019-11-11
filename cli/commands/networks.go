@@ -5,13 +5,14 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
-	nwcreate "github.com/nikhilsbhat/neuron/cloudoperations/network/create"
-	nwdelete "github.com/nikhilsbhat/neuron/cloudoperations/network/delete"
-	nwget "github.com/nikhilsbhat/neuron/cloudoperations/network/get"
-	nwupdate "github.com/nikhilsbhat/neuron/cloudoperations/network/update"
+	"strings"
+
+	nwcreate "github.com/nikhilsbhat/neuron-cloudy/cloudoperations/network/create"
+	nwdelete "github.com/nikhilsbhat/neuron-cloudy/cloudoperations/network/delete"
+	nwget "github.com/nikhilsbhat/neuron-cloudy/cloudoperations/network/get"
+	nwupdate "github.com/nikhilsbhat/neuron-cloudy/cloudoperations/network/update"
 	err "github.com/nikhilsbhat/neuron/error"
 	"github.com/spf13/cobra"
-	"strings"
 )
 
 var (

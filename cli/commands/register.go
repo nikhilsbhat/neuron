@@ -2,6 +2,7 @@ package commands
 
 import (
 	"fmt"
+
 	err "github.com/nikhilsbhat/neuron/error"
 	"github.com/spf13/cobra"
 )
@@ -10,7 +11,7 @@ var (
 	cmds map[string]*cobra.Command
 )
 
-type neucmds struct {
+type confcmds struct {
 	commands []*cobra.Command
 }
 
@@ -27,7 +28,7 @@ func Register(name string, fn *cobra.Command) {
 }
 
 func getCmds() *cobra.Command {
-	neucmd := new(neucmds)
+	neucmd := new(confcmds)
 	neucmd.commands = append(neucmd.commands, getInitCmds())
 	neucmd.commands = append(neucmd.commands, getConfigCmds())
 	neucmd.commands = append(neucmd.commands, getNetCmds())
@@ -41,7 +42,7 @@ func getCmds() *cobra.Command {
 	return cmd
 }
 
-func (c *neucmds) prepareCmds() *cobra.Command {
+func (c *confcmds) prepareCmds() *cobra.Command {
 	rootCmd := getNeuronCmds()
 	for _, cm := range c.commands {
 		rootCmd.AddCommand(cm)

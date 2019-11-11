@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-// Login will hold the writer and will be used while writing logs.
+// Login holds the writer and will be used while writing logs.
 type Login struct {
 	Logpath io.Writer
 }
